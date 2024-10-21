@@ -1,1 +1,2 @@
-ShopRotation Remake - Minecraft Plugin
+# ShopRotation-Remake
+ShopRotation - Remake Minecraft Plugin

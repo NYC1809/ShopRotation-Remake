@@ -1,6 +1,7 @@
 package de.nyc.shopRotationRemake;
 
 import de.nyc.shopRotationRemake.database.SrDatabase;
+import de.nyc.shopRotationRemake.listener.JoinListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,6 +16,7 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         LocalDateTime start = LocalDateTime.now();
+
         try {
             if(!getDataFolder().exists()) {
                 getDataFolder().mkdirs();
@@ -25,7 +27,7 @@ public final class Main extends JavaPlugin {
             System.out.println("Failed to connect to database! " + e.getMessage());
             Bukkit.getPluginManager().disablePlugin(this);
         }
-
+        Bukkit.getPluginManager().registerEvents(new JoinListener(this), this);
         getLogger().info("loaded in " + Duration.between(start, LocalDateTime.now()).toMillis() + "ms");
     }
 
@@ -38,7 +40,7 @@ public final class Main extends JavaPlugin {
         }
     }
 
-    public SrDatabase srDatabase() {
+    public SrDatabase getSrDatabase() {
         return srDatabase;
     }
 }

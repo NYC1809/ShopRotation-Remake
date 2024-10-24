@@ -1,8 +1,11 @@
 package de.nyc.shopRotationRemake;
 
+import de.nyc.shopRotationRemake.commands.CreateChestCommand;
 import de.nyc.shopRotationRemake.database.SrDatabase;
 import de.nyc.shopRotationRemake.listener.JoinListener;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -27,6 +30,9 @@ public final class Main extends JavaPlugin {
             System.out.println("Failed to connect to database! " + e.getMessage());
             Bukkit.getPluginManager().disablePlugin(this);
         }
+
+        registerCommand("srChest", new CreateChestCommand(this));
+
         Bukkit.getPluginManager().registerEvents(new JoinListener(this), this);
         getLogger().info("loaded in " + Duration.between(start, LocalDateTime.now()).toMillis() + "ms");
     }
@@ -42,5 +48,14 @@ public final class Main extends JavaPlugin {
 
     public SrDatabase getSrDatabase() {
         return srDatabase;
+    }
+
+    private void registerCommand(String command, CommandExecutor executor) {
+        PluginCommand cmd = this.getCommand(command);
+        if (cmd == null) {
+            getLogger().severe("No entry for command " + command + " could be found in the plugin.yml.");
+            return;
+        }
+        cmd.setExecutor(executor);
     }
 }

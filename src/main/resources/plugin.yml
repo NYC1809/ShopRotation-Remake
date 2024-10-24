@@ -2,3 +2,7 @@ name: ShopRotation-Remake
 version: '1.0-SNAPSHOT'
 main: de.nyc.shopRotationRemake.Main
 api-version: '1.21'
+
+commands:
+  srChest:
+    description: Command for the shop-rotation-remake plugin

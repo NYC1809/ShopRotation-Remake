@@ -15,6 +15,24 @@ public class SrDatabase {
                     "uuid TEXT PRIMARY KEY, " +
                     "username TEXT NOT NULL)");
         }
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("CREATE TABLE IF NOT EXISTS items (" +
+                    "id TEXT PRIMARY KEY, " +
+                    "items TEXT)");
+        }
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("CREATE TABLE IF NOT EXISTS rewards (" +
+                    "id TEXT PRIMARY KEY, " +
+                    "items TEXT NOT NULL, " +
+                    "FOREIGN KEY(id) REFERENCES items(id))");
+        }
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("CREATE TABLE IF NOT EXISTS chest (" +
+                    "uuid TEXT PRIMARY KEY, " +
+                    "name TEXT NOT NULL, " +
+                    "location TEXT NOT NULL, " +
+                    "FOREIGN KEY(uuid) REFERENCES items(id))");
+        }
     }
 
     public void closeConnection() throws SQLException {

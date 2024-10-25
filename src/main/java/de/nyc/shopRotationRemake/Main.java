@@ -2,6 +2,7 @@ package de.nyc.shopRotationRemake;
 
 import de.nyc.shopRotationRemake.commands.CreateChestCommand;
 import de.nyc.shopRotationRemake.database.SrDatabase;
+import de.nyc.shopRotationRemake.listener.ChatListener;
 import de.nyc.shopRotationRemake.listener.JoinListener;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -34,6 +35,7 @@ public final class Main extends JavaPlugin {
         registerCommand("srChest", new CreateChestCommand(this));
 
         Bukkit.getPluginManager().registerEvents(new JoinListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
         getLogger().info("loaded in " + Duration.between(start, LocalDateTime.now()).toMillis() + "ms");
     }
 

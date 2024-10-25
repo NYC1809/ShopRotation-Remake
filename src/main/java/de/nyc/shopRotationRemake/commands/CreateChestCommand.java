@@ -23,6 +23,7 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         Player player = (Player) sender;
         if(!player.isOp()) {
+            sender.sendMessage("You are not a Server Admin!");
             return true;
         }
         switch (args[0].toLowerCase()) {

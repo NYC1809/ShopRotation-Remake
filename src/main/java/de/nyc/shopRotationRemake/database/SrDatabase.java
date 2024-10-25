@@ -1,8 +1,10 @@
 package de.nyc.shopRotationRemake.database;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
+import java.util.UUID;
 
 public class SrDatabase {
 
@@ -56,4 +58,32 @@ public class SrDatabase {
             return resultSet.next();
         }
     }
+
+    public void createChest(UUID uuid, String name, Location location) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO chest (uuid, name, location) VALUES (?, ?, ?)")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setString(2, name);
+            preparedStatement.setString(3, location.toString());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public String getChestNameByUUID(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT name FROM chest WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.toString();
+        }
+    }
+
+    public String getChestLocationByUUID(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT location FROM chest WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.toString();
+        }
+    }
+
+    //TODO: Functions for the other two SQL tables
+
 }

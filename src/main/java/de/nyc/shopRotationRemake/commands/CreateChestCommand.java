@@ -1,6 +1,8 @@
 package de.nyc.shopRotationRemake.commands;
 
 import de.nyc.shopRotationRemake.Main;
+import de.nyc.shopRotationRemake.enums.Messages;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,6 +23,10 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
+        if(!(sender instanceof Player)) {
+            sender.sendMessage(Messages.NO_PLAYER.getMessage());
+            return true;
+        }
         Player player = (Player) sender;
         if(!player.isOp()) {
             sender.sendMessage("You are not a Server Admin!");

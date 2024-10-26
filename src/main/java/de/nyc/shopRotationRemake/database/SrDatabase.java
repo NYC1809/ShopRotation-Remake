@@ -35,6 +35,15 @@ public class SrDatabase {
                     "location TEXT NOT NULL, " +
                     "FOREIGN KEY(uuid) REFERENCES items(id))");
         }
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("CREATE TABLE IF NOT EXISTS currentitem (" +
+                   "uuid TEXT PRIMARY KEY, " +
+                    "item TEXT NOT NULL, " +
+                    "amount INT NOT NULL, " +
+                    "alreadygifted INT NOT NULL, " +
+                    "completed TEXT, " +
+                    "FOREIGN KEY(uuid) REFERENCES chest(uuid))");
+        }
     }
 
     public void closeConnection() throws SQLException {
@@ -84,6 +93,15 @@ public class SrDatabase {
         }
     }
 
-    //TODO: Functions for the other two SQL tables
+    public String getChestUuids(Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(DISTINCT uuid), name FROM chest")){
+            //DEBUG: PLAYER-SEND-MESSAGE
+            ResultSet resultSet = preparedStatement.executeQuery();
+            player.sendMessage("[12:35:28] " + resultSet.toString());
+            return resultSet.toString(); //DEBUG
+        }
+    }
+
+    //TODO: Functions for the other three SQL tables
 
 }

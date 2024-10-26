@@ -71,12 +71,12 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
                     chest.update();
                 }
 
+                //set Chest by default enabled to false
                 try {
-                    this.main.getSrDatabase().createChest(chestUUID, name, location);
+                    this.main.getSrDatabase().createChest(chestUUID, name, location, false);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-
                 break;
             case "get":
                 break;

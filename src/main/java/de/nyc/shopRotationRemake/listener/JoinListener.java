@@ -1,6 +1,7 @@
 package de.nyc.shopRotationRemake.listener;
 
 import de.nyc.shopRotationRemake.Main;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -17,7 +18,10 @@ public class JoinListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) throws SQLException {
-        if(!event.getPlayer().hasPlayedBefore()) {
+        Player player = event.getPlayer();
+        if(this.main.getSrDatabase().playerExists(player)) {
+            return;
+        } else {
             this.main.getSrDatabase().addPlayer(event.getPlayer());
         }
     }

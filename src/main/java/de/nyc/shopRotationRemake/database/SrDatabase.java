@@ -33,6 +33,7 @@ public class SrDatabase {
                     "uuid TEXT PRIMARY KEY, " +
                     "name TEXT NOT NULL, " +
                     "location TEXT NOT NULL, " +
+                    "enabled TEXT NOT NULL, " +
                     "FOREIGN KEY(uuid) REFERENCES items(id))");
         }
         try (Statement statement = connection.createStatement()) {
@@ -68,11 +69,12 @@ public class SrDatabase {
         }
     }
 
-    public void createChest(UUID uuid, String name, Location location) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO chest (uuid, name, location) VALUES (?, ?, ?)")) {
+    public void createChest(UUID uuid, String name, Location location, Boolean enabled) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO chest (uuid, name, location, enabled) VALUES (?, ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());
             preparedStatement.setString(2, name);
             preparedStatement.setString(3, location.toString());
+            preparedStatement.setString(4,enabled.toString());
             preparedStatement.executeUpdate();
         }
     }
@@ -93,8 +95,27 @@ public class SrDatabase {
         }
     }
 
+    public boolean getChestIsEnabledByUUID(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT enabled FROM chest WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next(); //TODO: ALL RESULTSETS ARE WRONG!! USE METHOD FROM FUNCTION BELOW:
+        }
+    }
+
+    public String getChestIsEnabledByName(String name) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT enabled FROM chest WHERE name = ?")) {
+            preparedStatement.setString(1, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) {
+                return resultSet.getString("enabled");
+            }
+            return null;
+        }
+    } //TODO:^^THIS FUNCTION IS CORRECT
+
     public String getChestUuids(Player player) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(DISTINCT uuid), name FROM chest")){
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(DISTINCT uuid), name FROM chest")) {
             //DEBUG: PLAYER-SEND-MESSAGE
             ResultSet resultSet = preparedStatement.executeQuery();
             player.sendMessage("[12:35:28] " + resultSet.toString());
@@ -103,5 +124,6 @@ public class SrDatabase {
     }
 
     //TODO: Functions for the other three SQL tables
+    //TODO: Check in functions if given args exist in SQL DB
 
 }

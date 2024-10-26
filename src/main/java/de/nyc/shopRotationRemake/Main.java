@@ -7,6 +7,7 @@ import de.nyc.shopRotationRemake.listener.JoinListener;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -59,5 +60,16 @@ public final class Main extends JavaPlugin {
             return;
         }
         cmd.setExecutor(executor);
+    }
+
+    public void copyToClipboard(Player player, String message, String url) {
+        Bukkit.getServer().dispatchCommand(
+                Bukkit.getConsoleSender(),
+                "tellraw " + player.getName() +
+                        " {\"clickEvent\":{\"action\":\"copy_to_clipboard\",\"value\":\"" +
+                        url +
+                        "\"},\"text\":\"" +
+                        message +
+                        "\"}");
     }
 }

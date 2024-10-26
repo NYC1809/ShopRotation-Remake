@@ -91,6 +91,9 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
                 break;
             case "help":
                 break;
+            case "debug":
+                this.main.copyToClipboard(player, "DAS HIER IST DIE UUID", "(testuuid) a56b6c74-6a80-47a5-b9fd-a08d8b0b0c04");
+                break;
         }
 
         return false;

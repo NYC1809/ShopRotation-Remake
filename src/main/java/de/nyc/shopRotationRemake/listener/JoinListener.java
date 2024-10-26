@@ -21,8 +21,7 @@ public class JoinListener implements Listener {
         Player player = event.getPlayer();
         if(this.main.getSrDatabase().playerExists(player)) {
             return;
-        } else {
-            this.main.getSrDatabase().addPlayer(event.getPlayer());
         }
+        this.main.getSrDatabase().addPlayer(event.getPlayer());
     }
 }

@@ -2,7 +2,7 @@ package de.nyc.shopRotationRemake.commands;
 
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.Messages;
-import org.bukkit.Bukkit;
+import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -65,8 +65,7 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
                 Block block = location.getBlock();
                 block.setType(materialChest);
                 UUID chestUUID = UUID.randomUUID();
-                if(block.getState() instanceof Chest) {
-                    Chest chest = (Chest) block.getState();
+                if(block.getState() instanceof Chest chest) {
                     chest.getPersistentDataContainer().set(new NamespacedKey("srchest-plugin", "chest_uuid"), PersistentDataType.STRING, chestUUID.toString());
                     chest.update();
                 }
@@ -79,8 +78,12 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
                 }
                 break;
             case "get":
+                if(args.length != 1) {
+                    player.sendMessage(Messages.TOO_MUCH_ARGUMENTS.getMessage());
+                    return true;
+                }
                 try {
-                    this.main.getSrDatabase().getAllChestUuids(player);
+                    this.main.getSrDatabase().processAllChestUuids(player);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -92,7 +95,8 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
             case "help":
                 break;
             case "debug":
-                this.main.copyToClipboard(player, "DAS HIER IST DIE UUID", "(testuuid) a56b6c74-6a80-47a5-b9fd-a08d8b0b0c04");
+
+                //Utils.copyToClipboard(player, "Klicke hier um die UUID zu kopieren!", "(testuuid) a56b6c74-6a80-47a5-b9fd-a08d8b0b0c04", false);
                 break;
         }
 
@@ -110,6 +114,7 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
             arguments.add("remove");
             arguments.add("adminsettings");
             arguments.add("help");
+            arguments.add("debug");
             StringUtil.copyPartialMatches(args[0], arguments, completions);
         }
         if (args.length == 2) {

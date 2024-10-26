@@ -1,17 +1,26 @@
 package de.nyc.shopRotationRemake.database;
 
+import de.nyc.shopRotationRemake.Main;
+import de.nyc.shopRotationRemake.enums.Messages;
+import de.nyc.shopRotationRemake.util.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.sqlite.SQLiteConnection;
 
 import java.sql.*;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class SrDatabase {
 
     private final Connection connection;
+    private final Main main;
 
-    public SrDatabase(String path) throws SQLException {
+    public SrDatabase(String path, Main main) throws SQLException {
         connection = DriverManager.getConnection("jdbc:sqlite:" + path);
+        this.main = main;
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS players (" +
                     "uuid TEXT PRIMARY KEY, " +
@@ -122,16 +131,37 @@ public class SrDatabase {
         }
     }
 
-    //TODO:TEMPORARY VOID CLASS
-    public void getAllChestUuids(Player player) throws SQLException {
+    public void processAllChestUuids(Player player) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT uuid, name FROM chest GROUP BY uuid")) {
-            //DEBUG: PLAYER-SEND-MESSAGE
             ResultSet resultSet = preparedStatement.executeQuery();
+            if(isTableEmpty("chest")) {
+                Bukkit.getLogger().severe("The SQL-LITE table \"chest\" has no entries!");
+                player.sendMessage(Messages.NO_ENTRIES_YET.getMessage().replace("%table", "chest"));
+                return;
+            }
+            player.sendMessage(Messages.GET_UUID_INFO_LINE_1.getMessage());
             while (resultSet.next()) {
                 String uuid = resultSet.getString("uuid");
                 String name = resultSet.getString("name");
-                player.sendMessage("[23:29:43] " + uuid + " / " + name);
+                if(main.getUuidList().contains(uuid)) {
+                    break;
+                }
+                main.getUuidList().add(uuid);
+                player.sendMessage();
+
+                //player.sendMessage("[23:29:43] " + uuid + " / " + name);
             }
+        }
+    }
+
+    private boolean isTableEmpty(String tableName) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) AS rowcount FROM " + tableName)){
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) {
+                int rowCount = resultSet.getInt("rowcount");
+                return true;
+            }
+            return false;
         }
     }
 

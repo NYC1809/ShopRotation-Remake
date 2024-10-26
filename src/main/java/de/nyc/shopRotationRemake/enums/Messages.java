@@ -1,5 +1,8 @@
 package de.nyc.shopRotationRemake.enums;
 
+import de.nyc.shopRotationRemake.util.Utils;
+import org.bukkit.ChatColor;
+
 public enum Messages {
 
     //Global messages
@@ -12,8 +15,10 @@ public enum Messages {
     //Global sr-messages
     UNKNOWN_INVENTORY("&cDas angefragte Inventar existiert nicht."),
     NOT_ENOUGH_ARGUMENTS("&cZu wenige Argumente! Siehe /srChest help"),
+    TOO_MUCH_ARGUMENTS("&cZu viele Argumente! Siehe /srChest help"),
     MATERIAL_AIR_NOT_ALLOWED("&cDas Material \"AIR\" ist nicht erlaubt."),
     LOCATION_HAS_TO_BE_AIR("&cWARNING: Dein Standort ist nicht\"AIR\"."),
+    NO_ENTRIES_YET("&cDie SQL-DB Tabelle \"%table\" hat keine Einträge!"),
 
     //srChest messages
     CHEST_UNKNOWN("&cDie Chest mit der UUID: \"%uuid\" wurde nicht gefunden."),
@@ -36,13 +41,16 @@ public enum Messages {
     ALREADY_ENABLED("&cDie Chest ist schon &aAktiviert&c."),
     ALREADY_DISABLED("&cDie Chest ist schon &4Deaktiviert&c."),
 
+    //srChest get messages
+    GET_UUID_INFO_LINE_1(Utils.getPrefix() + "&aKlicke die UUID an um diese in die Zwischenablage zu kopieren:"),
+
     //TODO: Messages for lootpool and the rewards etc.
     ;
 
     private final String message;
 
     Messages(String message) {
-        this.message = message;
+        this.message = ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public String getMessage() {

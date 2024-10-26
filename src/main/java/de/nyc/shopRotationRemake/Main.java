@@ -7,16 +7,20 @@ import de.nyc.shopRotationRemake.listener.JoinListener;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.entity.Player;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public final class Main extends JavaPlugin {
 
     private SrDatabase srDatabase;
+    private List<String> uuidList = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -26,7 +30,7 @@ public final class Main extends JavaPlugin {
             if(!getDataFolder().exists()) {
                 getDataFolder().mkdirs();
             }
-            srDatabase = new SrDatabase(getDataFolder().getAbsolutePath() + "/srDatabase.db");
+            srDatabase = new SrDatabase(getDataFolder().getAbsolutePath() + "/srDatabase.db", this);
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Failed to connect to database! " + e.getMessage());
@@ -34,6 +38,7 @@ public final class Main extends JavaPlugin {
         }
 
         registerCommand("srChest", new CreateChestCommand(this));
+        registerTabCompleter("srChest", new CreateChestCommand(this));
 
         Bukkit.getPluginManager().registerEvents(new JoinListener(this), this);
         Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
@@ -62,14 +67,16 @@ public final class Main extends JavaPlugin {
         cmd.setExecutor(executor);
     }
 
-    public void copyToClipboard(Player player, String message, String url) {
-        Bukkit.getServer().dispatchCommand(
-                Bukkit.getConsoleSender(),
-                "tellraw " + player.getName() +
-                        " {\"clickEvent\":{\"action\":\"copy_to_clipboard\",\"value\":\"" +
-                        url +
-                        "\"},\"text\":\"" +
-                        message +
-                        "\"}");
+    private void registerTabCompleter(String command, TabCompleter tabCompleter) {
+        PluginCommand cmd = this.getCommand(command);
+        if(cmd == null) {
+            getLogger().severe("Tabcompleter for command " + command + " is null!");
+            return;
+        }
+        cmd.setTabCompleter(tabCompleter);
+    }
+
+    public List<String> getUuidList() {
+        return uuidList;
     }
 }

@@ -79,6 +79,11 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
                 }
                 break;
             case "get":
+                try {
+                    this.main.getSrDatabase().getAllChestUuids(player);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             case "remove":
                 break;

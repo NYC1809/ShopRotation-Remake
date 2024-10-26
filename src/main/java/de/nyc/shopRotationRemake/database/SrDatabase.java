@@ -19,22 +19,22 @@ public class SrDatabase {
         }
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS items (" +
-                    "id TEXT PRIMARY KEY, " +
-                    "items TEXT)");
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "uuid TEXT NOT NULL, " +
+                    "items TEXT NOT NULL)");
         }
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS rewards (" +
-                    "id TEXT PRIMARY KEY, " +
-                    "items TEXT NOT NULL, " +
-                    "FOREIGN KEY(id) REFERENCES items(id))");
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "uuid TEXT NOT NULL, " +
+                    "items TEXT NOT NULL)");
         }
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS chest (" +
                     "uuid TEXT PRIMARY KEY, " +
                     "name TEXT NOT NULL, " +
                     "location TEXT NOT NULL, " +
-                    "enabled TEXT NOT NULL, " +
-                    "FOREIGN KEY(uuid) REFERENCES items(id))");
+                    "enabled TEXT NOT NULL)");
         }
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS currentitem (" +
@@ -42,8 +42,7 @@ public class SrDatabase {
                     "item TEXT NOT NULL, " +
                     "amount INT NOT NULL, " +
                     "alreadygifted INT NOT NULL, " +
-                    "completed TEXT, " +
-                    "FOREIGN KEY(uuid) REFERENCES chest(uuid))");
+                    "completed TEXT)");
         }
     }
 
@@ -83,7 +82,10 @@ public class SrDatabase {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT name FROM chest WHERE uuid = ?")) {
             preparedStatement.setString(1, uuid.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.toString();
+            if(resultSet.next()) {
+                return resultSet.getString("name");
+            }
+            return null;
         }
     }
 
@@ -91,7 +93,10 @@ public class SrDatabase {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT location FROM chest WHERE uuid = ?")) {
             preparedStatement.setString(1, uuid.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.toString();
+            if(resultSet.next()) {
+                return resultSet.getString("location");
+            }
+            return null;
         }
     }
 
@@ -99,31 +104,38 @@ public class SrDatabase {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT enabled FROM chest WHERE uuid = ?")) {
             preparedStatement.setString(1, uuid.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next(); //TODO: ALL RESULTSETS ARE WRONG!! USE METHOD FROM FUNCTION BELOW:
+            if(resultSet.next()) {
+                return resultSet.getString("enabled").equals("true");
+            }
+            return false;
         }
     }
 
-    public String getChestIsEnabledByName(String name) throws SQLException {
+    public boolean getChestIsEnabledByName(String name) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT enabled FROM chest WHERE name = ?")) {
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()) {
-                return resultSet.getString("enabled");
+                return resultSet.getString("enabled").equals("true");
             }
-            return null;
+            return false;
         }
-    } //TODO:^^THIS FUNCTION IS CORRECT
+    }
 
-    public String getChestUuids(Player player) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(DISTINCT uuid), name FROM chest")) {
+    //TODO:TEMPORARY VOID CLASS
+    public void getAllChestUuids(Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT uuid, name FROM chest GROUP BY uuid")) {
             //DEBUG: PLAYER-SEND-MESSAGE
             ResultSet resultSet = preparedStatement.executeQuery();
-            player.sendMessage("[12:35:28] " + resultSet.toString());
-            return resultSet.toString(); //DEBUG
+            while (resultSet.next()) {
+                String uuid = resultSet.getString("uuid");
+                String name = resultSet.getString("name");
+                player.sendMessage("[23:29:43] " + uuid + " / " + name);
+            }
         }
     }
 
     //TODO: Functions for the other three SQL tables
-    //TODO: Check in functions if given args exist in SQL DB
+    //TODO: Check in functions if given args exist in SQL DB (null-check)
 
 }

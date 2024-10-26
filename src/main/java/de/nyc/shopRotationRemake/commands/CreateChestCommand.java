@@ -51,6 +51,7 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
 
                 if(location.getBlock().getType() != Material.AIR) {
                     player.sendMessage(Messages.LOCATION_HAS_TO_BE_AIR.getMessage());
+                    return true;
                 }
 
                 String name = args[1];
@@ -66,7 +67,7 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
                 UUID chestUUID = UUID.randomUUID();
                 if(block.getState() instanceof Chest) {
                     Chest chest = (Chest) block.getState();
-                    chest.getPersistentDataContainer().set(new NamespacedKey("srChest-plugin", "chest_uuid"), PersistentDataType.STRING, chestUUID.toString());
+                    chest.getPersistentDataContainer().set(new NamespacedKey("srchest-plugin", "chest_uuid"), PersistentDataType.STRING, chestUUID.toString());
                     chest.update();
                 }
 

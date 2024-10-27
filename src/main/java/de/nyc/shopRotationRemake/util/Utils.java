@@ -4,6 +4,8 @@ import de.nyc.shopRotationRemake.Main;
 import jdk.jshell.execution.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 public class Utils {
@@ -55,6 +57,23 @@ public class Utils {
     public static String getPrefix() {
         return ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "Shop" + ChatColor.GOLD + "Rotation" + ChatColor.DARK_GRAY + "] ";
     }
+
+    public static BlockFace getFacingDirection(Location location) {
+        float yaw = location.getYaw();
+        if (yaw < 0) { yaw += 360; }
+
+        if (yaw >= 45 && yaw < 135) {
+            return BlockFace.WEST;
+        } else if (yaw >= 135 && yaw < 225) {
+            return BlockFace.NORTH;
+        } else if (yaw >= 225 && yaw < 315) {
+            return BlockFace.EAST;
+        } else {
+            return BlockFace.SOUTH;
+        }
+    }
+
+
 
 
 //    /tellraw player [{"clickEvent":{"action":"copy_to_clipboard","value":"uuid_here"},"color":"dark_blue","text":"TEST"}, {"clickEvent":{"action":"copy_to_clipboard","value":"uuid_here"},"color":"dark_blue","text":"TESTZWO"}]

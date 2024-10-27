@@ -3,11 +3,15 @@ package de.nyc.shopRotationRemake.commands;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.util.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -68,6 +72,12 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
                 if(block.getState() instanceof Chest chest) {
                     chest.getPersistentDataContainer().set(new NamespacedKey("srchest-plugin", "chest_uuid"), PersistentDataType.STRING, chestUUID.toString());
                     chest.update();
+                }
+                if(block.getBlockData() instanceof Directional) {
+                    Directional directional = (Directional) block.getBlockData();
+                    directional.setFacing(getPlayerFacingDirection(location));
+                    block.setBlockData(directional);
+                    Bukkit.getLogger().info("[02:31:23] " + "Directional facing - " + getPlayerFacingDirection(location));
                 }
 
                 //set Chest by default enabled to false
@@ -131,5 +141,20 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
         }
         player.sendMessage(Messages.CHEST_SET_MATERIAL_WRONG.getMessage());
         return false;
+    }
+
+    private static BlockFace getPlayerFacingDirection(Location location) {
+        float yaw = location.getYaw();
+        if (yaw < 0) { yaw += 360; }
+
+        if (yaw >= 45 && yaw < 135) {
+            return BlockFace.WEST;
+        } else if (yaw >= 135 && yaw < 225) {
+            return BlockFace.NORTH;
+        } else if (yaw >= 225 && yaw < 315) {
+            return BlockFace.EAST;
+        } else {
+            return BlockFace.SOUTH;
+        }
     }
 }

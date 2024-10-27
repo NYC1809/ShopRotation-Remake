@@ -136,7 +136,7 @@ public class SrDatabase {
             ResultSet resultSet = preparedStatement.executeQuery();
             if(isTableEmpty("chest")) {
                 Bukkit.getLogger().severe("The SQL-LITE table \"chest\" has no entries!");
-                player.sendMessage(Messages.NO_ENTRIES_YET.getMessage().replace("%table", "chest"));
+                player.sendMessage(Messages.NO_CHEST_EXISTING.getMessage());
                 return;
             }
             player.sendMessage(Messages.GET_UUID_INFO_LINE_1.getMessage());
@@ -148,7 +148,7 @@ public class SrDatabase {
                     break;
                 }
                 main.getUuidList().add(uuid);
-                player.sendMessage();
+                Utils.coloredCopyToClipboard(player, uuid);
 
                 //player.sendMessage("[23:29:43] " + uuid + " / " + name);
             }

@@ -140,6 +140,7 @@ public class SrDatabase {
                 return;
             }
             player.sendMessage(Messages.GET_UUID_INFO_LINE_1.getMessage());
+            main.getUuidList().clear();
             while (resultSet.next()) {
                 String uuid = resultSet.getString("uuid");
                 String name = resultSet.getString("name");
@@ -155,10 +156,10 @@ public class SrDatabase {
     }
 
     private boolean isTableEmpty(String tableName) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) AS rowcount FROM " + tableName)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT count(*) AS rowcount FROM " + tableName)){
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) {
-                int rowCount = resultSet.getInt("rowcount");
+            int row = resultSet.getInt("rowcount");
+            if(row == 0) {
                 return true;
             }
             return false;

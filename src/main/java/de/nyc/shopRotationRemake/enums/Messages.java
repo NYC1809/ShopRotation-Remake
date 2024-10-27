@@ -42,7 +42,7 @@ public enum Messages {
     ALREADY_DISABLED("&cDie Chest ist schon &4Deaktiviert&c."),
 
     //srChest get messages
-    GET_UUID_INFO_LINE_1(Utils.getPrefix() + "&aKlicke die UUID an um diese in die Zwischenablage zu kopieren:"),
+    GET_UUID_INFO_LINE_1(Utils.getPrefix() + "&2Anklicken zum kopieren:"),
 
     //TODO: Messages for lootpool and the rewards etc.
     ;

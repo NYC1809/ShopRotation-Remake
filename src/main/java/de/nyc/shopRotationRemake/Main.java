@@ -1,7 +1,6 @@
 package de.nyc.shopRotationRemake;
 
 import de.nyc.shopRotationRemake.commands.ChestCommand;
-import de.nyc.shopRotationRemake.commands.CreateChestCommand;
 import de.nyc.shopRotationRemake.database.SrDatabase;
 import de.nyc.shopRotationRemake.listener.ChatListener;
 import de.nyc.shopRotationRemake.listener.JoinListener;

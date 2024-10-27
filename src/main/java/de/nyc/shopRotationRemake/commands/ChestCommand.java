@@ -2,7 +2,6 @@ package de.nyc.shopRotationRemake.commands;
 
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.Messages;
-import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,7 +9,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,11 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CreateChestCommand implements CommandExecutor, TabCompleter {
+public class ChestCommand implements CommandExecutor, TabCompleter {
 
     private final Main main;
 
-    public CreateChestCommand(Main main) {
+    public ChestCommand(Main main) {
         this.main = main;
     }
 
@@ -60,10 +58,15 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
 
                 String name = args[1];
 
-                checkChestType(args[2], player);
-                Material materialChest = Material.getMaterial(args[2]);
+
+                if(!checkChestType(args[2])) {
+                    player.sendMessage(Messages.CHEST_SET_MATERIAL_WRONG.getMessage().replace("%input", args[2]));
+                    return true;
+                }
+                Material materialChest = getChestType(args[2]);
                 if(materialChest == null) {
                     materialChest = Material.CHEST;
+                    Bukkit.getLogger().info("[32:23:67] materialChest is null");
                 }
 
                 Block block = location.getBlock();
@@ -79,13 +82,14 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
                     block.setBlockData(directional);
                     Bukkit.getLogger().info("[02:31:23] " + "Directional facing - " + getPlayerFacingDirection(location));
                 }
-
                 //set Chest by default enabled to false
                 try {
                     this.main.getSrDatabase().createChest(chestUUID, name, location, false);
+                    Bukkit.getLogger().severe("[ShopRotation] srChest \"" + chestUUID + " / " + name + "\" has been written to the SQL DB!");
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
+                Bukkit.getLogger().info("[ShopRotation] A srChest has been created at " + location);
                 break;
             case "get":
                 if(args.length != 1) {
@@ -105,9 +109,6 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
             case "help":
                 break;
             case "debug":
-
-                Utils.coloredCopyToClipboard(player, "6351446b-4dd8-4ead-8e9e-d6468e0d8bda");
-                //Utils.copyToClipboard(player, "Klicke hier um die UUID zu kopieren!", "(testuuid) a56b6c74-6a80-47a5-b9fd-a08d8b0b0c04", false);
                 break;
         }
 
@@ -119,6 +120,8 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
         List<String> arguments = new ArrayList<>();
         List<String> completions = new ArrayList<>();
 
+        List<String> uuidsOfChests = this.main.getUuidList();
+
         if (args.length == 1) {
             arguments.add("set");
             arguments.add("get");
@@ -129,18 +132,36 @@ public class CreateChestCommand implements CommandExecutor, TabCompleter {
             StringUtil.copyPartialMatches(args[0], arguments, completions);
         }
         if (args.length == 2) {
+            switch (args[0].toLowerCase()) {
+                case "set":
+                    arguments.add("<name>");
+                    StringUtil.copyPartialMatches(args[1], arguments, completions);
+                    break;
+                case "remove", "adminsettings":
+                    arguments.addAll(uuidsOfChests);
+                    StringUtil.copyPartialMatches(args[1], arguments, completions);
+                    break;
+            }
             //TODO ARGUMENTS
         }
-        return null;
+        if(args.length == 3) {
+            if(args[0].equalsIgnoreCase("set")) {
+                List<String> validMaterials = List.of("Material.CHEST", "Material.ENDER_CHEST", "Material.TRAPPED_CHEST");
+                arguments.addAll(validMaterials);
+                StringUtil.copyPartialMatches(args[2], arguments, completions);
+            }
+        }
+        return completions;
     }
 
-    private boolean checkChestType(String argument, Player player) {
-        List<Material> validMaterials = List.of(Material.CHEST, Material.ENDER_CHEST, Material.TRAPPED_CHEST);
-        if(validMaterials.contains(Material.getMaterial(argument))) {
-            return true;
-        }
-        player.sendMessage(Messages.CHEST_SET_MATERIAL_WRONG.getMessage());
-        return false;
+    private boolean checkChestType(String argument) {
+        List<String> validMaterials = List.of("Material.CHEST", "Material.ENDER_CHEST", "Material.TRAPPED_CHEST");
+        return validMaterials.contains(argument);
+    }
+
+    private Material getChestType(String argument) {
+        String value = argument.substring(argument.lastIndexOf(".") + 1);
+        return Material.getMaterial(value);
     }
 
     private static BlockFace getPlayerFacingDirection(Location location) {

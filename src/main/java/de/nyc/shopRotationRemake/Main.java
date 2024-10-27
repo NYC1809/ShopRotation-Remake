@@ -1,5 +1,6 @@
 package de.nyc.shopRotationRemake;
 
+import de.nyc.shopRotationRemake.commands.ChestCommand;
 import de.nyc.shopRotationRemake.commands.CreateChestCommand;
 import de.nyc.shopRotationRemake.database.SrDatabase;
 import de.nyc.shopRotationRemake.listener.ChatListener;
@@ -7,7 +8,6 @@ import de.nyc.shopRotationRemake.listener.JoinListener;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -15,7 +15,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public final class Main extends JavaPlugin {
 
@@ -37,8 +36,8 @@ public final class Main extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
-        registerCommand("srChest", new CreateChestCommand(this));
-        registerTabCompleter("srChest", new CreateChestCommand(this));
+        registerCommand("srChest", new ChestCommand(this));
+        getCommand("srChest").setTabCompleter(new ChestCommand(this));
 
         Bukkit.getPluginManager().registerEvents(new JoinListener(this), this);
         Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
@@ -65,15 +64,6 @@ public final class Main extends JavaPlugin {
             return;
         }
         cmd.setExecutor(executor);
-    }
-
-    private void registerTabCompleter(String command, TabCompleter tabCompleter) {
-        PluginCommand cmd = this.getCommand(command);
-        if(cmd == null) {
-            getLogger().severe("Tabcompleter for command " + command + " is null!");
-            return;
-        }
-        cmd.setTabCompleter(tabCompleter);
     }
 
     public List<String> getUuidList() {

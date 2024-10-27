@@ -23,7 +23,7 @@ public class Utils {
                         "\"},\"text\":\"" +
                         message +
                         "\"}");
-        Bukkit.getLogger().severe("[23:55:23] copiedToClipboard / " + player.getName() + " / " + uuid);
+        Bukkit.getLogger().info("[23:55:23] copiedToClipboard / " + player.getName() + " / " + uuid);
     }
 
     public static void coloredCopyToClipboard(Player player, String uuid) {
@@ -49,7 +49,7 @@ public class Utils {
                         uuid +
                         "\"}]");
 
-        Bukkit.getLogger().severe("[23:55:23] copiedToClipboard / " + player.getName() + " / " + uuid);
+        Bukkit.getLogger().info("[23:55:23] copiedToClipboard / " + player.getName() + " / " + uuid);
     }
 
     public static String getPrefix() {

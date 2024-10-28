@@ -1,10 +1,10 @@
 package de.nyc.shopRotationRemake.util;
 
 import de.nyc.shopRotationRemake.Main;
-import jdk.jshell.execution.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
@@ -73,14 +73,25 @@ public class Utils {
         }
     }
 
+    //example: Location{world=CraftWorld{name=world},x=32.0,y=69.0,z=27.0,pitch=0.0,yaw=0.0}
+    public static Location stringToLocation(String input) {
+        input = input.replace("Location{","").replace("}", "");
+        String[] parts = input.split(",");
 
+        String worldName = parts[0].split("=")[2];
+        double x = Double.parseDouble(parts[1].split("=")[1]);
+        double y = Double.parseDouble(parts[2].split("=")[1]);
+        double z = Double.parseDouble(parts[3].split("=")[1]);
+        float pitch = Float.parseFloat(parts[4].split("=")[1]);
+        float yaw = Float.parseFloat(parts[5].split("=")[1]);
 
+        World world = Bukkit.getWorld(worldName);
+        if(world == null) {
+            throw new IllegalArgumentException("Wold \"" + worldName + "\" doesnt exists!");
+        }
 
-//    /tellraw player [{"clickEvent":{"action":"copy_to_clipboard","value":"uuid_here"},"color":"dark_blue","text":"TEST"}, {"clickEvent":{"action":"copy_to_clipboard","value":"uuid_here"},"color":"dark_blue","text":"TESTZWO"}]
+        Bukkit.getLogger().info("[45:36:85] " + new Location(world, x, y, z, yaw, pitch));
+        return new Location(world, x, y, z, yaw, pitch);
+    }
 
-//    /tellraw NYC_1809 [{"clickEvent":{"action":"copy_to_clipboard","value":"a56b6c74-6a80-47a5-b9fd-a08d8b0b0c04"},"color":"dark_gray","text":"["},
-//                      {"clickEvent":{"action":"copy_to_clipboard","value":"a56b6c74-6a80-47a5-b9fd-a08d8b0b0c04"},"color":"yellow","text":"Shop"},
-//                      {"clickEvent":{"action":"copy_to_clipboard","value":"a56b6c74-6a80-47a5-b9fd-a08d8b0b0c04"},"color":"gold","text":"Rotation"},
-//                      {"clickEvent":{"action":"copy_to_clipboard","value":"a56b6c74-6a80-47a5-b9fd-a08d8b0b0c04"},"color":"dark_gray","text":"] "},
-//                      {"clickEvent":{"action":"copy_to_clipboard","value":"a56b6c74-6a80-47a5-b9fd-a08d8b0b0c04"},"color":"green","text":"a56b6c74-6a80-47a5-b9fd-a08d8b0b0c04"}]
 }

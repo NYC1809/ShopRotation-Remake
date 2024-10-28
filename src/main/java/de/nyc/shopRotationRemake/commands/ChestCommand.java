@@ -3,6 +3,7 @@ package de.nyc.shopRotationRemake.commands;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.util.Utils;
+import jdk.jshell.execution.Util;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -47,6 +48,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 Location location = player.getLocation();
+                location = location.getBlock().getLocation();
 
                 if(location.getBlock().getType() != Material.AIR) {
                     player.sendMessage(Messages.LOCATION_HAS_TO_BE_AIR.getMessage());
@@ -117,6 +119,18 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 try {
+                    //**EASTEREGG** - I deleted the Chest first and I didnt know why this wasnt working \/ FML (-2 Hours)
+                    Location blockLocation = this.main.getSrDatabase().getLocationOfChest(input);
+                    Material chestType = Material.valueOf(this.main.getSrDatabase().getTypeOfChest(input));
+                    if(blockLocation.getBlock().getType().equals(chestType)) {
+                        Bukkit.getLogger().info("[76:63:30] chestType is equals to DB!");
+                        blockLocation.getBlock().setType(Material.AIR);
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+
+                try {
                     this.main.getSrDatabase().deleteChestByUuid(input);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -135,6 +149,8 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(ChatColor.GOLD + "»------------------ " + Utils.getPrefix() + ChatColor.GOLD + "------------------«");
                 break;
             case "debug":
+                Utils.stringToLocation(args[1]);
+                player.sendMessage(Utils.stringToLocation(args[1]).toString());
                 break;
         }
 

@@ -134,6 +134,39 @@ public class SrDatabase {
         }
     }
 
+    public boolean locationExistsInDB(Location location) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM chest where location = ?")) {
+            preparedStatement.setString(1, location.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+        }
+    }
+
+    public Location getLocationOfChest(String input) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT location FROM chest WHERE name = ? OR uuid = ?")) {
+            preparedStatement.setString(1, input);
+            preparedStatement.setString(2, input);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) {
+                String loc = resultSet.getString("location");
+                return Utils.stringToLocation(loc);
+            }
+            return null;
+        }
+    }
+
+    public String getTypeOfChest(String input) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT type FROM chest WHERE name = ? OR uuid = ?")) {
+            preparedStatement.setString(1, input);
+            preparedStatement.setString(2, input);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) {
+                return resultSet.getString("type");
+            }
+            return null;
+        }
+    }
+
     private boolean isTableEmpty(String tableName) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT count(*) AS rowcount FROM " + tableName)){
             ResultSet resultSet = preparedStatement.executeQuery();

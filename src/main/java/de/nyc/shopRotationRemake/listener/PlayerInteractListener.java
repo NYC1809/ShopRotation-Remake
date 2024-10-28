@@ -2,6 +2,7 @@ package de.nyc.shopRotationRemake.listener;
 
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.Messages;
+import de.nyc.shopRotationRemake.util.InventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -10,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 
 import java.sql.SQLException;
 import java.util.Objects;
@@ -39,6 +41,7 @@ public class PlayerInteractListener implements Listener {
             return;
         }
 
+        event.setCancelled(true);
         UUID uuid = UUID.fromString(this.main.getSrDatabase().getChestByLocation(location));
         String name = this.main.getSrDatabase().getNameOfChest(uuid);
         Bukkit.getLogger().info("[09:27:11] Player " + player.getName() + " interacted with srChest " + uuid);
@@ -48,7 +51,8 @@ public class PlayerInteractListener implements Listener {
             return;
         }
 
+        InventoryManager.createDefaultInventory(player, uuid, name);
 
-        //TODO: Open the inventory of the chest with the right uuid
+        //TODO: Inventory Manager^^
     }
 }

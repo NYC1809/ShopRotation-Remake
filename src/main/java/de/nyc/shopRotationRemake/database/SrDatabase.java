@@ -155,6 +155,18 @@ public class SrDatabase {
         }
     }
 
+    public String getChestByLocation(Location location) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT uuid FROM chest WHERE location = ?")) {
+            preparedStatement.setString(1, location.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(!locationExistsInDB(location)) {
+                Bukkit.getLogger().info("[65:87:14] Location doesnt exists in DB!");
+                return null;
+            }
+            return resultSet.getString("uuid");
+        }
+    }
+
     public String getTypeOfChest(String input) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT type FROM chest WHERE name = ? OR uuid = ?")) {
             preparedStatement.setString(1, input);
@@ -164,6 +176,27 @@ public class SrDatabase {
                 return resultSet.getString("type");
             }
             return null;
+        }
+    }
+
+    public boolean chestIsEnabled(String input) throws SQLException{
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT enabled FROM chest WHERE name = ? OR uuid = ?")) {
+            preparedStatement.setString(1, input);
+            preparedStatement.setString(2, input);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(chestExistsInDB(input)) {
+                Bukkit.getLogger().info("[87:36:55] The Chest" + input + " does not exists!");
+                return false;
+            }
+            return resultSet.getString("enabled").equals("true");
+        }
+    }
+
+    public boolean chestExistsInDB(String input) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM chest WHERE uuid = ?")) {
+            preparedStatement.setString(1, input);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
         }
     }
 
@@ -177,8 +210,5 @@ public class SrDatabase {
             return false;
         }
     }
-
-    //TODO: Functions for the other three SQL tables
-    //TODO: Check in functions if given args exist in SQL DB (null-check)
 
 }

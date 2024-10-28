@@ -160,7 +160,7 @@ public class SrDatabase {
             preparedStatement.setString(1, location.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
             if(!locationExistsInDB(location)) {
-                Bukkit.getLogger().info("[65:87:14] Location doesnt exists in DB!");
+                Bukkit.getLogger().info("[65:87:14] Location does not exist in DB!");
                 return null;
             }
             return resultSet.getString("uuid");
@@ -185,7 +185,7 @@ public class SrDatabase {
             preparedStatement.setString(2, input);
             ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()) {
-                if(chestExistsInDB(input)) {
+                if(!chestExistsInDB(input)) {
                     Bukkit.getLogger().info("[87:36:55] The Chest " + input + " does not exists!");
                     return false;
                 }
@@ -196,8 +196,9 @@ public class SrDatabase {
     }
 
     public boolean chestExistsInDB(String input) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM chest WHERE uuid = ?")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM chest WHERE name = ? OR uuid = ?")) {
             preparedStatement.setString(1, input);
+            preparedStatement.setString(2, input);
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next();
         }

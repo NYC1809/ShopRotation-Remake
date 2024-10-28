@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 import java.sql.SQLException;
 import java.util.Objects;
@@ -29,6 +30,10 @@ public class PlayerInteractListener implements Listener {
         if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             return;
         }
+        if(event.getHand() != EquipmentSlot.HAND) {
+            return;
+        }
+        event.setCancelled(true);
 
         Location location = Objects.requireNonNull(event.getClickedBlock()).getLocation();
         if(!this.main.getSrDatabase().locationExistsInDB(location)) {

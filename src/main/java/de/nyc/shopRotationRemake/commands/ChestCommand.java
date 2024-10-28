@@ -189,7 +189,6 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     StringUtil.copyPartialMatches(args[1], arguments, completions);
                     break;
             }
-            //TODO ARGUMENTS
         }
         if(args.length == 3) {
             if(args[0].equalsIgnoreCase("create")) {

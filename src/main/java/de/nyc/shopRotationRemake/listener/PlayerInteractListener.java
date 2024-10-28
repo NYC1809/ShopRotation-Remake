@@ -33,7 +33,6 @@ public class PlayerInteractListener implements Listener {
         if(event.getHand() != EquipmentSlot.HAND) {
             return;
         }
-        event.setCancelled(true);
 
         Location location = Objects.requireNonNull(event.getClickedBlock()).getLocation();
         if(!this.main.getSrDatabase().locationExistsInDB(location)) {
@@ -41,6 +40,7 @@ public class PlayerInteractListener implements Listener {
         }
 
         UUID uuid = UUID.fromString(this.main.getSrDatabase().getChestByLocation(location));
+        String name = this.main.getSrDatabase().getNameOfChest(uuid);
         Bukkit.getLogger().info("[09:27:11] Player " + player.getName() + " interacted with srChest " + uuid);
 
         if (!this.main.getSrDatabase().chestIsEnabled(uuid.toString())) {

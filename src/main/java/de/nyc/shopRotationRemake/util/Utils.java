@@ -94,4 +94,7 @@ public class Utils {
         return new Location(world, x, y, z, yaw, pitch);
     }
 
+    public static String setColorInMessage(String input) {
+        return ChatColor.translateAlternateColorCodes('&', input);
+    }
 }

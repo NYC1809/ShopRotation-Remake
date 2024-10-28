@@ -5,6 +5,7 @@ import de.nyc.shopRotationRemake.database.SrDatabase;
 import de.nyc.shopRotationRemake.listener.BlockBreakListener;
 import de.nyc.shopRotationRemake.listener.ChatListener;
 import de.nyc.shopRotationRemake.listener.PlayerInteractListener;
+import de.nyc.shopRotationRemake.util.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -21,10 +22,13 @@ public final class Main extends JavaPlugin {
     private SrDatabase srDatabase;
     private List<String> uuidList = new ArrayList<>();
     private List<String> chestNames = new ArrayList<>();
+    private Config config;
 
     @Override
     public void onEnable() {
         LocalDateTime start = LocalDateTime.now();
+
+        config = new Config(this, "config.yml");
 
         try {
             if(!getDataFolder().exists()) {

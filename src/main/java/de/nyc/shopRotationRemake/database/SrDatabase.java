@@ -215,4 +215,14 @@ public class SrDatabase {
         }
     }
 
+    public String getNameOfChest(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT name FROM chest WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) {
+                return resultSet.getString("name");
+            }
+            return null;
+        }
+    }
 }

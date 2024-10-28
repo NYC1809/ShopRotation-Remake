@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.data.Directional;
 import org.bukkit.command.Command;
@@ -83,9 +82,10 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     block.setBlockData(directional);
                     Bukkit.getLogger().info("[02:31:23] " + "Directional facing - " + Utils.getFacingDirection(location));
                 }
-                //set Chest by default enabled to false
+                //set Enabled of Chest by default to false
+                //set Hologram of Chest by default to true
                 try {
-                    this.main.getSrDatabase().createChest(chestUUID, name, location, false);
+                    this.main.getSrDatabase().createChest(chestUUID, name, location, false, materialChest, true);
                     Bukkit.getLogger().severe("[ShopRotation] srChest \"" + chestUUID + " / " + name + "\" has been written to the SQL DB!");
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

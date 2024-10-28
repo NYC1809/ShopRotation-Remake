@@ -4,14 +4,12 @@ import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.sqlite.SQLiteConnection;
 
 import java.sql.*;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 public class SrDatabase {
 
@@ -25,27 +23,30 @@ public class SrDatabase {
             statement.execute("CREATE TABLE IF NOT EXISTS items (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "uuid TEXT NOT NULL, " +
-                    "items TEXT NOT NULL)");
+                    "items TEXT NOT NULL," +
+                    "requiredamount INTEGER NOT NULL)");
         }
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS rewards (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "uuid TEXT NOT NULL, " +
-                    "items TEXT NOT NULL)");
+                    "items TEXT NOT NULL, " +
+                    "amount INTEGER NOT NULL)");
         }
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS chest (" +
                     "uuid TEXT PRIMARY KEY, " +
                     "name TEXT NOT NULL, " +
                     "location TEXT NOT NULL, " +
-                    "enabled TEXT NOT NULL)");
+                    "enabled TEXT NOT NULL, " +
+                    "type TEXT NOT NULL, " +
+                    "hologram TEXT NOT NULL)");
         }
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS currentitem (" +
                    "uuid TEXT PRIMARY KEY, " +
                     "item TEXT NOT NULL, " +
                     "amount INT NOT NULL, " +
-                    "alreadygifted INT NOT NULL, " +
                     "completed TEXT)");
         }
         try (Statement statement = connection.createStatement()) {
@@ -65,57 +66,15 @@ public class SrDatabase {
         }
     }
 
-    public void createChest(UUID uuid, String name, Location location, Boolean enabled) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO chest (uuid, name, location, enabled) VALUES (?, ?, ?, ?)")) {
+    public void createChest(UUID uuid, String name, Location location, Boolean enabled, Material type, Boolean hologram) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO chest (uuid, name, location, enabled, type, hologram) VALUES (?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());
             preparedStatement.setString(2, name);
             preparedStatement.setString(3, location.toString());
             preparedStatement.setString(4,enabled.toString());
+            preparedStatement.setString(5, type.toString());
+            preparedStatement.setString(6, hologram.toString());
             preparedStatement.executeUpdate();
-        }
-    }
-
-    public String getChestNameByUUID(UUID uuid) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT name FROM chest WHERE uuid = ?")) {
-            preparedStatement.setString(1, uuid.toString());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) {
-                return resultSet.getString("name");
-            }
-            return null;
-        }
-    }
-
-    public String getChestLocationByUUID(UUID uuid) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT location FROM chest WHERE uuid = ?")) {
-            preparedStatement.setString(1, uuid.toString());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) {
-                return resultSet.getString("location");
-            }
-            return null;
-        }
-    }
-
-    public boolean getChestIsEnabledByUUID(UUID uuid) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT enabled FROM chest WHERE uuid = ?")) {
-            preparedStatement.setString(1, uuid.toString());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) {
-                return resultSet.getString("enabled").equals("true");
-            }
-            return false;
-        }
-    }
-
-    public boolean getChestIsEnabledByName(String name) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT enabled FROM chest WHERE name = ?")) {
-            preparedStatement.setString(1, name);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) {
-                return resultSet.getString("enabled").equals("true");
-            }
-            return false;
         }
     }
 

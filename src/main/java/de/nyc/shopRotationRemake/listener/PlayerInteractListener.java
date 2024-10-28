@@ -1,6 +1,7 @@
 package de.nyc.shopRotationRemake.listener;
 
 import de.nyc.shopRotationRemake.Main;
+import de.nyc.shopRotationRemake.enums.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -30,13 +31,18 @@ public class PlayerInteractListener implements Listener {
         }
 
         Location location = Objects.requireNonNull(event.getClickedBlock()).getLocation();
-
         if(!this.main.getSrDatabase().locationExistsInDB(location)) {
             return;
         }
 
         UUID uuid = UUID.fromString(this.main.getSrDatabase().getChestByLocation(location));
-        Bukkit.getLogger().info("[09:27:11] Interacted with srChest \"" + uuid + "\"");
+        Bukkit.getLogger().info("[09:27:11] Player " + player.getName() + " interacted with srChest " + uuid);
+
+        if (!this.main.getSrDatabase().chestIsEnabled(uuid.toString())) {
+            player.sendMessage(Messages.CHEST_IS_DISABLED.getMessage());
+            return;
+        }
+
 
         //TODO: Open the inventory of the chest with the right uuid
     }

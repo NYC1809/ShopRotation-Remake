@@ -184,11 +184,14 @@ public class SrDatabase {
             preparedStatement.setString(1, input);
             preparedStatement.setString(2, input);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(chestExistsInDB(input)) {
-                Bukkit.getLogger().info("[87:36:55] The Chest" + input + " does not exists!");
-                return false;
+            if(resultSet.next()) {
+                if(chestExistsInDB(input)) {
+                    Bukkit.getLogger().info("[87:36:55] The Chest " + input + " does not exists!");
+                    return false;
+                }
+                return resultSet.getString("enabled").equals("true");
             }
-            return resultSet.getString("enabled").equals("true");
+            return false;
         }
     }
 

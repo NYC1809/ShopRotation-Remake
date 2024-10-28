@@ -14,6 +14,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.StringUtil;
+import org.checkerframework.checker.units.qual.A;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -55,15 +56,16 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 }
 
                 String name = args[1];
+                String inputMaterial = args[2];
 
-                if(!checkChestType(args[2])) {
-                    player.sendMessage(Messages.CHEST_SET_MATERIAL_WRONG.getMessage().replace("%input", args[2]));
+                if(!isValidBlock(inputMaterial)) {
+                    player.sendMessage(Messages.CHEST_SET_MATERIAL_WRONG.getMessage().replace("%input", inputMaterial));
                     return true;
                 }
-                Material materialChest = getChestType(args[2]);
+                Material materialChest = getChestType(inputMaterial);
                 if(materialChest == null) {
                     materialChest = Material.CHEST;
-                    Bukkit.getLogger().info("[32:23:67] materialChest is null");
+                    Bukkit.getLogger().info("[32:23:67] materialChest is null -> set default type to \"Material.CHEST\"");
                 }
 
                 Block block = location.getBlock();
@@ -73,8 +75,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     chest.getPersistentDataContainer().set(new NamespacedKey("srchest-plugin", "chest_uuid"), PersistentDataType.STRING, chestUUID.toString());
                     chest.update();
                 }
-                if(block.getBlockData() instanceof Directional) {
-                    Directional directional = (Directional) block.getBlockData();
+                if(block.getBlockData() instanceof Directional directional) {
                     directional.setFacing(Utils.getFacingDirection(location));
                     block.setBlockData(directional);
                     Bukkit.getLogger().info("[02:31:23] " + "Directional facing - " + Utils.getFacingDirection(location));
@@ -192,17 +193,15 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
         }
         if(args.length == 3) {
             if(args[0].equalsIgnoreCase("create")) {
-                List<String> validMaterials = List.of("Material.CHEST", "Material.ENDER_CHEST", "Material.TRAPPED_CHEST");
-                arguments.addAll(validMaterials);
+                List<String> validBlocks = new ArrayList<>();
+                for (Material material : getBlockList()) {
+                    validBlocks.add("Material." + material);
+                }
+                arguments.addAll(validBlocks);
                 StringUtil.copyPartialMatches(args[2], arguments, completions);
             }
         }
         return completions;
-    }
-
-    private boolean checkChestType(String argument) {
-        List<String> validMaterials = List.of("Material.CHEST", "Material.ENDER_CHEST", "Material.TRAPPED_CHEST");
-        return validMaterials.contains(argument);
     }
 
     private Material getChestType(String argument) {
@@ -210,4 +209,25 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
         return Material.getMaterial(value);
     }
 
-}
+    private boolean isValidBlock(String input) {
+        List<Material> blocks = new ArrayList<>();
+
+        for(Material material : Material.values()) {
+            if(material.isBlock()) {
+                blocks.add(material);
+            }
+        }
+        String value = input.substring(input.lastIndexOf(".") + 1);
+        return blocks.contains(Material.getMaterial(value));
+    }
+
+    private List<Material> getBlockList() {
+        List<Material> blocks = new ArrayList<>();
+        for(Material material : Material.values()) {
+            if (material.isBlock()) {
+                blocks.add(material);
+            }
+        }
+        return blocks;
+    }
+ }

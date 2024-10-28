@@ -19,12 +19,13 @@ public enum Messages {
     MATERIAL_AIR_NOT_ALLOWED("&cDas Material \"AIR\" ist nicht erlaubt."),
     LOCATION_HAS_TO_BE_AIR("&cWARNING: Du kannst hier keine Chest erstellen! (Benötigt \"Material.AIR\")"),
     CHEST_DOES_NOT_EXISITS("&cDie Chest \"%name\" existiert nicht!"),
-    CANNOT_BREAK_BLOCK("&cDu kannst diesen Block nicht zerstören! Nutze /srChest remove <chest>"),
+    CANNOT_BREAK_BLOCK("&cDu kannst diesen Block nicht zerstören! \nNutze /srChest remove <chest>"),
 
     //srChest messages
     CHEST_REMOVE_SUCCESS("&aDie Chest wurde erfolgreich entfernt."),
     CHEST_NO_ITEMS("&cEs wurden keine Items in \"%uuid\" festgelegt."),
-    CHEST_SET_MATERIAL_WRONG("&cDas Material: \"%input\" ist kein valides Material."),
+    CHEST_SET_MATERIAL_WRONG("&cDas Material \"%input\" ist kein valides Material."),
+    CHEST_IS_DISABLED("&cDie srChest ist aktuell &4Deaktiviert."),
 
     //srChest help messages
     CHEST_CREATE("&6⁜ &e/srChest create &6» &7Erstellen einer srChest"),

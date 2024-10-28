@@ -17,8 +17,8 @@ public enum Messages {
     NOT_ENOUGH_ARGUMENTS("&cZu wenige Argumente! Siehe /srChest help"),
     TOO_MUCH_ARGUMENTS("&cZu viele Argumente! Siehe /srChest help"),
     MATERIAL_AIR_NOT_ALLOWED("&cDas Material \"AIR\" ist nicht erlaubt."),
-    LOCATION_HAS_TO_BE_AIR("&cWARNING: Dein Standort ist nicht\"AIR\"."),
-    NO_CHEST_EXISTING("&cEs existiert aktuell keine srChest!"),
+    LOCATION_HAS_TO_BE_AIR("&cWARNING: Du kannst hier keine Chest erstellen!"),
+    CHEST_DOES_NOT_EXISITS("&cDie Chest \"%name\" existiert nicht!"),
 
     //srChest messages
     CHEST_UNKNOWN("&cDie Chest mit der UUID: \"%uuid\" wurde nicht gefunden."),

@@ -43,8 +43,8 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         switch (args[0].toLowerCase()) {
-            case "set":
-                //srChest set <name> <Material.CHEST_TYPE>
+            case "create":
+                //srChest create <name> <Material.CHEST_TYPE>
                 if(!(args.length == 3)){
                     player.sendMessage(Messages.NOT_ENOUGH_ARGUMENTS.getMessage());
                     return true;
@@ -57,7 +57,6 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 }
 
                 String name = args[1];
-
 
                 if(!checkChestType(args[2])) {
                     player.sendMessage(Messages.CHEST_SET_MATERIAL_WRONG.getMessage().replace("%input", args[2]));
@@ -104,6 +103,27 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 }
                 break;
             case "remove":
+                if(args.length != 2) {
+                    player.sendMessage(Messages.NOT_ENOUGH_ARGUMENTS.getMessage());
+                    return true;
+                }
+                String input = args[1];
+                try {
+                    this.main.getSrDatabase().addFromDBtoList();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                List<String> uuids = this.main.getUuidList();
+                List<String> chestNames = this.main.getChestNames();
+                if(!(uuids.contains(input) || chestNames.contains(input))) {
+                    player.sendMessage(Messages.CHEST_DOES_NOT_EXISITS.getMessage().replace("%name", input));
+                    return true;
+                }
+                try {
+                    this.main.getSrDatabase().deleteChestByUuid(input);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             case "adminsettings":
                 break;
@@ -124,7 +144,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
         List<String> uuidsOfChests = this.main.getUuidList();
 
         if (args.length == 1) {
-            arguments.add("set");
+            arguments.add("create");
             arguments.add("get");
             arguments.add("remove");
             arguments.add("adminsettings");
@@ -134,11 +154,16 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
         }
         if (args.length == 2) {
             switch (args[0].toLowerCase()) {
-                case "set":
+                case "create":
                     arguments.add("<name>");
                     StringUtil.copyPartialMatches(args[1], arguments, completions);
                     break;
                 case "remove", "adminsettings":
+                    try {
+                        this.main.getSrDatabase().addFromDBtoList();
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                     arguments.addAll(uuidsOfChests);
                     StringUtil.copyPartialMatches(args[1], arguments, completions);
                     break;
@@ -146,7 +171,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
             //TODO ARGUMENTS
         }
         if(args.length == 3) {
-            if(args[0].equalsIgnoreCase("set")) {
+            if(args[0].equalsIgnoreCase("create")) {
                 List<String> validMaterials = List.of("Material.CHEST", "Material.ENDER_CHEST", "Material.TRAPPED_CHEST");
                 arguments.addAll(validMaterials);
                 StringUtil.copyPartialMatches(args[2], arguments, completions);

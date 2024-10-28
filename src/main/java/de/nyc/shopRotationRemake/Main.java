@@ -18,6 +18,7 @@ public final class Main extends JavaPlugin {
 
     private SrDatabase srDatabase;
     private List<String> uuidList = new ArrayList<>();
+    private List<String> chestNames = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -65,5 +66,9 @@ public final class Main extends JavaPlugin {
 
     public List<String> getUuidList() {
         return uuidList;
+    }
+
+    public List<String> getChestNames() {
+        return chestNames;
     }
 }

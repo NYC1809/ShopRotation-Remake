@@ -51,8 +51,8 @@ public class SrDatabase {
         }
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS history (" +
-                    "uuid PRIMARY KEY, " +
-                    "id INTEGER AUTOINCREMENT, " +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "uuid TEXT NOT NULL, " +
                     "timestamp TEXT NOT NULL, " +
                     "player TEXT NOT NULL, " +
                     "item TEXT NOT NULL, " +
@@ -83,7 +83,7 @@ public class SrDatabase {
             ResultSet resultSet = preparedStatement.executeQuery();
             if(isTableEmpty("chest")) {
                 Bukkit.getLogger().severe("The SQL-LITE table \"chest\" has no entries!");
-                player.sendMessage(Messages.NO_CHEST_EXISTING.getMessage());
+                player.sendMessage(Messages.CHEST_DOES_NOT_EXISITS.getMessage());
                 return;
             }
             player.sendMessage(Messages.GET_UUID_INFO_LINE_1.getMessage());
@@ -99,6 +99,38 @@ public class SrDatabase {
 
                 //player.sendMessage("[23:29:43] " + uuid + " / " + name);
             }
+        }
+    }
+
+    public void addFromDBtoList() throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT uuid FROM chest GROUP BY uuid")) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(isTableEmpty("chest")) {
+                Bukkit.getLogger().severe("[28:10:01:26] SQL-Table \"chest\" is empty!");
+                return;
+            }
+            main.getUuidList().clear();
+            while (resultSet.next()) {
+                String uuid = resultSet.getString("uuid");
+                if(main.getUuidList().contains(uuid)) {
+                    break;
+                }
+                main.getUuidList().add(uuid);
+            }
+        }
+    }
+
+    public void deleteChestByUuid(String input) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM chest WHERE name = ? OR uuid = ?")) {
+            preparedStatement.setString(1, input);
+            preparedStatement.setString(2, input);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            if(rowsAffected > 0) {
+                Bukkit.getLogger().severe("[28:98:12] Removed entry from SQL - DB!");
+                return;
+            }
+            Bukkit.getLogger().warning("[28:98:12] No entry found to remove SQL - DB!");
         }
     }
 

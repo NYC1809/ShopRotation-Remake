@@ -27,11 +27,12 @@ public enum Messages {
     CHEST_SET_MATERIAL_WRONG("&cDas Material: \"%input\" ist kein valides Material."),
 
     //srChest help messages
-    CHEST_SET("&e/srChest set &8» &8Erstellen einer srChest"),
-    CHEST_GET("&e/srChest get &8» &8Zeigt alle srChests an"),
-    CHEST_REMOVE("&e/srChest remove &8» &8Entfernen einer srChest"),
-    CHEST_ADMINSETTINGS("&e/srChest adminsettings &8» &8Öffnet das Inventar der srChest"),
-    CHEST_HELP("&e/srChest help &8» &8Zeigt diesen Text an"),
+    CHEST_CREATE("&6⁜ &e/srChest create &6» &7Erstellen einer srChest"),
+    CHEST_GET("&6⁜ &e/srChest get &6» &7Zeigt alle srChests an"),
+    CHEST_REMOVE("&6⁜ &e/srChest remove &6» &7Entfernen einer srChest"),
+    CHEST_ADMINSETTINGS("&6⁜ &e/srChest adminsettings &6» &7Öffnet das Inventar der srChest"),
+    CHEST_DEBUG("&6⁜ &e/srChest debug &6» &7WARNING: Nur für Debugging!"),
+    CHEST_HELP("&6⁜ &e/srChest help &6» &7Zeigt diesen Text an"),
 
     //Enable-disable messages
     SET_ENABLED_SUCCESS("&7Die Chest wurde erfolgreich &cAktiviert&7."),

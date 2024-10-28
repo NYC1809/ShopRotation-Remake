@@ -3,10 +3,7 @@ package de.nyc.shopRotationRemake.commands;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.util.Utils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.data.Directional;
@@ -128,6 +125,14 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
             case "adminsettings":
                 break;
             case "help":
+                player.sendMessage(ChatColor.GOLD + "»------------------ " + Utils.getPrefix() + ChatColor.GOLD + "------------------«");
+                player.sendMessage(Messages.CHEST_CREATE.getMessage());
+                player.sendMessage(Messages.CHEST_GET.getMessage());
+                player.sendMessage(Messages.CHEST_REMOVE.getMessage());
+                player.sendMessage(Messages.CHEST_ADMINSETTINGS.getMessage());
+                player.sendMessage(Messages.CHEST_DEBUG.getMessage());
+                player.sendMessage(Messages.CHEST_HELP.getMessage());
+                player.sendMessage(ChatColor.GOLD + "»------------------ " + Utils.getPrefix() + ChatColor.GOLD + "------------------«");
                 break;
             case "debug":
                 break;

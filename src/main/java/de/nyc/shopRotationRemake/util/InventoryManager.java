@@ -25,7 +25,19 @@ public class InventoryManager implements Listener {
 
         GUI gui = main.getGuiFactory().createGUI(6, Utils.setColorInMessage(name));
         for(int i=0; i<9; i++) {
-            gui.set(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").getItem(), event -> {
+            gui.setItem(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
+                event.setCancelled(true);
+            });
+        }
+        for (int i=45; i<54; i++) {
+            if(i == 49) { continue; }
+            gui.setItem(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
+                event.setCancelled(true);
+            });
+        }
+        for(int i=9; i<45; i++) {
+            if(i == 10 || i == 13 || i == 15) { continue; }
+            gui.setItem(i, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
                 event.setCancelled(true);
             });
         }

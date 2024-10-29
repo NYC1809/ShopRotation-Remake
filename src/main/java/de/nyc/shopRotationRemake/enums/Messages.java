@@ -21,11 +21,12 @@ public enum Messages {
     CHEST_DOES_NOT_EXISITS("&cDie Chest \"%name\" existiert nicht!"),
     NO_CHEST_EXISTS("&cEs existiert aktuell keine srChest!"),
     CANNOT_BREAK_BLOCK("&cDu kannst diesen Block nicht zerstören! \nNutze /srChest remove <chest>"),
+    IS_NOT_NUMERIC("&c\"%input\" ist keine gültige Zahl!"),
 
     //srChest messages
     CHEST_REMOVE_SUCCESS("&aDie Chest wurde erfolgreich entfernt."),
     CHEST_NO_ITEMS("&cEs wurden keine Items in \"%uuid\" festgelegt."),
-    CHEST_SET_MATERIAL_WRONG("&cDas Material \"%input\" ist kein valides Material."),
+    CHEST_MATERIAL_WRONG("&cDas Material \"%input\" ist kein valides Material."),
     CHEST_IS_DISABLED("&cDie srChest ist aktuell &4Deaktiviert."),
 
     //srChest help messages
@@ -33,6 +34,7 @@ public enum Messages {
     CHEST_GET("&6⁜ &e/srChest get &6» &7Zeigt alle srChests an"),
     CHEST_REMOVE("&6⁜ &e/srChest remove &6» &7Entfernen einer srChest"),
     CHEST_ADMINSETTINGS("&6⁜ &e/srChest adminsettings &6» &7Öffnet das Inventar der srChest"),
+    CHEST_ADD_ITEM("&6⁜ &e/srChest add &6» &7Fügt Items der srChest hinzu"),
     CHEST_DEBUG("&6⁜ &e/srChest debug &6» &7WARNING: Nur für Debugging!"),
     CHEST_HELP("&6⁜ &e/srChest help &6» &7Zeigt diesen Text an"),
 

@@ -46,8 +46,8 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     player.sendMessage(Messages.NOT_ENOUGH_ARGUMENTS.getMessage());
                     return true;
                 }
-                Location location = player.getLocation();
-                location = location.getBlock().getLocation();
+                Location locationPlayer = player.getLocation();
+                Location location = locationPlayer.getBlock().getLocation();
 
                 if(location.getBlock().getType() != Material.AIR) {
                     player.sendMessage(Messages.LOCATION_HAS_TO_BE_AIR.getMessage());
@@ -58,10 +58,10 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 String inputMaterial = args[2];
 
                 if(!isValidBlock(inputMaterial)) {
-                    player.sendMessage(Messages.CHEST_SET_MATERIAL_WRONG.getMessage().replace("%input", inputMaterial));
+                    player.sendMessage(Messages.CHEST_MATERIAL_WRONG.getMessage().replace("%input", inputMaterial));
                     return true;
                 }
-                Material materialChest = getChestType(inputMaterial);
+                Material materialChest = getBlockType(inputMaterial);
                 if(materialChest == null) {
                     materialChest = Material.CHEST;
                     Bukkit.getLogger().info("[32:23:67] materialChest is null -> set default type to \"Material.CHEST\"");
@@ -75,9 +75,9 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     chest.update();
                 }
                 if(block.getBlockData() instanceof Directional directional) {
-                    directional.setFacing(Utils.getFacingDirection(location));
+                    directional.setFacing(Utils.getFacingDirection(locationPlayer));
                     block.setBlockData(directional);
-                    Bukkit.getLogger().info("[02:31:23] " + "Directional facing - " + Utils.getFacingDirection(location));
+                    Bukkit.getLogger().info("[02:31:23] " + "Directional facing - " + Utils.getFacingDirection(locationPlayer));
                 }
                 //set Enabled of Chest by default to false
                 //set Hologram of Chest by default to true
@@ -110,47 +110,72 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 }
                 break;
             case "remove":
+                //TODO: Remove all Items from the chest when deleting
                 if(args.length != 2) {
                     player.sendMessage(Messages.NOT_ENOUGH_ARGUMENTS.getMessage());
                     return true;
                 }
-                String input = args[1];
-                try {
-                    this.main.getSrDatabase().addFromDBtoList();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-                List<String> uuids = this.main.getUuidList();
-                List<String> chestNames = this.main.getChestNames();
-                if(!(uuids.contains(input) || chestNames.contains(input))) {
-                    player.sendMessage(Messages.CHEST_DOES_NOT_EXISITS.getMessage().replace("%name", input));
+                String rInput = args[1];
+                if(!checkIfChestExists(rInput)) {
+                    player.sendMessage(Messages.CHEST_DOES_NOT_EXISITS.getMessage().replace("%name", rInput));
                     return true;
                 }
                 try {
                     //**EASTEREGG** - I deleted the Chest first and I didnt know why this wasnt working \/ FML (-2 Hours)
-                    Location blockLocation = this.main.getSrDatabase().getLocationOfChest(input);
-                    Material chestType = Material.valueOf(this.main.getSrDatabase().getTypeOfChest(input));
+                    Location blockLocation = this.main.getSrDatabase().getLocationOfChest(rInput);
+                    Material chestType = Material.valueOf(this.main.getSrDatabase().getTypeOfChest(rInput));
                     if(blockLocation.getBlock().getType().equals(chestType)) {
                         Bukkit.getLogger().info("[76:63:30] chestType is equals to DB!");
                         blockLocation.getBlock().setType(Material.AIR);
                     }
-                    if(uuids.contains(input)) {
-                        uuids.remove(input);
+                    List<String> chestUuids = this.main.getUuidList();
+                    List<String> chestNames = this.main.getChestNames();
+                    if(chestUuids.contains(rInput)) {
+                        chestUuids.remove(rInput);
                     }
-                    if(chestNames.contains(input)) {
-                        chestNames.remove(input);
+                    if(chestNames.contains(rInput)) {
+                        chestNames.remove(rInput);
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
 
                 try {
-                    this.main.getSrDatabase().deleteChestByUuid(input);
+                    this.main.getSrDatabase().deleteChestByUuid(rInput);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
                 break;
             case "adminsettings":
+                break;
+            case "add":
+                // /srChest add <uuid> <material> <amountRequired>
+                if(args.length != 4) {
+                    player.sendMessage(Messages.NOT_ENOUGH_ARGUMENTS.getMessage());
+                    return true;
+                }
+                String aUuid = args[1];
+
+                if(!Utils.isNumeric(args[3])) {
+                    player.sendMessage(Messages.IS_NOT_NUMERIC.getMessage());
+                    return true;
+                }
+                Integer amountRequired = Integer.valueOf(args[3]);
+                if(!checkIfChestExists(aUuid)) {
+                    player.sendMessage(Messages.CHEST_DOES_NOT_EXISITS.getMessage().replace("%name", aUuid));
+                    return true;
+                }
+                if(!isValidBlock(args[2])) {
+                    player.sendMessage(Messages.CHEST_MATERIAL_WRONG.getMessage().replace("%input", args[2]));
+                    return true;
+                }
+                Material aMaterial = getBlockType(args[2]);
+                String aItem = Utils.convertItemStackToString(aMaterial, String.valueOf(aMaterial));
+                try {
+                    this.main.getSrDatabase().addItemToItemsDB(UUID.fromString(aUuid), aItem, amountRequired);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             case "help":
                 player.sendMessage(ChatColor.GOLD + "»------------------ " + Utils.getPrefix() + ChatColor.GOLD + "------------------«");
@@ -158,16 +183,14 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(Messages.CHEST_GET.getMessage());
                 player.sendMessage(Messages.CHEST_REMOVE.getMessage());
                 player.sendMessage(Messages.CHEST_ADMINSETTINGS.getMessage());
+                player.sendMessage(Messages.CHEST_ADD_ITEM.getMessage());
                 player.sendMessage(Messages.CHEST_DEBUG.getMessage());
                 player.sendMessage(Messages.CHEST_HELP.getMessage());
                 player.sendMessage(ChatColor.GOLD + "»------------------ " + Utils.getPrefix() + ChatColor.GOLD + "------------------«");
                 break;
             case "debug":
-                Utils.stringToLocation(args[1]);
-                player.sendMessage(Utils.stringToLocation(args[1]).toString());
                 break;
         }
-
         return false;
     }
 
@@ -183,6 +206,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
             arguments.add("get");
             arguments.add("remove");
             arguments.add("adminsettings");
+            arguments.add("add");
             arguments.add("help");
             arguments.add("debug");
             StringUtil.copyPartialMatches(args[0], arguments, completions);
@@ -193,7 +217,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     arguments.add("<name>");
                     StringUtil.copyPartialMatches(args[1], arguments, completions);
                     break;
-                case "remove", "adminsettings":
+                case "remove", "adminsettings", "add":
                     try {
                         this.main.getSrDatabase().addFromDBtoList();
                     } catch (SQLException e) {
@@ -205,19 +229,27 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
             }
         }
         if(args.length == 3) {
-            if(args[0].equalsIgnoreCase("create")) {
-                List<String> validBlocks = new ArrayList<>();
-                for (Material material : getBlockList()) {
-                    validBlocks.add("Material." + material);
-                }
-                arguments.addAll(validBlocks);
-                StringUtil.copyPartialMatches(args[2], arguments, completions);
+            switch (args[0].toLowerCase()) {
+                case "create", "add":
+                    List<String> validBlocks = new ArrayList<>();
+                    for (Material material : getBlockList()) {
+                        validBlocks.add("Material." + material);
+                    }
+                    arguments.addAll(validBlocks);
+                    StringUtil.copyPartialMatches(args[2], arguments, completions);
+                    break;
+            }
+        }
+        if(args.length == 4) {
+            if(args[0].equalsIgnoreCase("add")) {
+                arguments.add("<amount>");
+                StringUtil.copyPartialMatches(args[3], arguments, completions);
             }
         }
         return completions;
     }
 
-    private Material getChestType(String argument) {
+    private Material getBlockType(String argument) {
         String value = argument.substring(argument.lastIndexOf(".") + 1);
         return Material.getMaterial(value);
     }
@@ -242,5 +274,13 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
             }
         }
         return blocks;
+    }
+
+    private boolean checkIfChestExists(String input) {
+        try {
+            return this.main.getSrDatabase().chestExistsInDB(input);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
  }

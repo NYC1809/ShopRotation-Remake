@@ -1,12 +1,11 @@
 package de.nyc.shopRotationRemake.util;
 
+import de.leonheuer.mcguiapi.utils.ItemBuilder;
 import de.nyc.shopRotationRemake.Main;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class Utils {
 
@@ -28,7 +27,7 @@ public class Utils {
         Bukkit.getLogger().info("[23:55:23] copiedToClipboard / " + player.getName() + " / " + uuid);
     }
 
-    public static void coloredCopyToClipboard(Player player, String uuid) {
+    public static void coloredCopyToClipboard(Player player, String uuid, String name) {
         Bukkit.getServer().dispatchCommand(
                 Bukkit.getConsoleSender(),
                 "tellraw " + player.getName() +
@@ -49,9 +48,17 @@ public class Utils {
                         uuid +
                         "\"},\"color\":\"green\",\"text\":\"" +
                         uuid +
+                        "\"}," +
+                        "{\"clickEvent\":{\"action\":\"copy_to_clipboard\",\"value\":\"" +
+                        uuid +
+                        "\"},\"color\":\"dark_green\",\"text\":\" | Name: \"}," +
+                        "{\"clickEvent\":{\"action\":\"copy_to_clipboard\",\"value\":\"" +
+                        uuid +
+                        "\"},\"color\":\"yellow\",\"text\":\"" +
+                        name +
                         "\"}]");
 
-        Bukkit.getLogger().info("[23:55:23] copiedToClipboard / " + player.getName() + " / " + uuid);
+        Bukkit.getLogger().info("[23:55:23] pastedToCopyMSG / " + player.getName() + " / " + uuid);
     }
 
     public static String getPrefix() {
@@ -96,5 +103,10 @@ public class Utils {
 
     public static String setColorInMessage(String input) {
         return ChatColor.translateAlternateColorCodes('&', input);
+    }
+
+    public static ItemStack convertToItemStack(String input, Integer itemAmount) {
+        return ItemBuilder.of(Material.BARRIER).name("Default Name").description("Default Description").amount(itemAmount).asItem();
+//DEBUG
     }
 }

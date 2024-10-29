@@ -19,6 +19,7 @@ public enum Messages {
     MATERIAL_AIR_NOT_ALLOWED("&cDas Material \"AIR\" ist nicht erlaubt."),
     LOCATION_HAS_TO_BE_AIR("&cWARNING: Du kannst hier keine Chest erstellen! (Benötigt \"Material.AIR\")"),
     CHEST_DOES_NOT_EXISITS("&cDie Chest \"%name\" existiert nicht!"),
+    NO_CHEST_EXISTS("&cEs existiert aktuell keine srChest!"),
     CANNOT_BREAK_BLOCK("&cDu kannst diesen Block nicht zerstören! \nNutze /srChest remove <chest>"),
 
     //srChest messages
@@ -45,8 +46,12 @@ public enum Messages {
 
     //srChest get messages
     GET_UUID_INFO_LINE_1(Utils.getPrefix() + "&2Anklicken zum kopieren:"),
+    CHEST_HAS_NO_ACTIVE_ITEM("&cDiese srChest hat aktuell kein aktives Item!"),
+    CHEST_HAS_NO_ACTIVE_ITEM_LORE_1(" "),
+    CHEST_HAS_NO_ACTIVE_ITEM_LORE_2("&7Bitte komme zu einem späteren Zeitpunkt zurück")
 
-    //TODO: Messages for lootpool and the rewards etc.
+
+    //TODO: Add missing messages
     ;
 
     private final String message;

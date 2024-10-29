@@ -1,14 +1,13 @@
 package de.nyc.shopRotationRemake.database;
 
 import de.nyc.shopRotationRemake.Main;
-import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import java.sql.*;
+import java.util.List;
 import java.util.UUID;
 
 public class SrDatabase {
@@ -23,7 +22,8 @@ public class SrDatabase {
             statement.execute("CREATE TABLE IF NOT EXISTS items (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "uuid TEXT NOT NULL, " +
-                    "items TEXT NOT NULL," +
+                    "items TEXT NOT NULL, " +
+                    "holdingamount INTEGER NOT NULL, " +
                     "requiredamount INTEGER NOT NULL)");
         }
         try (Statement statement = connection.createStatement()) {
@@ -47,6 +47,7 @@ public class SrDatabase {
                    "uuid TEXT PRIMARY KEY, " +
                     "item TEXT NOT NULL, " +
                     "amount INT NOT NULL, " +
+                    "holdingamount INT NOT NULL, " +
                     "completed TEXT)");
         }
         try (Statement statement = connection.createStatement()) {
@@ -78,32 +79,28 @@ public class SrDatabase {
         }
     }
 
-    public void processAllChestUuids(Player player) throws SQLException {
+    public List<String> processAllChestUuids() throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT uuid, name FROM chest GROUP BY uuid")) {
             ResultSet resultSet = preparedStatement.executeQuery();
             if(isTableEmpty("chest")) {
                 Bukkit.getLogger().severe("The SQL-LITE table \"chest\" has no entries!");
-                player.sendMessage(Messages.CHEST_DOES_NOT_EXISITS.getMessage());
-                return;
+                return null;
             }
-            player.sendMessage(Messages.GET_UUID_INFO_LINE_1.getMessage());
+
             main.getUuidList().clear();
             while (resultSet.next()) {
                 String uuid = resultSet.getString("uuid");
-                String name = resultSet.getString("name");
                 if(main.getUuidList().contains(uuid)) {
-                    break;
+                    continue;
                 }
                 main.getUuidList().add(uuid);
-                Utils.coloredCopyToClipboard(player, uuid);
-
-                //player.sendMessage("[23:29:43] " + uuid + " / " + name);
             }
+            return main.getUuidList();
         }
     }
 
     public void addFromDBtoList() throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT uuid FROM chest GROUP BY uuid")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT uuid, name FROM chest GROUP BY uuid")) {
             ResultSet resultSet = preparedStatement.executeQuery();
             if(isTableEmpty("chest")) {
                 Bukkit.getLogger().severe("[28:10:01:26] SQL-Table \"chest\" is empty!");
@@ -112,10 +109,14 @@ public class SrDatabase {
             main.getUuidList().clear();
             while (resultSet.next()) {
                 String uuid = resultSet.getString("uuid");
-                if(main.getUuidList().contains(uuid)) {
-                    break;
+                if(!main.getUuidList().contains(uuid)) {
+                    main.getUuidList().add(uuid);
                 }
-                main.getUuidList().add(uuid);
+
+                String name = resultSet.getString("name");
+                if(!main.getChestNames().contains(name)) {
+                    main.getChestNames().add(name);
+                }
             }
         }
     }
@@ -223,6 +224,39 @@ public class SrDatabase {
                 return resultSet.getString("name");
             }
             return null;
+        }
+    }
+
+    public String getCurrentItem(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT item FROM currentitem WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) {
+                return resultSet.getString("item");
+            }
+            return null;
+        }
+    }
+
+    public void addItemToCurrentItem(UUID uuid, String item, Integer amount, Boolean completed) throws SQLException{
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO currentitem (uuid, item, amount, completed, holdingamount) VALUES (?, ? , ?, ?, ?)")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setString(2, item);
+            preparedStatement.setInt(3, amount);
+            preparedStatement.setString(4, completed.toString());
+            preparedStatement.setInt(5, 0);
+            preparedStatement.executeUpdate();
+        }
+        addItemToItemsDB(uuid, item, amount);
+    }
+
+    public void addItemToItemsDB(UUID uuid, String item, Integer amount) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO items (uuid, items, requiredamount, holdingamount) VALUES (?, ?, ?, ?)")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setString(2, item);
+            preparedStatement.setInt(3, amount);
+            preparedStatement.setInt(4,0);
+            preparedStatement.executeUpdate();
         }
     }
 }

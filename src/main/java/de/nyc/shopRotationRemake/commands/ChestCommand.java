@@ -14,7 +14,6 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.StringUtil;
-import org.checkerframework.checker.units.qual.A;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -96,7 +95,16 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 try {
-                    this.main.getSrDatabase().processAllChestUuids(player);
+                    List<String> uuids = this.main.getSrDatabase().processAllChestUuids();
+                    if(uuids == null) {
+                        player.sendMessage(Messages.NO_CHEST_EXISTS.getMessage());
+                        return true;
+                    }
+                    player.sendMessage(Messages.GET_UUID_INFO_LINE_1.getMessage());
+                    for(String uuid : uuids) {
+                        String nameOfChest = this.main.getSrDatabase().getNameOfChest(UUID.fromString(uuid));
+                        Utils.coloredCopyToClipboard(player, uuid, nameOfChest);
+                    }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -125,6 +133,12 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     if(blockLocation.getBlock().getType().equals(chestType)) {
                         Bukkit.getLogger().info("[76:63:30] chestType is equals to DB!");
                         blockLocation.getBlock().setType(Material.AIR);
+                    }
+                    if(uuids.contains(input)) {
+                        uuids.remove(input);
+                    }
+                    if(chestNames.contains(input)) {
+                        chestNames.remove(input);
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

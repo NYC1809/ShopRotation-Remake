@@ -136,11 +136,8 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     if(chestNames.contains(rInput)) {
                         chestNames.remove(rInput);
                     }
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-
-                try {
+                    UUID uuidOfChest = this.main.getSrDatabase().getUuidByInput(rInput);
+                    this.main.getSrDatabase().deleteItems(uuidOfChest);
                     this.main.getSrDatabase().deleteChestByUuid(rInput);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

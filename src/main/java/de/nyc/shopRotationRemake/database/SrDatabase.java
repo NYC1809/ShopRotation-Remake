@@ -228,6 +228,18 @@ public class SrDatabase {
         }
     }
 
+    public UUID getUuidByInput(String input) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT uuid FROM chest WHERE uuid = ? OR name = ?")) {
+            preparedStatement.setString(1, input);
+            preparedStatement.setString(2, input);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return UUID.fromString(resultSet.getString("uuid"));
+            }
+            return null;
+        }
+    }
+
     public String getCurrentItem(UUID uuid) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT item FROM currentitem WHERE uuid = ?")) {
             preparedStatement.setString(1, uuid.toString());
@@ -258,6 +270,18 @@ public class SrDatabase {
             preparedStatement.setInt(3, amount);
             preparedStatement.setInt(4,0);
             preparedStatement.executeUpdate();
+        }
+    }
+
+    public void deleteItems(UUID uuid) throws SQLException{
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM items WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            int rowsAffected = preparedStatement.executeUpdate();
+            if(rowsAffected > 0) {
+                Bukkit.getLogger().severe("[90:09:12] Removed all items from \"" + uuid + "\".");
+                return;
+            }
+            Bukkit.getLogger().warning("[90:66:55] \"" + uuid + "\" has no items!");
         }
     }
 }

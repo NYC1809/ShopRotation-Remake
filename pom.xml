@@ -59,6 +59,10 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>jitpack</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -72,6 +76,11 @@
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.42.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.heuerleon</groupId>
+            <artifactId>mcguiapi</artifactId>
+            <version>v1.2.0</version>
         </dependency>
     </dependencies>
 </project>

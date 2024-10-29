@@ -1,47 +1,34 @@
 package de.nyc.shopRotationRemake.util;
 
+import de.leonheuer.mcguiapi.gui.GUI;
+import de.leonheuer.mcguiapi.utils.ItemBuilder;
 import de.nyc.shopRotationRemake.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
-public class InventoryManager {
+public class InventoryManager implements Listener {
 
-    private final Main main;
+    private static Main main;
 
     public InventoryManager(Main main) {
-        this.main = main;
+        InventoryManager.main = main;
     }
 
     public static void createDefaultInventory(Player player, UUID uuid, String name) {
         Inventory inventory = Bukkit.createInventory(player, 54, Utils.setColorInMessage(name));
         player.openInventory(inventory);
 
-        ItemStack defaultItemGray = new ItemAPI(" ", Material.GRAY_STAINED_GLASS_PANE, 1).build();
-
-
-        for(int i = 0; i<9; i++) {
-            inventory.setItem(i, new ItemAPI(" ", Material.CYAN_STAINED_GLASS_PANE, 1).build());
+        GUI gui = main.getGuiFactory().createGUI(6, Utils.setColorInMessage(name));
+        for(int i=0; i<9; i++) {
+            gui.set(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").getItem(), event -> {
+                event.setCancelled(true);
+            });
         }
-        for(int i = 45; i<54; i++) {
-            if(i == 49) { break;}
-            inventory.setItem(i, new ItemAPI(" ", Material.CYAN_STAINED_GLASS_PANE, 1).build());
-        }
-        for(int i = 9; i<28; i++) {
-            if(i == 13) {break;}
-            inventory.setItem(i, defaultItemGray);
-        }
-        for(int i = 35; i<45; i++) {
-            inventory.setItem(i, defaultItemGray);
-        }
-        //TODO: Names of below:
-        inventory.setItem(10, new ItemAPI("History:", Material.OAK_HANGING_SIGN, 1).build());
-        inventory.setItem(15, new ItemAPI("Klicke hier um deine Items abzugeben!", Material.HOPPER, 1).build());
-        inventory.setItem(49, new ItemAPI("»HELP«", Material.NETHER_STAR, 1).build());
-
+        gui.show(player);
     }
 }

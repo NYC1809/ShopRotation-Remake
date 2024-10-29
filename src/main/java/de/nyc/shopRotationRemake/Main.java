@@ -1,10 +1,12 @@
 package de.nyc.shopRotationRemake;
 
+import de.leonheuer.mcguiapi.gui.GUIFactory;
 import de.nyc.shopRotationRemake.commands.ChestCommand;
 import de.nyc.shopRotationRemake.database.SrDatabase;
 import de.nyc.shopRotationRemake.listener.BlockBreakListener;
 import de.nyc.shopRotationRemake.listener.ChatListener;
 import de.nyc.shopRotationRemake.listener.PlayerInteractListener;
+import de.nyc.shopRotationRemake.util.InventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -21,10 +23,13 @@ public final class Main extends JavaPlugin {
     private SrDatabase srDatabase;
     private List<String> uuidList = new ArrayList<>();
     private List<String> chestNames = new ArrayList<>();
+    private GUIFactory guiFactory;
 
     @Override
     public void onEnable() {
         LocalDateTime start = LocalDateTime.now();
+
+        guiFactory = new GUIFactory(this);
 
         try {
             if(!getDataFolder().exists()) {
@@ -43,6 +48,7 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
         Bukkit.getPluginManager().registerEvents(new BlockBreakListener(this), this);
         Bukkit.getPluginManager().registerEvents(new PlayerInteractListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new InventoryManager(this), this);
 
         getLogger().info("loaded in " + Duration.between(start, LocalDateTime.now()).toMillis() + "ms");
     }
@@ -75,5 +81,9 @@ public final class Main extends JavaPlugin {
 
     public List<String> getChestNames() {
         return chestNames;
+    }
+
+    public GUIFactory getGuiFactory() {
+        return guiFactory;
     }
 }

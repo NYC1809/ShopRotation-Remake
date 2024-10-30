@@ -6,6 +6,8 @@ import de.nyc.shopRotationRemake.database.SrDatabase;
 import de.nyc.shopRotationRemake.listener.BlockBreakListener;
 import de.nyc.shopRotationRemake.listener.ChatListener;
 import de.nyc.shopRotationRemake.listener.PlayerInteractListener;
+import de.nyc.shopRotationRemake.objects.Hologram;
+import de.nyc.shopRotationRemake.util.HologramUtils;
 import de.nyc.shopRotationRemake.util.InventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -21,13 +23,18 @@ import java.util.List;
 public final class Main extends JavaPlugin {
 
     private SrDatabase srDatabase;
-    private List<String> uuidList = new ArrayList<>();
-    private List<String> chestNames = new ArrayList<>();
+    private final List<String> uuidList = new ArrayList<>();
+    private final List<String> chestNames = new ArrayList<>();
+
+    private final List<Hologram> hologramList = new ArrayList<>();
     private GUIFactory guiFactory;
+
+    private static Main instance;
 
     @Override
     public void onEnable() {
         LocalDateTime start = LocalDateTime.now();
+        instance = this;
 
         guiFactory = new GUIFactory(this);
 
@@ -42,6 +49,8 @@ public final class Main extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
+        HologramUtils.createHologram();
+
         registerCommand("srChest", new ChestCommand(this));
         getCommand("srChest").setTabCompleter(new ChestCommand(this));
 
@@ -55,6 +64,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        HologramUtils.deleteHolograms();
         try {
             srDatabase.closeConnection();
         } catch (SQLException e) {
@@ -85,5 +95,13 @@ public final class Main extends JavaPlugin {
 
     public GUIFactory getGuiFactory() {
         return guiFactory;
+    }
+
+    public List<Hologram> getHologramList() {
+        return hologramList;
+    }
+
+    public static Main getInstance() {
+        return instance;
     }
 }

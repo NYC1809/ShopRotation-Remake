@@ -1,4 +1,4 @@
-package de.nyc.shopRotationRemake.Objects;
+package de.nyc.shopRotationRemake.objects;
 
 public class Triple {
     private String value1;
@@ -11,7 +11,6 @@ public class Triple {
         this.value3 = value3;
     }
 
-    // Getters
     public String getValue1() {
         return value1;
     }

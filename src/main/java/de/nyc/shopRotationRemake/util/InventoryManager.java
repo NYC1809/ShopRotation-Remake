@@ -155,7 +155,7 @@ public class InventoryManager implements Listener {
 
     private static String getCurrentItemFromDB(UUID uuid) throws SQLException {
         String item = main.getSrDatabase().getCurrentItem(uuid);
-        //TODO
+        //TODO: generate the current Item
         return item;
     }
 }

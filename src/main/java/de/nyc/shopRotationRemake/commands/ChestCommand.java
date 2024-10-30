@@ -1,9 +1,12 @@
 package de.nyc.shopRotationRemake.commands;
 
+import de.leonheuer.mcguiapi.utils.ItemBuilder;
 import de.nyc.shopRotationRemake.Main;
-import de.nyc.shopRotationRemake.Objects.Quadruple;
-import de.nyc.shopRotationRemake.Objects.Triple;
+import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.enums.Messages;
+import de.nyc.shopRotationRemake.objects.Hologram;
+import de.nyc.shopRotationRemake.objects.Quadruple;
+import de.nyc.shopRotationRemake.util.HologramUtils;
 import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -18,10 +21,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.StringUtil;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ChestCommand implements CommandExecutor, TabCompleter {
 
@@ -84,9 +84,13 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 }
                 //set Enabled of Chest by default to false
                 //set Hologram of Chest by default to true
+                //set Hologram - style by default to "hologram_item_name"
                 try {
-                    this.main.getSrDatabase().createChest(chestUUID, name, location, false, materialChest, true, player);
+                    this.main.getSrDatabase().createChest(chestUUID, name, location, false, materialChest, true, player, HologramStyle.HOLOGRAM_ITEM_NAME);
                     Bukkit.getLogger().severe("[ShopRotation] srChest \"" + chestUUID + " / " + name + "\" has been written to the SQL DB!");
+
+                    HologramUtils.createHologram();
+
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -130,6 +134,8 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                         Bukkit.getLogger().info("[76:63:30] chestType is equals to DB!");
                         blockLocation.getBlock().setType(Material.AIR);
                     }
+                    HologramUtils.deleteHolograms();
+
                     List<String> chestUuids = this.main.getUuidList();
                     List<String> chestNames = this.main.getChestNames();
                     if(chestUuids.contains(rInput)) {
@@ -141,6 +147,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     UUID uuidOfChest = this.main.getSrDatabase().getUuidByInput(rInput);
                     this.main.getSrDatabase().deleteItems(uuidOfChest, player);
                     this.main.getSrDatabase().deleteChestByUuid(rInput, player);
+
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -272,6 +279,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 StringUtil.copyPartialMatches(args[3], arguments, completions);
             }
         }
+        Collections.sort(completions);
         return completions;
     }
 

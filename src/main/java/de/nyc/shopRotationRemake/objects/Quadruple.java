@@ -1,4 +1,4 @@
-package de.nyc.shopRotationRemake.Objects;
+package de.nyc.shopRotationRemake.objects;
 
 public class Quadruple {
 
@@ -14,7 +14,6 @@ public class Quadruple {
         this.value4 = value4;
     }
 
-    // Getters
     public String getValue1() {
         return value1;
     }

@@ -1,6 +1,7 @@
 package de.nyc.shopRotationRemake.commands;
 
 import de.nyc.shopRotationRemake.Main;
+import de.nyc.shopRotationRemake.Objects.Quadruple;
 import de.nyc.shopRotationRemake.Objects.Triple;
 import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.util.Utils;
@@ -189,11 +190,11 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 break;
             case "debug":
                 try {
-                    Map<Integer, Triple> actionMap = this.main.getSrDatabase().getLastActions();
-                    for(Map.Entry<Integer, Triple> entry : actionMap.entrySet()) {
+                    Map<Integer, Quadruple> actionMap = this.main.getSrDatabase().getLastActions();
+                    for(Map.Entry<Integer, Quadruple> entry : actionMap.entrySet()) {
                         Integer id = entry.getKey();
-                        Triple values = entry.getValue();
-                        player.sendMessage(id.toString() + " » " + values.getValue1() + " | " + values.getValue2() + " | " + values.getValue3());
+                        Quadruple values = entry.getValue();
+                        player.sendMessage(id.toString() + " » " + values.getValue1() + " | " + values.getValue2() + " | " + values.getValue3() + " | " + values.getValue4());
                     }
 
                 } catch (SQLException e) {
@@ -210,6 +211,14 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
         List<String> completions = new ArrayList<>();
 
         List<String> uuidsOfChests = this.main.getUuidList();
+
+        if(sender instanceof Player) {
+            Player player = ((Player) sender).getPlayer();
+            //TODO: Permission System
+            if(!player.isOp()) {
+                return completions;
+            }
+        }
 
         if (args.length == 1) {
             arguments.add("create");

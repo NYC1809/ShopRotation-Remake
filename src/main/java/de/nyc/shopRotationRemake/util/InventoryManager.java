@@ -76,6 +76,14 @@ public class InventoryManager implements Listener {
                     }
                 });
             }
+            gui.setItem(45, ItemBuilder.of(Material.COMMAND_BLOCK).name("&eKlicke hier um die &6Einstellungen &ezu öffnen:").asItem(), event -> {
+                event.setCancelled(true);
+                try {
+                    createAdminSettingsInventory(player, uuid, name);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
 
         gui.show(player);

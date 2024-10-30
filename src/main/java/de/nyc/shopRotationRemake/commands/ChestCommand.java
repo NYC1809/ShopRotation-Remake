@@ -1,8 +1,8 @@
 package de.nyc.shopRotationRemake.commands;
 
-import de.leonheuer.mcguiapi.utils.ItemBuilder;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.Messages;
+import de.nyc.shopRotationRemake.util.ItemUtils;
 import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -14,12 +14,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.StringUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -189,6 +189,13 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(ChatColor.GOLD + "»------------------ " + Utils.getPrefix() + ChatColor.GOLD + "------------------«");
                 break;
             case "debug":
+                player.sendMessage(ItemUtils.createStringA("NAME", Material.IRON_ORE, "Erste Line of Descriptionnn", "SECOND LINEEE", "UND DER REST HATL!!!"));
+                player.sendMessage(ChatColor.RED + "------------------------------------");
+                player.sendMessage(ItemUtils.createStringB("NAME", Material.IRON_TRAPDOOR, Enchantment.EFFICIENCY, 15, "DESCRPTION 1", "UND ZWO etc..."));
+                player.sendMessage(ChatColor.RED + "------------------------------------");
+                player.sendMessage(ItemUtils.createStringC("NAMEEE", Material.CHEST_MINECART, Enchantment.AQUA_AFFINITY, 40, ItemFlag.HIDE_ENCHANTS, "DESC 1", "DESC 2"));
+                player.sendMessage(ChatColor.RED + "------------------------------------");
+                player.sendMessage(ItemUtils.createStringD("NAme", Material.BEACON, ItemFlag.HIDE_UNBREAKABLE, "Description von dem Item"));
                 break;
         }
         return false;

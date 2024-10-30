@@ -46,8 +46,10 @@ public class PlayerInteractListener implements Listener {
         Bukkit.getLogger().info("[09:27:11] Player " + player.getName() + " interacted with srChest " + uuid);
 
         if (!this.main.getSrDatabase().chestIsEnabled(uuid.toString())) {
-            player.sendMessage(Messages.CHEST_IS_DISABLED.getMessage());
-            return;
+            if(!player.isOp()) {
+                player.sendMessage(Messages.CHEST_IS_DISABLED.getMessage());
+                return;
+            }
         }
 
         InventoryManager.createDefaultInventory(player, uuid, name);

@@ -52,6 +52,31 @@ public class InventoryManager implements Listener {
         } else {
 
         }
+        //TODO: Permission System
+        if(player.isOp()) {
+            boolean isEnabled = main.getSrDatabase().getChestEnabled(uuid);
+            if(isEnabled) {
+                gui.setItem(53, ItemBuilder.of(Material.GREEN_WOOL).name("&eDiese srChest ist aktuell &aaktiviert&e!").description(" ", "&7Klicke hier um diese zu &cdeaktivieren&7!").asItem(), event -> {
+                    event.setCancelled(true);
+                    try {
+                        main.getSrDatabase().changeEnabledOfChest(uuid, false);
+                        createDefaultInventory(player, uuid, name);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            } else {
+                gui.setItem(53, ItemBuilder.of(Material.RED_WOOL).name("&eDiese srChest ist aktuell &cdeaktiviert&e!").description(" ", "&7Klicke hier um diese zu &aaktivieren&7!").asItem(), event -> {
+                    event.setCancelled(true);
+                    try {
+                        main.getSrDatabase().changeEnabledOfChest(uuid, true);
+                        createDefaultInventory(player, uuid, name);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+        }
 
         gui.show(player);
     }

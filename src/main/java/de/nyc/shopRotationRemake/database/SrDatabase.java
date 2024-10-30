@@ -181,7 +181,7 @@ public class SrDatabase {
         }
     }
 
-    public boolean chestIsEnabled(String input) throws SQLException{
+    public boolean chestIsEnabled(String input) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT enabled FROM chest WHERE name = ? OR uuid = ?")) {
             preparedStatement.setString(1, input);
             preparedStatement.setString(2, input);
@@ -251,7 +251,7 @@ public class SrDatabase {
         }
     }
 
-    public void addItemToCurrentItem(UUID uuid, String item, Integer amount, Boolean completed) throws SQLException{
+    public void addItemToCurrentItem(UUID uuid, String item, Integer amount, Boolean completed) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO currentitem (uuid, item, amount, completed, holdingamount) VALUES (?, ? , ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());
             preparedStatement.setString(2, item);
@@ -273,7 +273,7 @@ public class SrDatabase {
         }
     }
 
-    public void deleteItems(UUID uuid) throws SQLException{
+    public void deleteItems(UUID uuid) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM items WHERE uuid = ?")) {
             preparedStatement.setString(1, uuid.toString());
             int rowsAffected = preparedStatement.executeUpdate();
@@ -282,6 +282,25 @@ public class SrDatabase {
                 return;
             }
             Bukkit.getLogger().warning("[90:66:55] \"" + uuid + "\" has no items!");
+        }
+    }
+
+    public boolean getChestEnabled(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT enabled FROM chest WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) {
+                return resultSet.getString("enabled").equals("true");
+            }
+            return false;
+        }
+    }
+
+    public void changeEnabledOfChest(UUID uuid, boolean enabled) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE chest SET enabled = ? WHERE uuid = ?")) {
+            preparedStatement.setString(1, String.valueOf(enabled));
+            preparedStatement.setString(2, uuid.toString());
+            preparedStatement.executeUpdate();
         }
     }
 }

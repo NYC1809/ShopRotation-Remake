@@ -27,7 +27,7 @@ public enum Messages {
     CHEST_REMOVE_SUCCESS("&aDie Chest wurde erfolgreich entfernt."),
     CHEST_NO_ITEMS("&cEs wurden keine Items in \"%uuid\" festgelegt."),
     CHEST_MATERIAL_WRONG("&cDas Material \"%input\" ist kein valides Material."),
-    CHEST_IS_DISABLED("&cDie srChest ist aktuell &4Deaktiviert."),
+    CHEST_IS_DISABLED("&cDie srChest ist aktuell &4Deaktiviert&c."),
 
     //srChest help messages
     CHEST_CREATE("&6⁜ &e/srChest create &6» &7Erstellen einer srChest"),

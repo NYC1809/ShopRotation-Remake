@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ItemUtils {

@@ -3,6 +3,7 @@ package de.nyc.shopRotationRemake.objects;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.exceptions.HologramAlreadyDestroyedException;
 import de.nyc.shopRotationRemake.util.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -11,6 +12,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Objects;
+
 public class Hologram {
 
     private Location location;
@@ -18,7 +21,8 @@ public class Hologram {
     private ItemStack item;
     private Main main;
 
-    private ArmorStand armorStand;
+    private ArmorStand hologramArmorStand;
+    private ArmorStand itemArmorStand;
     private Item displayItem;
 
     private BukkitTask checkLivingTask;
@@ -34,7 +38,7 @@ public class Hologram {
         checkLivingTask = new BukkitRunnable() {
             public void run() {
                 if (!isShown) return;
-                if (armorStand.isDead() || displayItem.isDead()) {
+                if (hologramArmorStand.isDead() || displayItem.isDead() ||itemArmorStand.isDead()) {
                     kill();
                     create();
                 }
@@ -47,32 +51,50 @@ public class Hologram {
             throw new HologramAlreadyDestroyedException();
         }
 
-        Location holoLoc = location.clone().add(0.5, -0.2, 0.5);
-        armorStand = (ArmorStand) holoLoc.getWorld().spawnEntity(holoLoc, EntityType.ARMOR_STAND);
-        armorStand.setVisible(false);
-        armorStand.setCustomNameVisible(true);
-        armorStand.setGravity(false);
-        armorStand.setCustomName(title);
-        armorStand.setInvulnerable(true);
-        armorStand.setCanPickupItems(false);
+        Location hologramLocation = location.clone().add(0.5, -0.65, 0.5);
+        hologramArmorStand = (ArmorStand) hologramLocation.getWorld().spawnEntity(hologramLocation, EntityType.ARMOR_STAND);
+        hologramArmorStand.setVisible(false);
+        hologramArmorStand.setCustomNameVisible(true);
+        hologramArmorStand.setGravity(false);
+        hologramArmorStand.setCustomName(title);
+        hologramArmorStand.setInvulnerable(true);
+        hologramArmorStand.setCanPickupItems(false);
 
-        Location itemLoc = holoLoc.clone().add(0.0, -1, 0.0);
-        displayItem = (Item) itemLoc.getWorld().spawnEntity(itemLoc, EntityType.ITEM);
+        Bukkit.getLogger().severe("[77:33:12] created hologramArmorStand at: " + hologramLocation);
+
+        Location itemLocationArmorStand = location.clone().add(0.5, -1.2, 0.5);
+        itemArmorStand = (ArmorStand) itemLocationArmorStand.getWorld().spawnEntity(itemLocationArmorStand, EntityType.ARMOR_STAND);
+        itemArmorStand.setVisible(false);
+        itemArmorStand.setGravity(false);
+        itemArmorStand.setCustomNameVisible(false);
+        itemArmorStand.setInvulnerable(true);
+        itemArmorStand.setCanPickupItems(false);
+
+        Bukkit.getLogger().severe("[77:33:12] created itemArmorStand at: " + itemLocationArmorStand);
+
+        Location itemLocation = location.clone().add(0.5, -1.2, 0.5);
+        displayItem = (Item) itemLocation.getWorld().spawnEntity(itemLocation, EntityType.ITEM);
         displayItem.setItemStack(item);
         displayItem.setGravity(false);
         displayItem.setPickupDelay(Integer.MAX_VALUE);
         displayItem.setTicksLived(Integer.MAX_VALUE);
-        armorStand.addPassenger(displayItem);
+        itemArmorStand.addPassenger(displayItem);
+
+        Bukkit.getLogger().severe("[77:33:12] created displayItem at: " + itemLocation);
 
         isShown = true;
     }
 
     public void kill() {
-        armorStand.setInvulnerable(false);
-        armorStand.removePassenger(displayItem);
+        hologramArmorStand.setInvulnerable(false);
+        hologramArmorStand.remove();
+
         displayItem.setInvulnerable(false);
         displayItem.remove();
-        armorStand.remove();
+
+        itemArmorStand.setInvulnerable(false);
+        itemArmorStand.removePassenger(displayItem);
+        itemArmorStand.remove();
 
         isShown = false;
     }

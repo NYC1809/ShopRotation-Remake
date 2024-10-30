@@ -1,5 +1,6 @@
 package de.nyc.shopRotationRemake.commands;
 
+import de.leonheuer.mcguiapi.utils.ItemBuilder;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.util.Utils;
@@ -11,12 +12,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.StringUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -162,7 +165,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     player.sendMessage(Messages.CHEST_DOES_NOT_EXISITS.getMessage().replace("%name", aUuid));
                     return true;
                 }
-                if(!isValidBlock(args[2])) {
+                if(!Utils.isMaterial(args[2])) {
                     player.sendMessage(Messages.CHEST_MATERIAL_WRONG.getMessage().replace("%input", args[2]));
                     return true;
                 }
@@ -226,10 +229,17 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
             }
         }
         if(args.length == 3) {
+            List<String> validBlocks = new ArrayList<>();
             switch (args[0].toLowerCase()) {
-                case "create", "add":
-                    List<String> validBlocks = new ArrayList<>();
-                    for (Material material : getBlockList()) {
+                case "create":
+                    for (Material material : Utils.getBlockList()) {
+                        validBlocks.add("Material." + material);
+                    }
+                    arguments.addAll(validBlocks);
+                    StringUtil.copyPartialMatches(args[2], arguments, completions);
+                    break;
+                case "add":
+                    for(Material material : Utils.getItemList()) {
                         validBlocks.add("Material." + material);
                     }
                     arguments.addAll(validBlocks);
@@ -261,16 +271,6 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
         }
         String value = input.substring(input.lastIndexOf(".") + 1);
         return blocks.contains(Material.getMaterial(value));
-    }
-
-    private List<Material> getBlockList() {
-        List<Material> blocks = new ArrayList<>();
-        for(Material material : Material.values()) {
-            if (material.isBlock()) {
-                blocks.add(material);
-            }
-        }
-        return blocks;
     }
 
     private boolean checkIfChestExists(String input) {

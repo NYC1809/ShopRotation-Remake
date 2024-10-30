@@ -7,6 +7,10 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Utils {
 
     private final Main main;
@@ -116,5 +120,34 @@ public class Utils {
 
     public static boolean isNumeric(String input) {
         return input != null && input.matches("\\d+");
+    }
+
+    public static boolean isMaterial(String input) {
+        String value = input.substring(input.lastIndexOf(".") + 1);
+
+        for (Material material : Material.values()) {
+            if (material == Material.getMaterial(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static List<Material> getItemList() {
+        return new ArrayList<>(Arrays.asList(Material.values()));
+    }
+
+    public static List<Material> getBlockList() {
+        List<Material> blocks = new ArrayList<>();
+        for(Material material : Material.values()) {
+            if (material.isBlock()) {
+                blocks.add(material);
+            }
+        }
+        return blocks;
+    }
+
+    public static boolean isEnchantmentInt(Integer input) {
+        return input > 0 && input <= 255;
     }
 }

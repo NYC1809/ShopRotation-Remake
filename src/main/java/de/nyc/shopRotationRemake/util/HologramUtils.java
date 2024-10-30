@@ -23,7 +23,7 @@ public class HologramUtils {
             deleteHolograms();
             for(String uuid : main.getUuidList()) {
                 Location location = main.getSrDatabase().getLocationOfChest(uuid);
-                location.setY(location.getY() + -2);
+                location.clone().add(0,-1,0);
                 String name = main.getSrDatabase().getNameOfChest(UUID.fromString(uuid));
                 //TODO: Replace Barrier with currentitem when implemented
 

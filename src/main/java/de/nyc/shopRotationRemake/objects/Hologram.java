@@ -56,7 +56,7 @@ public class Hologram {
         armorStand.setInvulnerable(true);
         armorStand.setCanPickupItems(false);
 
-        Location itemLoc = holoLoc.clone().add(0.0, -0.5, 0.0);
+        Location itemLoc = holoLoc.clone().add(0.0, -1, 0.0);
         displayItem = (Item) itemLoc.getWorld().spawnEntity(itemLoc, EntityType.ITEM);
         displayItem.setItemStack(item);
         displayItem.setGravity(false);

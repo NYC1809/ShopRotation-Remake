@@ -148,12 +148,11 @@ public class SrDatabase {
     }
 
     public void deleteChestByUuid(String input, Player player) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM chest WHERE name = ? OR uuid = ?")) {
-            preparedStatement.setString(1, input);
-            preparedStatement.setString(2, input);
+        UUID uuid = getUuidByInput(input);
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM chest WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
 
             int rowsAffected = preparedStatement.executeUpdate();
-            UUID uuid = getUuidByInput(input);
 
             if(rowsAffected > 0) {
                 Bukkit.getLogger().severe("[28:98:12] Removed entry from SQL - DB!");

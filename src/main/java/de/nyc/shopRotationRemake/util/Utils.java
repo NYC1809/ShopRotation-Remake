@@ -7,6 +7,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -149,5 +151,10 @@ public class Utils {
 
     public static boolean isEnchantmentInt(Integer input) {
         return input > 0 && input <= 255;
+    }
+
+    public static String createTimestamp() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("[dd-MM-yyyy HH:mm]");
+        return ZonedDateTime.now().format(dateTimeFormatter);
     }
 }

@@ -1,8 +1,8 @@
 package de.nyc.shopRotationRemake.commands;
 
 import de.nyc.shopRotationRemake.Main;
+import de.nyc.shopRotationRemake.Objects.Triple;
 import de.nyc.shopRotationRemake.enums.Messages;
-import de.nyc.shopRotationRemake.util.ItemUtils;
 import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -12,15 +12,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.StringUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class ChestCommand implements CommandExecutor, TabCompleter {
@@ -85,7 +84,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 //set Enabled of Chest by default to false
                 //set Hologram of Chest by default to true
                 try {
-                    this.main.getSrDatabase().createChest(chestUUID, name, location, false, materialChest, true);
+                    this.main.getSrDatabase().createChest(chestUUID, name, location, false, materialChest, true, player);
                     Bukkit.getLogger().severe("[ShopRotation] srChest \"" + chestUUID + " / " + name + "\" has been written to the SQL DB!");
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -113,7 +112,6 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 }
                 break;
             case "remove":
-                //TODO: Remove all Items from the chest when deleting
                 if(args.length != 2) {
                     player.sendMessage(Messages.NOT_ENOUGH_ARGUMENTS.getMessage());
                     return true;
@@ -140,8 +138,8 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                         chestNames.remove(rInput);
                     }
                     UUID uuidOfChest = this.main.getSrDatabase().getUuidByInput(rInput);
-                    this.main.getSrDatabase().deleteItems(uuidOfChest);
-                    this.main.getSrDatabase().deleteChestByUuid(rInput);
+                    this.main.getSrDatabase().deleteItems(uuidOfChest, player);
+                    this.main.getSrDatabase().deleteChestByUuid(rInput, player);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -172,7 +170,8 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 Material aMaterial = getBlockType(args[2]);
                 String aItem = Utils.convertItemStackToString(aMaterial, String.valueOf(aMaterial));
                 try {
-                    this.main.getSrDatabase().addItemToItemsDB(UUID.fromString(aUuid), aItem, amountRequired);
+                    this.main.getSrDatabase().addItemToItemsDB(UUID.fromString(aUuid), aItem, amountRequired, player);
+
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -189,13 +188,17 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(ChatColor.GOLD + "»------------------ " + Utils.getPrefix() + ChatColor.GOLD + "------------------«");
                 break;
             case "debug":
-                player.sendMessage(ItemUtils.createStringA("NAME", Material.IRON_ORE, "Erste Line of Descriptionnn", "SECOND LINEEE", "UND DER REST HATL!!!"));
-                player.sendMessage(ChatColor.RED + "------------------------------------");
-                player.sendMessage(ItemUtils.createStringB("NAME", Material.IRON_TRAPDOOR, Enchantment.EFFICIENCY, 15, "DESCRPTION 1", "UND ZWO etc..."));
-                player.sendMessage(ChatColor.RED + "------------------------------------");
-                player.sendMessage(ItemUtils.createStringC("NAMEEE", Material.CHEST_MINECART, Enchantment.AQUA_AFFINITY, 40, ItemFlag.HIDE_ENCHANTS, "DESC 1", "DESC 2"));
-                player.sendMessage(ChatColor.RED + "------------------------------------");
-                player.sendMessage(ItemUtils.createStringD("NAme", Material.BEACON, ItemFlag.HIDE_UNBREAKABLE, "Description von dem Item"));
+                try {
+                    Map<Integer, Triple> actionMap = this.main.getSrDatabase().getLastActions();
+                    for(Map.Entry<Integer, Triple> entry : actionMap.entrySet()) {
+                        Integer id = entry.getKey();
+                        Triple values = entry.getValue();
+                        player.sendMessage(id.toString() + " » " + values.getValue1() + " | " + values.getValue2() + " | " + values.getValue3());
+                    }
+
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
         }
         return false;

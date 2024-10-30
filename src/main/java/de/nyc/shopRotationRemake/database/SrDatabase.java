@@ -1,13 +1,18 @@
 package de.nyc.shopRotationRemake.database;
 
 import de.nyc.shopRotationRemake.Main;
+import de.nyc.shopRotationRemake.Objects.Triple;
+import de.nyc.shopRotationRemake.enums.SrAction;
 import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class SrDatabase {
@@ -22,7 +27,7 @@ public class SrDatabase {
             statement.execute("CREATE TABLE IF NOT EXISTS items (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "uuid TEXT NOT NULL, " +
-                    "items TEXT NOT NULL, " +
+                    "item TEXT NOT NULL, " +
                     "holdingamount INTEGER NOT NULL, " +
                     "requiredamount INTEGER NOT NULL)");
         }
@@ -30,7 +35,7 @@ public class SrDatabase {
             statement.execute("CREATE TABLE IF NOT EXISTS rewards (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "uuid TEXT NOT NULL, " +
-                    "items TEXT NOT NULL, " +
+                    "item TEXT NOT NULL, " +
                     "amount INTEGER NOT NULL)");
         }
         try (Statement statement = connection.createStatement()) {
@@ -59,6 +64,21 @@ public class SrDatabase {
                     "item TEXT NOT NULL, " +
                     "amount INTEGER NOT NULL)");
         }
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("CREATE TABLE IF NOT EXISTS actionhistory (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "timestamp TEXT NOT NULL, " +
+                    "player TEXT NOT NULL, " +
+                    "action TEXT NOT NULL)");
+        }
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("CREATE TABLE IF NOT EXISTS player (" +
+                    "uuid TEXT PRIMARY KEY, " +
+                    "item TEXT NOT NULL, " +
+                    "player TEXT NOT NULL, " +
+                    "givenamount INTEGER, " +
+                    "maxamount INTEGER NOT NULL)");
+        }
     }
 
     public void closeConnection() throws SQLException {
@@ -67,7 +87,7 @@ public class SrDatabase {
         }
     }
 
-    public void createChest(UUID uuid, String name, Location location, Boolean enabled, Material type, Boolean hologram) throws SQLException {
+    public void createChest(UUID uuid, String name, Location location, Boolean enabled, Material type, Boolean hologram, Player player) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO chest (uuid, name, location, enabled, type, hologram) VALUES (?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());
             preparedStatement.setString(2, name);
@@ -77,6 +97,7 @@ public class SrDatabase {
             preparedStatement.setString(6, hologram.toString());
             preparedStatement.executeUpdate();
         }
+        this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_CREATED);
     }
 
     public List<String> processAllChestUuids() throws SQLException {
@@ -122,7 +143,7 @@ public class SrDatabase {
         }
     }
 
-    public void deleteChestByUuid(String input) throws SQLException {
+    public void deleteChestByUuid(String input, Player player) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM chest WHERE name = ? OR uuid = ?")) {
             preparedStatement.setString(1, input);
             preparedStatement.setString(2, input);
@@ -130,6 +151,7 @@ public class SrDatabase {
             int rowsAffected = preparedStatement.executeUpdate();
             if(rowsAffected > 0) {
                 Bukkit.getLogger().severe("[28:98:12] Removed entry from SQL - DB!");
+                this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_DELETED);
                 return;
             }
             Bukkit.getLogger().warning("[28:98:12] No entry found to remove SQL - DB!");
@@ -251,7 +273,7 @@ public class SrDatabase {
         }
     }
 
-    public void addItemToCurrentItem(UUID uuid, String item, Integer amount, Boolean completed) throws SQLException {
+    public void addItemToCurrentItem(UUID uuid, String item, Integer amount, Boolean completed, Player player) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO currentitem (uuid, item, amount, completed, holdingamount) VALUES (?, ? , ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());
             preparedStatement.setString(2, item);
@@ -260,25 +282,28 @@ public class SrDatabase {
             preparedStatement.setInt(5, 0);
             preparedStatement.executeUpdate();
         }
-        addItemToItemsDB(uuid, item, amount);
+        addItemToItemsDB(uuid, item, amount, player);
     }
 
-    public void addItemToItemsDB(UUID uuid, String item, Integer amount) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO items (uuid, items, requiredamount, holdingamount) VALUES (?, ?, ?, ?)")) {
+    public void addItemToItemsDB(UUID uuid, String item, Integer amount, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO items (uuid, item, requiredamount, holdingamount) VALUES (?, ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());
             preparedStatement.setString(2, item);
             preparedStatement.setInt(3, amount);
             preparedStatement.setInt(4,0);
             preparedStatement.executeUpdate();
         }
+
+        this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.ITEM_ADD);
     }
 
-    public void deleteItems(UUID uuid) throws SQLException {
+    public void deleteItems(UUID uuid, Player player) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM items WHERE uuid = ?")) {
             preparedStatement.setString(1, uuid.toString());
             int rowsAffected = preparedStatement.executeUpdate();
             if(rowsAffected > 0) {
                 Bukkit.getLogger().severe("[90:09:12] Removed all items from \"" + uuid + "\".");
+                this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.ALL_ITEMS_REMOVED);
                 return;
             }
             Bukkit.getLogger().warning("[90:66:55] \"" + uuid + "\" has no items!");
@@ -296,11 +321,43 @@ public class SrDatabase {
         }
     }
 
-    public void changeEnabledOfChest(UUID uuid, boolean enabled) throws SQLException {
+    public void changeEnabledOfChest(UUID uuid, boolean enabled, Player player) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE chest SET enabled = ? WHERE uuid = ?")) {
             preparedStatement.setString(1, String.valueOf(enabled));
             preparedStatement.setString(2, uuid.toString());
             preparedStatement.executeUpdate();
+        }
+        if(enabled) {
+            this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_ENABLED);
+        } else {
+            this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_DISABLED);
+        }
+    }
+
+    public void saveAction(String timestamp, Player player, SrAction action) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO actionhistory (timestamp, player, action) VALUES (?, ?, ?)")) {
+            preparedStatement.setString(1, timestamp);
+            preparedStatement.setString(2, player.getName());
+            preparedStatement.setString(3, action.getMessage());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public Map<Integer, Triple> getLastActions() throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM actionhistory ORDER BY id DESC LIMIT 20")) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            Map<Integer, Triple> map = new HashMap<>();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String timestamp = resultSet.getString("timestamp");
+                String playerName = resultSet.getString("player");
+                String action = resultSet.getString("action");
+
+                map.put(id, new Triple(timestamp, playerName, action));
+            }
+            return map;
         }
     }
 }

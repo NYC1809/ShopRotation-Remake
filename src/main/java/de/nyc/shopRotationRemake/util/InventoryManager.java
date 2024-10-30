@@ -50,7 +50,7 @@ public class InventoryManager implements Listener {
                event.setCancelled(true);
             });
         } else {
-
+            //TODO: HERE
         }
         //TODO: Permission System
         if(player.isOp()) {
@@ -59,7 +59,7 @@ public class InventoryManager implements Listener {
                 gui.setItem(53, ItemBuilder.of(Material.GREEN_WOOL).name("&eDiese srChest ist aktuell &aaktiviert&e!").description(" ", "&7Klicke hier um diese zu &cdeaktivieren&7!").asItem(), event -> {
                     event.setCancelled(true);
                     try {
-                        main.getSrDatabase().changeEnabledOfChest(uuid, false);
+                        main.getSrDatabase().changeEnabledOfChest(uuid, false, player);
                         createDefaultInventory(player, uuid, name);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
@@ -69,7 +69,7 @@ public class InventoryManager implements Listener {
                 gui.setItem(53, ItemBuilder.of(Material.RED_WOOL).name("&eDiese srChest ist aktuell &cdeaktiviert&e!").description(" ", "&7Klicke hier um diese zu &aaktivieren&7!").asItem(), event -> {
                     event.setCancelled(true);
                     try {
-                        main.getSrDatabase().changeEnabledOfChest(uuid, true);
+                        main.getSrDatabase().changeEnabledOfChest(uuid, true, player);
                         createDefaultInventory(player, uuid, name);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
@@ -78,6 +78,70 @@ public class InventoryManager implements Listener {
             }
         }
 
+        gui.show(player);
+    }
+
+    public static void createAdminSettingsInventory(Player player, UUID uuid, String name) throws SQLException {
+        Inventory inventory = Bukkit.createInventory(player, 54, Utils.setColorInMessage(name));
+        player.openInventory(inventory);
+
+        GUI gui = main.getGuiFactory().createGUI(6, Utils.setColorInMessage(name));
+        for(int i=0; i<9; i++) {
+            gui.setItem(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
+                event.setCancelled(true);
+            });
+        }
+        for (int i=45; i<54; i++) {
+            if(i == 49) { continue; }
+            gui.setItem(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
+                event.setCancelled(true);
+            });
+        }
+        for(int i=9; i<19; i++) {
+            gui.setItem(i, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
+                event.setCancelled(true);
+            });
+        }
+        gui.setItem(26, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
+            event.setCancelled(true);
+        });
+        gui.setItem(27, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
+            event.setCancelled(true);
+        });
+        for(int i=35; i<45; i++) {
+            gui.setItem(i, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
+                event.setCancelled(true);
+            });
+        }
+        gui.setItem(13, ItemBuilder.of(Material.ACACIA_HANGING_SIGN).name(Utils.getPrefix() + "&6AdminSettings").description(" ", "&7Hier kannst du verschiedene Einstellungen zu dieser srChest tätigen:").asItem(), event -> {
+            event.setCancelled(true);
+        });
+
+        //TODO: Permission System
+        if(player.isOp()) {
+            boolean isEnabled = main.getSrDatabase().getChestEnabled(uuid);
+            if(isEnabled) {
+                gui.setItem(53, ItemBuilder.of(Material.GREEN_WOOL).name("&eDiese srChest ist aktuell &aaktiviert&e!").description(" ", "&7Klicke hier um diese zu &cdeaktivieren&7!").asItem(), event -> {
+                    event.setCancelled(true);
+                    try {
+                        main.getSrDatabase().changeEnabledOfChest(uuid, false, player);
+                        createDefaultInventory(player, uuid, name);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            } else {
+                gui.setItem(53, ItemBuilder.of(Material.RED_WOOL).name("&eDiese srChest ist aktuell &cdeaktiviert&e!").description(" ", "&7Klicke hier um diese zu &aaktivieren&7!").asItem(), event -> {
+                    event.setCancelled(true);
+                    try {
+                        main.getSrDatabase().changeEnabledOfChest(uuid, true, player);
+                        createDefaultInventory(player, uuid, name);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+        }
         gui.show(player);
     }
 

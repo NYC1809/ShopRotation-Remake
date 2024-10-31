@@ -6,15 +6,12 @@ import de.nyc.shopRotationRemake.database.SrDatabase;
 import de.nyc.shopRotationRemake.listener.BlockBreakListener;
 import de.nyc.shopRotationRemake.listener.ChatListener;
 import de.nyc.shopRotationRemake.listener.PlayerInteractListener;
-import de.nyc.shopRotationRemake.objects.AnvilGUI;
 import de.nyc.shopRotationRemake.objects.Hologram;
 import de.nyc.shopRotationRemake.util.HologramUtils;
 import de.nyc.shopRotationRemake.util.InventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -22,7 +19,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public final class Main extends JavaPlugin {
 
@@ -109,7 +105,7 @@ public final class Main extends JavaPlugin {
         return instance;
     }
 
-    public void openAnvilGUI(Player player, String initialText, String titleOfAnvil, UUID uuid, String name) {
-        new AnvilGUI(player, initialText, titleOfAnvil, uuid, name, this);
+    public void updateHolograms() {
+        HologramUtils.createHologram();
     }
 }

@@ -339,6 +339,15 @@ public class SrDatabase {
         }
     }
 
+    public void changeNameOfChest(UUID uuid, String name, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE chest SET name = ? WHERE uuid = ?")) {
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, uuid.toString());
+            preparedStatement.executeUpdate();
+        }
+        this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_TITLE_CHANGED, uuid);
+    }
+
     public void saveAction(String timestamp, Player player, SrAction action, UUID uuid) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO actionhistory (uuid, timestamp, player, action) VALUES (?, ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());

@@ -181,16 +181,22 @@ public class InventoryManager implements Listener {
                 }
             }
             event.setCancelled(true);
+            try {
+                createAdminSettingsInventory(player, uuid, name);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         Map<Integer, Quadruple> recentActions = main.getSrDatabase().getLastActions();
+        Map<Integer, Quadruple> sortedMap = new TreeMap<>(recentActions);
+
         List<String> recentActionsList = new ArrayList<>();
         recentActionsList.add("&0 ");
-        for(Map.Entry<Integer, Quadruple> entry : recentActions.entrySet()) {
+        for(Map.Entry<Integer, Quadruple> entry : sortedMap.entrySet()) {
             StringBuilder stringBuilder = getStringBuilder(entry);
             recentActionsList.add(stringBuilder.toString());
         }
-        Collections.sort(recentActionsList);
 
         gui.setItem(19, ItemBuilder.of(Material.ANVIL).name(ItemDescription.ITEM_ACTION_HISTORY_NAME.getText())
                 .description(recentActionsList.toArray(new String[0])).asItem(), event -> {
@@ -200,8 +206,9 @@ public class InventoryManager implements Listener {
         //TODO: Create player Item history here
 
         gui.setItem(21, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.ITEM_CHANGE_TITLE.getText()).asItem(), event -> {
-            AnvilGUI anvilGUI = new AnvilGUI(player, Utils.setColorInMessage("&a"), Utils.setColorInMessage("&eNeuen &6Titel &eeingeben..."), uuid, name);
-            anvilGUI.openAnvil();
+
+            main.openAnvilGUI(player, Utils.setColorInMessage("&a"), Utils.setColorInMessage("&eNeuen &6Titel &eeingeben..."), uuid, name);
+
             event.setCancelled(true);
         });
 

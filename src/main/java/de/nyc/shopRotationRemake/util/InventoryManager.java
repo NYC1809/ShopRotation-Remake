@@ -5,6 +5,7 @@ import de.leonheuer.mcguiapi.utils.ItemBuilder;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.ItemDescription;
 import de.nyc.shopRotationRemake.enums.Messages;
+import de.nyc.shopRotationRemake.objects.Quadruple;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -13,7 +14,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 
 import java.sql.SQLException;
-import java.util.UUID;
+import java.util.*;
 
 public class InventoryManager implements Listener {
 
@@ -143,7 +144,7 @@ public class InventoryManager implements Listener {
                 try {
                     main.getSrDatabase().changeEnabledOfChest(uuid, false, player);
                     player.sendMessage(Messages.SET_DISABLED_SUCCESS.getMessage());
-                    createDefaultInventory(player, uuid, name);
+                    createAdminSettingsInventory(player, uuid, name);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -154,14 +155,14 @@ public class InventoryManager implements Listener {
                 try {
                     main.getSrDatabase().changeEnabledOfChest(uuid, true, player);
                     player.sendMessage(Messages.SET_ENABLED_SUCCESS.getMessage());
-                    createDefaultInventory(player, uuid, name);
+                    createAdminSettingsInventory(player, uuid, name);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             });
         }
 
-        gui.setItem(52, ItemBuilder.of(Material.YELLOW_WOOL).name(ItemDescription.ITEM_ENABLE_DISABLE_ALL.getText()).description(ItemDescription.ITEM_ENABLE_DISABLE_ALL_LORE_1.getText(), ItemDescription.ITEM_ENABLE_DISABLE_ALL_LORE_2.getText()).asItem(), event -> {
+        gui.setItem(52, ItemBuilder.of(Material.YELLOW_WOOL).name(ItemDescription.ITEM_ENABLE_DISABLE_ALL.getText()).description(ItemDescription.ITEM_ENABLE_DISABLE_ALL_LORE_1.getText(), ItemDescription.ITEM_ENABLE_DISABLE_ALL_LORE_2.getText(), ItemDescription.ITEM_ENABLE_DISABLE_ALL_LORE_3.getText()).asItem(), event -> {
             if(event.getClick().equals(ClickType.LEFT)) {
                 try {
                     main.getSrDatabase().enableAllChests(uuid, player);
@@ -170,7 +171,7 @@ public class InventoryManager implements Listener {
                     throw new RuntimeException(e);
                 }
             }
-            if(event.getClick().equals(ClickType.SHIFT_LEFT)) {
+            if(event.getClick().equals(ClickType.RIGHT)) {
                 try {
                     main.getSrDatabase().disableAllChests(uuid, player);
                     player.sendMessage(Messages.DISABLED_ALL.getMessage());
@@ -181,8 +182,39 @@ public class InventoryManager implements Listener {
             event.setCancelled(true);
         });
 
+        Map<Integer, Quadruple> recentActions = main.getSrDatabase().getLastActions();
+        List<String> recentActionsList = new ArrayList<>();
+        recentActionsList.add("&0 ");
+        for(Map.Entry<Integer, Quadruple> entry : recentActions.entrySet()) {
+            StringBuilder stringBuilder = getStringBuilder(entry);
+            recentActionsList.add(stringBuilder.toString());
+        }
+        Collections.sort(recentActionsList);
+
+        gui.setItem(19, ItemBuilder.of(Material.ANVIL).name(ItemDescription.ITEM_ACTION_HISTORY_NAME.getText())
+                .description(recentActionsList.toArray(new String[0])).asItem(), event -> {
+            event.setCancelled(true);
+        });
 
         gui.show(player);
+    }
+
+    private static StringBuilder getStringBuilder(Map.Entry<Integer, Quadruple> entry) {
+        Integer id = entry.getKey();
+        Quadruple values = entry.getValue();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("&f&lID &7[");
+        stringBuilder.append(id);
+        stringBuilder.append("] &7 &l»» &6");
+        stringBuilder.append(values.getValue2());
+        stringBuilder.append(" &7&l»» &3");
+        stringBuilder.append(values.getValue1());
+        stringBuilder.append(" &7&l»» &a");
+        stringBuilder.append(values.getValue3());
+        stringBuilder.append(" &7&l»» &d[ ");
+        stringBuilder.append(values.getValue4());
+        stringBuilder.append(" &d]");
+        return stringBuilder;
     }
 
     private static String getCurrentItemFromDB(UUID uuid) throws SQLException {

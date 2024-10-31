@@ -60,8 +60,6 @@ public class Hologram {
         hologramArmorStand.setInvulnerable(true);
         hologramArmorStand.setCanPickupItems(false);
 
-        Bukkit.getLogger().severe("[77:33:12] created hologramArmorStand at: " + hologramLocation);
-
         Location itemLocationArmorStand = location.clone().add(0.5, -1.2, 0.5);
         itemArmorStand = (ArmorStand) itemLocationArmorStand.getWorld().spawnEntity(itemLocationArmorStand, EntityType.ARMOR_STAND);
         itemArmorStand.setVisible(false);
@@ -70,8 +68,6 @@ public class Hologram {
         itemArmorStand.setInvulnerable(true);
         itemArmorStand.setCanPickupItems(false);
 
-        Bukkit.getLogger().severe("[77:33:12] created itemArmorStand at: " + itemLocationArmorStand);
-
         Location itemLocation = location.clone().add(0.5, -1.2, 0.5);
         displayItem = (Item) itemLocation.getWorld().spawnEntity(itemLocation, EntityType.ITEM);
         displayItem.setItemStack(item);
@@ -79,8 +75,6 @@ public class Hologram {
         displayItem.setPickupDelay(Integer.MAX_VALUE);
         displayItem.setTicksLived(Integer.MAX_VALUE);
         itemArmorStand.addPassenger(displayItem);
-
-        Bukkit.getLogger().severe("[77:33:12] created displayItem at: " + itemLocation);
 
         isShown = true;
     }

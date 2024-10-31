@@ -1,10 +1,8 @@
 package de.nyc.shopRotationRemake.commands;
 
-import de.leonheuer.mcguiapi.utils.ItemBuilder;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.enums.Messages;
-import de.nyc.shopRotationRemake.objects.Hologram;
 import de.nyc.shopRotationRemake.objects.Quadruple;
 import de.nyc.shopRotationRemake.util.HologramUtils;
 import de.nyc.shopRotationRemake.util.Utils;
@@ -58,6 +56,17 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 }
 
                 String name = args[1];
+                try {
+                    this.main.getSrDatabase().processAllChestUuids();
+                    for(String uuid : this.main.getUuidList()) {
+                        if(this.main.getSrDatabase().getNameOfChest(UUID.fromString(uuid)).equals(name)) {
+                            player.sendMessage(Messages.CHEST_NAME_ALREADY_EXISTS.getMessage().replace("%name", name));
+                            return true;
+                        }
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 String inputMaterial = args[2];
 
                 if(!isValidBlock(inputMaterial)) {
@@ -89,6 +98,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     this.main.getSrDatabase().createChest(chestUUID, name, location, false, materialChest, true, player, HologramStyle.HOLOGRAM_ITEM_NAME);
                     Bukkit.getLogger().severe("[ShopRotation] srChest \"" + chestUUID + " / " + name + "\" has been written to the SQL DB!");
 
+                    player.sendMessage(Messages.CHEST_CREATE_SUCCESS.getMessage().replace("%uuid", chestUUID.toString()));
                     HologramUtils.createHologram();
 
                 } catch (SQLException e) {
@@ -148,6 +158,8 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     this.main.getSrDatabase().deleteItems(uuidOfChest, player);
                     this.main.getSrDatabase().deleteChestByUuid(rInput, player);
 
+                    player.sendMessage(Messages.CHEST_REMOVE_SUCCESS.getMessage().replace("%chest", uuidOfChest.toString()));
+                    HologramUtils.createHologram();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -207,6 +219,9 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
+                break;
+            default:
+                player.sendMessage(Messages.MESSAGE_UNKNOWN.getMessage());
                 break;
         }
         return false;

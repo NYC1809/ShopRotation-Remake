@@ -8,6 +8,8 @@ public enum SrAction {
     CHEST_DELETED("Action.Chest.DELETED"),
     CHEST_ENABLED("Action.Chest.ENABLED"),
     CHEST_DISABLED("Action.Chest.DISABLED"),
+    CHEST_ALL_ENABLED("Action.Chest.ENABLED_ALL"),
+    CHEST_ALL_DISABLED("Action.Chest.DISABLED_ALL"),
     CHEST_ITEM_GOAL_FINISHED("Action.Chest.Item.GOAL_FINISHED"),
 
     ITEM_ADD("Action.Chest.Item.ADDED"),
@@ -38,5 +40,4 @@ public enum SrAction {
     public String getMessage() {
         return action;
     }
-
 }

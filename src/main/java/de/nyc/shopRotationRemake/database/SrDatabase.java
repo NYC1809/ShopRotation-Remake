@@ -1,9 +1,9 @@
 package de.nyc.shopRotationRemake.database;
 
 import de.nyc.shopRotationRemake.Main;
-import de.nyc.shopRotationRemake.objects.Quadruple;
 import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.enums.SrAction;
+import de.nyc.shopRotationRemake.objects.Quadruple;
 import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -378,6 +378,24 @@ public class SrDatabase {
             } else {
                 return null;
             }
+        }
+    }
+
+    public void disableAllChests(UUID uuid, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE chest SET enabled = ?")) {
+            preparedStatement.setString(1, "false");
+            preparedStatement.executeUpdate();
+
+            this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_ALL_DISABLED, uuid);
+        }
+    }
+
+    public void enableAllChests(UUID uuid, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE chest SET enabled = ?")) {
+            preparedStatement.setString(1, "true");
+            preparedStatement.executeUpdate();
+
+            this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_ALL_ENABLED, uuid);
         }
     }
 }

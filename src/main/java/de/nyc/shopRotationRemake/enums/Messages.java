@@ -11,6 +11,7 @@ public enum Messages {
     INVALID_MATERIAL("&cBitte gib ein gültiges Material an."),
     NO_PLAYER("&cDieser Befehl ist nur für Spieler."),
     MESSAGE_UNKNOWN("&cUnbekannter Befehl. Siehe /srChest help"),
+    NO_PERMS_ERROR("&cERROR: Du hast keine Rechte darauf zuzugreifen!"),
 
     //Global sr-messages
     UNKNOWN_INVENTORY("&cDas angefragte Inventar existiert nicht."),
@@ -24,10 +25,12 @@ public enum Messages {
     IS_NOT_NUMERIC("&c\"%input\" ist keine gültige Zahl!"),
 
     //srChest messages
-    CHEST_REMOVE_SUCCESS("&aDie Chest wurde erfolgreich entfernt."),
+    CHEST_REMOVE_SUCCESS("&7Die Chest \"&a%chest&7\" wurde erfolgreich &centfernt&7."),
     CHEST_NO_ITEMS("&cEs wurden keine Items in \"%uuid\" festgelegt."),
     CHEST_MATERIAL_WRONG("&cDas Material \"%input\" ist kein valides Material."),
     CHEST_IS_DISABLED("&cDie srChest ist aktuell &4Deaktiviert&c."),
+    CHEST_CREATE_SUCCESS("&7Du hast &aerfolgreich &7die srChest \"&a%uuid&7\" erstellt!"),
+    CHEST_NAME_ALREADY_EXISTS("&cEine srChest mit dem Namen: \"%name\" existiert bereits!"),
 
     //srChest help messages
     CHEST_CREATE("&6⁜ &e/srChest create &6» &7Erstellen einer srChest"),
@@ -39,7 +42,7 @@ public enum Messages {
     CHEST_HELP("&6⁜ &e/srChest help &6» &7Zeigt diesen Text an"),
 
     //Enable-disable messages
-    SET_ENABLED_SUCCESS("&7Die Chest wurde erfolgreich &cAktiviert&7."),
+    SET_ENABLED_SUCCESS("&7Die Chest wurde erfolgreich &aAktiviert&7."),
     ENABLED_ALL("&7Alle Chests wurden &aaktiviert&7."),
     SET_DISABLED_SUCCESS("&7Die Chest wurde erfolgreich &cDeaktiviert&7."),
     DISABLED_ALL("&7Alle Chests wurden &cdeaktiviert&7."),

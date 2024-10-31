@@ -23,7 +23,9 @@ public enum ItemDescription {
     AS_DESCRIPTION_LORE_2("&7Hier kannst du verschiedene Einstellungen tätigen:"),
 
     ITEM_ACTION_HISTORY_NAME("&eZeigt die letzten srChest &6Aktionen&e an: "),
-    ITEM_ACTION_HISTORY_LORE1(" ")
+    ITEM_ACTION_HISTORY_LORE1(" "),
+
+    ITEM_CHANGE_TITLE("&eKlicke hier um den &6Titel &ezu ändern!")
 
     ;
 

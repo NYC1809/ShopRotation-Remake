@@ -5,6 +5,7 @@ import de.leonheuer.mcguiapi.utils.ItemBuilder;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.ItemDescription;
 import de.nyc.shopRotationRemake.enums.Messages;
+import de.nyc.shopRotationRemake.objects.AnvilGUI;
 import de.nyc.shopRotationRemake.objects.Quadruple;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -193,6 +194,14 @@ public class InventoryManager implements Listener {
 
         gui.setItem(19, ItemBuilder.of(Material.ANVIL).name(ItemDescription.ITEM_ACTION_HISTORY_NAME.getText())
                 .description(recentActionsList.toArray(new String[0])).asItem(), event -> {
+            event.setCancelled(true);
+        });
+
+        //TODO: Create player Item history here
+
+        gui.setItem(21, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.ITEM_CHANGE_TITLE.getText()).asItem(), event -> {
+            AnvilGUI anvilGUI = new AnvilGUI(player, Utils.setColorInMessage("&a"), Utils.setColorInMessage("&eNeuen &6Titel &eeingeben..."), uuid, name);
+            anvilGUI.openAnvil();
             event.setCancelled(true);
         });
 

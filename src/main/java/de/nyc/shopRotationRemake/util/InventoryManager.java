@@ -26,9 +26,6 @@ public class InventoryManager implements Listener {
     }
 
     public static void createDefaultInventory(Player player, UUID uuid, String name) throws SQLException {
-        Inventory inventory = Bukkit.createInventory(player, 54, Utils.setColorInMessage(name));
-        player.openInventory(inventory);
-
         GUI gui = main.getGuiFactory().createGUI(6, Utils.setColorInMessage(name));
         for(int i=0; i<9; i++) {
             gui.setItem(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
@@ -101,9 +98,6 @@ public class InventoryManager implements Listener {
             player.sendMessage(Messages.NO_PERMS_ERROR.getMessage());
             return;
         }
-
-        Inventory inventory = Bukkit.createInventory(player, 54, Utils.setColorInMessage(title));
-        player.openInventory(inventory);
 
         GUI gui = main.getGuiFactory().createGUI(6, Utils.setColorInMessage(title));
         for(int i=0; i<9; i++) {
@@ -205,7 +199,7 @@ public class InventoryManager implements Listener {
 
         //TODO: Create player Item history here
 
-        gui.setItem(21, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.ITEM_CHANGE_TITLE.getText()).asItem(), event -> {
+        gui.setItem(23, ItemBuilder.of(Material.CHEST).name(ItemDescription.ITEM_CHANGE_TITLE.getText()).asItem(), event -> {
 
             //main.openAnvilGUI(player, Utils.setColorInMessage("&a"), Utils.setColorInMessage("&eNeuen &6Titel &eeingeben..."), uuid, name);
             try {

@@ -51,6 +51,8 @@ public class Hologram {
             throw new HologramAlreadyDestroyedException();
         }
 
+        //TODO: Set the correct style of the hologram
+
         Location hologramLocation = location.clone().add(0.5, -0.65, 0.5);
         hologramArmorStand = (ArmorStand) hologramLocation.getWorld().spawnEntity(hologramLocation, EntityType.ARMOR_STAND);
         hologramArmorStand.setVisible(false);

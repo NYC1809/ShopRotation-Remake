@@ -26,6 +26,7 @@ public class HologramUtils {
                 String name = main.getSrDatabase().getNameOfChest(UUID.fromString(uuid));
                 //TODO: Replace Barrier with currentitem when implemented
 
+                //TODO: Lookup if Hologram is enabled
                 Hologram hologram = new Hologram(location, name, ItemBuilder.of(Material.BARRIER).asItem(), main);
                 hologram.create();
                 main.getHologramList().add(hologram);

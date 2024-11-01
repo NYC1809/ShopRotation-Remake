@@ -8,6 +8,7 @@ import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.objects.Quadruple;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -199,11 +200,20 @@ public class InventoryManager implements Listener {
 
         //TODO: Create player Item history here
 
-        gui.setItem(23, ItemBuilder.of(Material.CHEST).name(ItemDescription.ITEM_CHANGE_TITLE.getText()).asItem(), event -> {
-
-            //main.openAnvilGUI(player, Utils.setColorInMessage("&a"), Utils.setColorInMessage("&eNeuen &6Titel &eeingeben..."), uuid, name);
+        gui.setItem(23, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.ITEM_CHANGE_TITLE.getText()).asItem(), event -> {
             try {
                 changeTitleGUI(player, Utils.setColorInMessage(title), Utils.setColorInMessage("&eNeuen &6Titel &eeingeben..."), uuid);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            event.setCancelled(true);
+        });
+
+        String blockType = main.getSrDatabase().getTypeOfChest(uuid.toString());
+
+        gui.setItem(24, ItemBuilder.of(Material.CHEST).name(ItemDescription.ITEM_CHANGE_CHEST_TYPE.getText()).description(ItemDescription.ITEM_CHANGE_CHEST_TYPE_LORE_1.getText(), ItemDescription.ITEM_CHANGE_CHEST_TYPE_LORE_2.getText().replace("%type", blockType)).asItem(), event -> {
+            try {
+                changeBlockTypeGUI(player, blockType, Utils.setColorInMessage("&eNeuen BlockType &eeingeben..."), uuid);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -281,4 +291,43 @@ public class InventoryManager implements Listener {
                 .open(player);                  //opens the GUI for the player provided
     }
 
+    private static void changeBlockTypeGUI(Player player, String blockType, String title, UUID uuid) throws SQLException {
+        final String newBlockType = blockType;
+        new AnvilGUI.Builder()
+                .onClose(stateSnapshot -> {
+                    try {
+                        createAdminSettingsInventory(player, uuid, title);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .onClick((slot, stateSnapshot) -> {
+                    if(slot != AnvilGUI.Slot.OUTPUT) {
+                        return Collections.emptyList();
+                    }
+                    String input = stateSnapshot.getText();
+                    if(!Utils.isValidBlock(input)) {
+                        player.sendMessage(Messages.CHEST_MATERIAL_WRONG.getMessage().replace("%input", input));
+                        return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText("Material." + blockType));
+                    }
+                    try {
+                        Material material = Utils.getBlockType(input);
+                        main.getSrDatabase().setTypeOfChest(uuid, player, String.valueOf(material));
+                        player.sendMessage(Messages.CHEST_CHANGED_TYPE_SUCCESS.getMessage().replace("%type", input));
+
+                        Location blockLocation = main.getSrDatabase().getLocationOfChest(uuid.toString());
+                        blockLocation.getBlock().setType(material);
+
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    return Arrays.asList(AnvilGUI.ResponseAction.close());
+                })
+                .preventClose()
+                .text("Material." + blockType)
+                .title(title)
+                .plugin(main)
+                .open(player);
+    }
 }

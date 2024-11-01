@@ -69,11 +69,11 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 }
                 String inputMaterial = args[2];
 
-                if(!isValidBlock(inputMaterial)) {
+                if(!Utils.isValidBlock(inputMaterial)) {
                     player.sendMessage(Messages.CHEST_MATERIAL_WRONG.getMessage().replace("%input", inputMaterial));
                     return true;
                 }
-                Material materialChest = getBlockType(inputMaterial);
+                Material materialChest = Utils.getBlockType(inputMaterial);
                 if(materialChest == null) {
                     materialChest = Material.CHEST;
                     Bukkit.getLogger().info("[32:23:67] materialChest is null -> set default type to \"Material.CHEST\"");
@@ -187,7 +187,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     player.sendMessage(Messages.CHEST_MATERIAL_WRONG.getMessage().replace("%input", args[2]));
                     return true;
                 }
-                Material aMaterial = getBlockType(args[2]);
+                Material aMaterial = Utils.getBlockType(args[2]);
                 String aItem = Utils.convertItemStackToString(aMaterial, String.valueOf(aMaterial));
                 try {
                     this.main.getSrDatabase().addItemToItemsDB(UUID.fromString(aUuid), aItem, amountRequired, player);
@@ -296,23 +296,6 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
         }
         Collections.sort(completions);
         return completions;
-    }
-
-    private Material getBlockType(String argument) {
-        String value = argument.substring(argument.lastIndexOf(".") + 1);
-        return Material.getMaterial(value);
-    }
-
-    private boolean isValidBlock(String input) {
-        List<Material> blocks = new ArrayList<>();
-
-        for(Material material : Material.values()) {
-            if(material.isBlock()) {
-                blocks.add(material);
-            }
-        }
-        String value = input.substring(input.lastIndexOf(".") + 1);
-        return blocks.contains(Material.getMaterial(value));
     }
 
     private boolean checkIfChestExists(String input) {

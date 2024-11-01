@@ -407,4 +407,13 @@ public class SrDatabase {
             this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_ALL_ENABLED, uuid);
         }
     }
+
+    public void setTypeOfChest(UUID uuid, Player player, String material) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE chest SET type = ? WHERE uuid = ?")) {
+            preparedStatement.setString(1, material);
+            preparedStatement.setString(2, uuid.toString());
+            preparedStatement.executeUpdate();
+        }
+        this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_TYPE_CHANGED, uuid);
+    }
 }

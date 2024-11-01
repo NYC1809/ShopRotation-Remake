@@ -143,7 +143,9 @@ public class Utils {
         List<Material> blocks = new ArrayList<>();
         for(Material material : Material.values()) {
             if (material.isBlock()) {
-                blocks.add(material);
+                if(!material.isAir()) {
+                    blocks.add(material);
+                }
             }
         }
         return blocks;
@@ -156,5 +158,24 @@ public class Utils {
     public static String createTimestamp() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("[dd-MM-yyyy HH:mm]");
         return ZonedDateTime.now().format(dateTimeFormatter);
+    }
+
+    public static boolean isValidBlock(String input) { //example input: "Material.STONE"
+        List<Material> blocks = new ArrayList<>();
+
+        for(Material material : Material.values()) {
+            if(material.isBlock()) {
+                if(!material.isAir()) {
+                    blocks.add(material);
+                }
+            }
+        }
+        String value = input.substring(input.lastIndexOf(".") + 1);
+        return blocks.contains(Material.getMaterial(value));
+    }
+
+    public static Material getBlockType(String argument) {
+        String value = argument.substring(argument.lastIndexOf(".") + 1);
+        return Material.getMaterial(value);
     }
 }

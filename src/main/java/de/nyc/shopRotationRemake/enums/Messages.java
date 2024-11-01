@@ -31,8 +31,9 @@ public enum Messages {
     CHEST_IS_DISABLED("&cDie srChest ist aktuell &4Deaktiviert&c."),
     CHEST_CREATE_SUCCESS("&7Du hast &aerfolgreich &7die srChest \"&a%uuid&7\" erstellt!"),
     CHEST_NAME_ALREADY_EXISTS("&cEine srChest mit dem Namen: \"%name\" existiert bereits!"),
-    CHEST_CHANGED_NAME_SUCCESS("&7Du hast &aerfolgreich den Namen der srChest zu: \"&a%name&7\" geändert."),
+    CHEST_CHANGED_NAME_SUCCESS("&7Du hast &aerfolgreich &7den Namen der srChest zu: \"" + Utils.setColorInMessage("%name") +"&7\" geändert."),
     CHEST_CHANGED_NAME_CANCEL("&7Die srChest hat bereits den Titel: \"&a%name&7\""),
+    CHEST_CHANGED_TYPE_SUCCESS("&7Du hast &aerfolgreich &7den BlockType der srChest zu \"" + Utils.setColorInMessage("%type") + "&7\" geändert."),
 
     //srChest help messages
     CHEST_CREATE("&6⁜ &e/srChest create &6» &7Erstellen einer srChest"),

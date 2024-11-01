@@ -13,7 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.Inventory;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -26,8 +25,14 @@ public class InventoryManager implements Listener {
         InventoryManager.main = main;
     }
 
-    public static void createDefaultInventory(Player player, UUID uuid, String name) throws SQLException {
-        GUI gui = main.getGuiFactory().createGUI(6, Utils.setColorInMessage(name));
+    public static void createDefaultInventory(Player player, UUID uuid) throws SQLException {
+        String title = main.getSrDatabase().getNameOfChest(uuid);
+        if(title == null) {
+            Bukkit.getLogger().severe("[23:55:76] uuid or title of the inventory is null! -> canceling...");
+            return;
+        }
+
+        GUI gui = main.getGuiFactory().createGUI(6, Utils.setColorInMessage(title));
         for(int i=0; i<9; i++) {
             gui.setItem(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
                 event.setCancelled(true);
@@ -63,7 +68,7 @@ public class InventoryManager implements Listener {
                     try {
                         main.getSrDatabase().changeEnabledOfChest(uuid, false, player);
                         player.sendMessage(Messages.SET_DISABLED_SUCCESS.getMessage());
-                        createDefaultInventory(player, uuid, name);
+                        createDefaultInventory(player, uuid);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -74,7 +79,7 @@ public class InventoryManager implements Listener {
                     try {
                         main.getSrDatabase().changeEnabledOfChest(uuid, true, player);
                         player.sendMessage(Messages.SET_ENABLED_SUCCESS.getMessage());
-                        createDefaultInventory(player, uuid, name);
+                        createDefaultInventory(player, uuid);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -83,7 +88,7 @@ public class InventoryManager implements Listener {
             gui.setItem(45, ItemBuilder.of(Material.COMMAND_BLOCK).name("&eKlicke hier um die &6Einstellungen &ezu öffnen:").asItem(), event -> {
                 event.setCancelled(true);
                 try {
-                    createAdminSettingsInventory(player, uuid, name);
+                    createAdminSettingsInventory(player, uuid);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -93,10 +98,15 @@ public class InventoryManager implements Listener {
         gui.show(player);
     }
 
-    public static void createAdminSettingsInventory(Player player, UUID uuid, String title) throws SQLException {
+    public static void createAdminSettingsInventory(Player player, UUID uuid) throws SQLException {
         //&TODO: permission system
         if(!player.isOp()) {
             player.sendMessage(Messages.NO_PERMS_ERROR.getMessage());
+            return;
+        }
+        String title = main.getSrDatabase().getNameOfChest(uuid);
+        if(title == null) {
+            Bukkit.getLogger().severe("[23:55:76] uuid or title of the inventory is null! -> canceling...");
             return;
         }
 
@@ -140,7 +150,7 @@ public class InventoryManager implements Listener {
                 try {
                     main.getSrDatabase().changeEnabledOfChest(uuid, false, player);
                     player.sendMessage(Messages.SET_DISABLED_SUCCESS.getMessage());
-                    createAdminSettingsInventory(player, uuid, title);
+                    createAdminSettingsInventory(player, uuid);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -151,7 +161,7 @@ public class InventoryManager implements Listener {
                 try {
                     main.getSrDatabase().changeEnabledOfChest(uuid, true, player);
                     player.sendMessage(Messages.SET_ENABLED_SUCCESS.getMessage());
-                    createAdminSettingsInventory(player, uuid, title);
+                    createAdminSettingsInventory(player, uuid);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -177,7 +187,7 @@ public class InventoryManager implements Listener {
             }
             event.setCancelled(true);
             try {
-                createAdminSettingsInventory(player, uuid, title);
+                createAdminSettingsInventory(player, uuid);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -202,7 +212,7 @@ public class InventoryManager implements Listener {
 
         gui.setItem(23, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.ITEM_CHANGE_TITLE.getText()).asItem(), event -> {
             try {
-                changeTitleGUI(player, Utils.setColorInMessage(title), Utils.setColorInMessage("&eNeuen &6Titel &eeingeben..."), uuid);
+                changeTitleGUI(player, title, Utils.setColorInMessage("&eNeuen &6Titel &eeingeben..."), uuid);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -248,11 +258,11 @@ public class InventoryManager implements Listener {
     }
 
     private static void changeTitleGUI(Player player, String chestName, String title, UUID uuid) throws SQLException {
-        final String[] newTitle = {title};
+        final String[] newTitle = {chestName};
         new AnvilGUI.Builder()
                 .onClose(stateSnapshot -> {
                     try {
-                        createAdminSettingsInventory(player, uuid, newTitle[0]);
+                        createAdminSettingsInventory(player, uuid);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -271,12 +281,12 @@ public class InventoryManager implements Listener {
                         for(String entry : main.getUuidList()) {
                             if(main.getSrDatabase().getNameOfChest(UUID.fromString(entry)).equals(newTitle[0])) {
                                 player.sendMessage(Messages.CHEST_NAME_ALREADY_EXISTS.getMessage().replace("%name", newTitle[0]));
-                                return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(chestName));
+                                return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(newTitle[0]));
                             }
                         }
 
                         main.getSrDatabase().changeNameOfChest(uuid, newTitle[0], player);
-                        stateSnapshot.getPlayer().sendMessage(Messages.CHEST_CHANGED_NAME_SUCCESS.getMessage().replace("%name", newTitle[0]));
+                        stateSnapshot.getPlayer().sendMessage(Messages.CHEST_CHANGED_NAME_SUCCESS.getMessage().replace("%name", Utils.setColorInMessage(newTitle[0])));
                         main.updateHolograms();
 
                         return Arrays.asList(AnvilGUI.ResponseAction.close());
@@ -284,11 +294,11 @@ public class InventoryManager implements Listener {
                         throw new RuntimeException(e);
                     }
                 })
-                .preventClose()                 //prevents the inventory from being closed
-                .text(chestName)                //sets the text the GUI should start with
-                .title(title)                   //set the title of the GUI (only works in 1.14+)
-                .plugin(main)                   //set the plugin instance
-                .open(player);                  //opens the GUI for the player provided
+                .preventClose()                     //prevents the inventory from being closed
+                .text(chestName)                    //sets the text the GUI should start with
+                .title(title)                       //set the title of the GUI (only works in 1.14+)
+                .plugin(main)                       //set the plugin instance
+                .open(player);                      //opens the GUI for the player provided
     }
 
     private static void changeBlockTypeGUI(Player player, String blockType, String title, UUID uuid) throws SQLException {
@@ -296,7 +306,7 @@ public class InventoryManager implements Listener {
         new AnvilGUI.Builder()
                 .onClose(stateSnapshot -> {
                     try {
-                        createAdminSettingsInventory(player, uuid, title);
+                        createAdminSettingsInventory(player, uuid);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }

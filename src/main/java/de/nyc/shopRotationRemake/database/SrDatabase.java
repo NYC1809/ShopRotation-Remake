@@ -306,7 +306,7 @@ public class SrDatabase {
     public void addItemToItemsDB(UUID uuid,UUID itemuuid, String item, Integer amount, Player player) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO items (uuid, itemuuid, item, requiredamount, holdingamount) VALUES (?, ?, ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());
-            preparedStatement.setString(2, uuid.toString());
+            preparedStatement.setString(2, itemuuid.toString());
             preparedStatement.setString(3, item);
             preparedStatement.setInt(4, amount);
             preparedStatement.setInt(5,0);

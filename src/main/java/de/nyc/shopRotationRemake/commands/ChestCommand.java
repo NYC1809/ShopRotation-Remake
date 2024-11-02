@@ -175,7 +175,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 String aUuid = args[1];
 
                 if(!Utils.isNumeric(args[3])) {
-                    player.sendMessage(Messages.IS_NOT_NUMERIC.getMessage());
+                    player.sendMessage(Messages.IS_NOT_NUMERIC.getMessage().replace("%input", args[3]));
                     return true;
                 }
                 Integer amountRequired = Integer.valueOf(args[3]);

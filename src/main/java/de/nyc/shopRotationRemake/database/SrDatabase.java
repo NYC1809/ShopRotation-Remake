@@ -430,4 +430,60 @@ public class SrDatabase {
         }
         this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_TYPE_CHANGED, uuid);
     }
-}
+
+    public String getItemByItemUuid(UUID itemUuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT item FROM items WHERE itemuuid = ?")) {
+            preparedStatement.setString(1, itemUuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getString("item");
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public Integer getrequiredItemAmountByItemUuid(UUID itemUuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT requiredamount FROM items WHERE itemuuid = ?")) {
+            preparedStatement.setString(1, itemUuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getInt("requiredamount");
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public Integer getholdingItemAmountByItemUuid(UUID itemUuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT holdingamount FROM items WHERE itemuuid = ?")) {
+            preparedStatement.setString(1, itemUuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getInt("holdingamount");
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public void setrequiredAmountByItemUuid(UUID itemUuid, Integer amount) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE items SET requiredamount = ? WHERE itemuuid = ?")) {
+            preparedStatement.setInt(1, amount);
+            preparedStatement.setString(2, itemUuid.toString());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public void setholdingAmountByItemUuid(UUID itemUuid, Integer amount) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE items SET holdingamount = ? WHERE itemuuid = ?")) {
+            preparedStatement.setInt(1, amount);
+            preparedStatement.setString(2, itemUuid.toString());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+ }

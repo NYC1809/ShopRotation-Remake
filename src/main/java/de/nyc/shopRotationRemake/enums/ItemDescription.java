@@ -48,7 +48,9 @@ public enum ItemDescription {
 
     ITEM_DELETE_ALL_ITEMS("&cKlicke hier um alle &4&lITEMS &r&cdieser Chest zu löschen!"),
     ITEM_DELETE_ALL_ITEMS_LORE_1(" "),
-    ITEM_DELETE_ALL_ITEMS_LORE_2("&cWARNING&7: Hiermit setzt du alle Items zurück!")
+    ITEM_DELETE_ALL_ITEMS_LORE_2("&cWARNING&7: Hiermit setzt du alle Items zurück!"),
+
+    ITEM_BACK_TO_ADD_ITEM_TO_INV("&7Klicke hier um zurück zu allen &6Items &7zu gelangen."),
 
     ;
 

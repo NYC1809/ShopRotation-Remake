@@ -267,6 +267,50 @@ public class InventoryManager implements Listener {
         gui.show(player);
     }
 
+    public static void modifyItemInventory(Player player, UUID uuid, UUID itemUuid) throws SQLException {
+        //&TODO: permission system
+        if(!player.isOp()) {
+            player.sendMessage(Messages.NO_PERMS_ERROR.getMessage());
+            return;
+        }
+        String title = main.getSrDatabase().getNameOfChest(uuid);
+        if(title == null) {
+            Bukkit.getLogger().severe("[23:55:76] uuid or title of the inventory is null! -> canceling...");
+            return;
+        }
+
+        GUI gui = main.getGuiFactory().createGUI(6, Utils.setColorInMessage("&6Modify Item: &a" + itemUuid));
+        //START OF CREATING GLASS BORDER
+        for(int i=0; i<10; i++) {
+            gui.setItem(i, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        }
+        gui.setItem(17, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        gui.setItem(18, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        gui.setItem(26, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        gui.setItem(27, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        gui.setItem(35, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        gui.setItem(36, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        for(int i=44; i<54; i++) {
+            if(i == 45) { continue; }
+            gui.setItem(i, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        }
+        //END OF CREATING GLASS BORDER
+        gui.setItem(45, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.ITEM_BACK_TO_ADD_ITEM_TO_INV.getText()).asItem(), event -> {
+            try {
+                createItemsInventory(player, uuid);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+
+
+        gui.setDefaultClickAction(event -> {
+            event.setCancelled(true);
+        });
+        gui.show(player);
+    }
+
     private static StringBuilder getStringBuilder(Map.Entry<Integer, Quadruple> entry) {
         Integer id = entry.getKey();
         Quadruple values = entry.getValue();
@@ -379,5 +423,71 @@ public class InventoryManager implements Listener {
         main.getSrDatabase().deleteItems(uuid, player);
         player.sendMessage(Messages.ITEMS_REMOVED_SUCCESS.getMessage().replace("%name", uuid.toString()));
         createItemsInventory(player, uuid);
+    }
+
+    private static void changeRequiredAmount(Player player, UUID uuid, UUID itemUuid,  String title, Integer currentAmount) throws SQLException {
+        new AnvilGUI.Builder()
+                .onClose(stateSnapshot -> {
+                    try {
+                        modifyItemInventory(player, uuid, itemUuid);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .onClick((slot, stateSnapshot) -> {
+                    if(slot != AnvilGUI.Slot.OUTPUT) {
+                        return Collections.emptyList();
+                    }
+                    String input = stateSnapshot.getText();
+                    if(!Utils.isNumeric(input)) {
+                        player.sendMessage(Messages.IS_NOT_NUMERIC.getMessage().replace("%input", input));
+                        return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(currentAmount.toString()));
+                    }
+                    try {
+                        main.getSrDatabase().setrequiredAmountByItemUuid(itemUuid, Integer.valueOf(input));
+                        player.sendMessage(Messages.ITEM_CHANGED_AMOUNT_SUCCESS.getMessage().replace("%number", input));
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return Arrays.asList(AnvilGUI.ResponseAction.close());
+                })
+                .preventClose()
+                .text(currentAmount.toString())
+                .title(title)
+                .plugin(main)
+                .open(player);
+    }
+
+    private static void changeHoldingAmount(Player player, UUID uuid, UUID itemUuid,  String title, Integer currentAmount) throws SQLException {
+        new AnvilGUI.Builder()
+                .onClose(stateSnapshot -> {
+                    try {
+                        modifyItemInventory(player, uuid, itemUuid);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .onClick((slot, stateSnapshot) -> {
+                    if(slot != AnvilGUI.Slot.OUTPUT) {
+                        return Collections.emptyList();
+                    }
+                    String input = stateSnapshot.getText();
+                    if(!Utils.isNumeric(input)) {
+                        player.sendMessage(Messages.IS_NOT_NUMERIC.getMessage().replace("%input", input));
+                        return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(currentAmount.toString()));
+                    }
+                    try {
+                        main.getSrDatabase().setholdingAmountByItemUuid(itemUuid, Integer.valueOf(input));
+                        player.sendMessage(Messages.ITEM_CHANGED_AMOUNT_SUCCESS.getMessage().replace("%number", input));
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return Arrays.asList(AnvilGUI.ResponseAction.close());
+                })
+                .preventClose()
+                .text(currentAmount.toString())
+                .title(title)
+                .plugin(main)
+                .open(player);
     }
 }

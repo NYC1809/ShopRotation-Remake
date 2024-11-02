@@ -34,28 +34,20 @@ public class InventoryManager implements Listener {
 
         GUI gui = main.getGuiFactory().createGUI(6, Utils.setColorInMessage(title));
         for(int i=0; i<9; i++) {
-            gui.setItem(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
-                event.setCancelled(true);
-            });
+            gui.setItem(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").asItem());
         }
         for (int i=45; i<54; i++) {
             if(i == 49) { continue; }
-            gui.setItem(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
-                event.setCancelled(true);
-            });
+            gui.setItem(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").asItem());
         }
         for(int i=9; i<45; i++) {
             if(i == 10 || i == 13 || i == 15) { continue; }
-            gui.setItem(i, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
-                event.setCancelled(true);
-            });
+            gui.setItem(i, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem());
         }
 
         String item = getCurrentItemFromDB(uuid);
         if(item == null) {
-            gui.setItem(13, ItemBuilder.of(Material.BARRIER).name(Messages.CHEST_HAS_NO_ACTIVE_ITEM.getMessage()).description(Messages.CHEST_HAS_NO_ACTIVE_ITEM_LORE_1.getMessage(), Messages.CHEST_HAS_NO_ACTIVE_ITEM_LORE_2.getMessage()).asItem(), event -> {
-               event.setCancelled(true);
-            });
+            gui.setItem(13, ItemBuilder.of(Material.BARRIER).name(Messages.CHEST_HAS_NO_ACTIVE_ITEM.getMessage()).description(Messages.CHEST_HAS_NO_ACTIVE_ITEM_LORE_1.getMessage(), Messages.CHEST_HAS_NO_ACTIVE_ITEM_LORE_2.getMessage()).asItem());
         } else {
             //TODO: HERE
         }
@@ -64,7 +56,6 @@ public class InventoryManager implements Listener {
             boolean isEnabled = main.getSrDatabase().getChestEnabled(uuid);
             if(isEnabled) {
                 gui.setItem(53, ItemBuilder.of(Material.GREEN_WOOL).name(ItemDescription.ITEM_ENABLED.getText()).description(ItemDescription.ITEM_ENABLED_LORE_1.getText(), ItemDescription.ITEM_ENABLED_LORE_2.getText()).asItem(), event -> {
-                    event.setCancelled(true);
                     try {
                         main.getSrDatabase().changeEnabledOfChest(uuid, false, player);
                         player.sendMessage(Messages.SET_DISABLED_SUCCESS.getMessage());
@@ -75,7 +66,6 @@ public class InventoryManager implements Listener {
                 });
             } else {
                 gui.setItem(53, ItemBuilder.of(Material.RED_WOOL).name(ItemDescription.ITEM_DISABLED.getText()).description(ItemDescription.ITEM_DISABLED_LORE_1.getText(), ItemDescription.ITEM_DISABLED_LORE_2.getText()).asItem(), event -> {
-                    event.setCancelled(true);
                     try {
                         main.getSrDatabase().changeEnabledOfChest(uuid, true, player);
                         player.sendMessage(Messages.SET_ENABLED_SUCCESS.getMessage());
@@ -85,8 +75,7 @@ public class InventoryManager implements Listener {
                     }
                 });
             }
-            gui.setItem(45, ItemBuilder.of(Material.COMMAND_BLOCK).name("&eKlicke hier um die &6Einstellungen &ezu öffnen:").asItem(), event -> {
-                event.setCancelled(true);
+            gui.setItem(45, ItemBuilder.of(Material.COMMAND_BLOCK).name(ItemDescription.ITEM_OPEN_AS.getText()).asItem(), event -> {
                 try {
                     createAdminSettingsInventory(player, uuid);
                 } catch (SQLException e) {
@@ -112,41 +101,26 @@ public class InventoryManager implements Listener {
 
         GUI gui = main.getGuiFactory().createGUI(6, Utils.setColorInMessage(title));
         for(int i=0; i<9; i++) {
-            gui.setItem(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
-                event.setCancelled(true);
-            });
+            gui.setItem(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").asItem());
         }
         for (int i=45; i<54; i++) {
             if(i == 49) { continue; }
-            gui.setItem(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
-                event.setCancelled(true);
-            });
+            gui.setItem(i, ItemBuilder.of(Material.CYAN_STAINED_GLASS_PANE).name(" ").asItem());
         }
         for(int i=9; i<19; i++) {
-            gui.setItem(i, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
-                event.setCancelled(true);
-            });
+            gui.setItem(i, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem());
         }
-        gui.setItem(26, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
-            event.setCancelled(true);
-        });
-        gui.setItem(27, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
-            event.setCancelled(true);
-        });
+        gui.setItem(26, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem());
+        gui.setItem(27, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem());
         for(int i=35; i<45; i++) {
-            gui.setItem(i, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem(), event -> {
-                event.setCancelled(true);
-            });
+            gui.setItem(i, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem());
         }
-        gui.setItem(13, ItemBuilder.of(Material.ACACIA_HANGING_SIGN).name(ItemDescription.AS_DESCRIPTION_NAME.getText()).description(ItemDescription.AS_DESCRIPTION_LORE_1.getText(), ItemDescription.AS_DESCRIPTION_LORE_2.getText()).asItem(), event -> {
-            event.setCancelled(true);
-        });
+        gui.setItem(13, ItemBuilder.of(Material.ACACIA_HANGING_SIGN).name(ItemDescription.AS_DESCRIPTION_NAME.getText()).description(ItemDescription.AS_DESCRIPTION_LORE_1.getText(), ItemDescription.AS_DESCRIPTION_LORE_2.getText()).asItem());
 
 
         boolean isEnabled = main.getSrDatabase().getChestEnabled(uuid);
         if(isEnabled) {
             gui.setItem(53, ItemBuilder.of(Material.GREEN_WOOL).name(ItemDescription.ITEM_ENABLED.getText()).description(ItemDescription.ITEM_ENABLED_LORE_1.getText(), ItemDescription.ITEM_ENABLED_LORE_2.getText()).asItem(), event -> {
-                event.setCancelled(true);
                 try {
                     main.getSrDatabase().changeEnabledOfChest(uuid, false, player);
                     player.sendMessage(Messages.SET_DISABLED_SUCCESS.getMessage());
@@ -157,7 +131,6 @@ public class InventoryManager implements Listener {
             });
         } else {
             gui.setItem(53, ItemBuilder.of(Material.RED_WOOL).name(ItemDescription.ITEM_DISABLED.getText()).description(ItemDescription.ITEM_DISABLED_LORE_1.getText(), ItemDescription.ITEM_DISABLED_LORE_2.getText()).asItem(), event -> {
-                event.setCancelled(true);
                 try {
                     main.getSrDatabase().changeEnabledOfChest(uuid, true, player);
                     player.sendMessage(Messages.SET_ENABLED_SUCCESS.getMessage());
@@ -185,7 +158,6 @@ public class InventoryManager implements Listener {
                     throw new RuntimeException(e);
                 }
             }
-            event.setCancelled(true);
             try {
                 createAdminSettingsInventory(player, uuid);
             } catch (SQLException e) {
@@ -204,9 +176,7 @@ public class InventoryManager implements Listener {
         }
 
         gui.setItem(19, ItemBuilder.of(Material.ANVIL).name(ItemDescription.ITEM_ACTION_HISTORY_NAME.getText())
-                .description(recentActionsList.toArray(new String[0])).asItem(), event -> {
-            event.setCancelled(true);
-        });
+                .description(recentActionsList.toArray(new String[0])).asItem());
 
         //TODO: Create player Item history here
 
@@ -216,20 +186,76 @@ public class InventoryManager implements Listener {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-            event.setCancelled(true);
         });
 
         String blockType = main.getSrDatabase().getTypeOfChest(uuid.toString());
-
         gui.setItem(24, ItemBuilder.of(Material.CHEST).name(ItemDescription.ITEM_CHANGE_CHEST_TYPE.getText()).description(ItemDescription.ITEM_CHANGE_CHEST_TYPE_LORE_1.getText(), ItemDescription.ITEM_CHANGE_CHEST_TYPE_LORE_2.getText().replace("%type", blockType)).asItem(), event -> {
             try {
                 changeBlockTypeGUI(player, blockType, Utils.setColorInMessage("&eNeuen BlockType &eeingeben..."), uuid);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-            event.setCancelled(true);
+        });
+        for(int i=25; i<32; i++) {
+            if(i == 26 || i == 27) { continue; }
+            gui.setItem(i, ItemBuilder.of(Material.GRAY_DYE).name(ItemDescription.ITEM_COMING_SOON.getText()).asItem());
+        }
+        gui.setItem(32, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.ITEM_MODIFY_ITEMS.getText()).description(ItemDescription.ITEM_MODIFY_ITEMS_LORE_1.getText(), ItemDescription.ITEM_MODIFY_ITEMS_LORE_2.getText()).asItem(), event -> {
+            try {
+                createItemsInventory(player, uuid);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         });
 
+        gui.setDefaultClickAction(event -> {
+            event.setCancelled(true);
+        });
+        gui.show(player);
+    }
+
+    public static void createItemsInventory(Player player, UUID uuid) throws SQLException{
+        //&TODO: permission system
+        if(!player.isOp()) {
+            player.sendMessage(Messages.NO_PERMS_ERROR.getMessage());
+            return;
+        }
+        String title = main.getSrDatabase().getNameOfChest(uuid);
+        if(title == null) {
+            Bukkit.getLogger().severe("[23:55:76] uuid or title of the inventory is null! -> canceling...");
+            return;
+        }
+
+        GUI gui = main.getGuiFactory().createGUI(6, Utils.setColorInMessage(title + " &6 - Items"));
+        for(int i=0; i<10; i++) {
+            gui.setItem(i, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        }
+        gui.setItem(17, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        gui.setItem(18, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        gui.setItem(26, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        gui.setItem(27, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        gui.setItem(35, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        gui.setItem(36, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        for(int i=44; i<54; i++) {
+            if(i == 45 || i == 48 || i == 49 || i == 50) { continue; }
+            gui.setItem(i, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        }
+
+        gui.setItem(45, ItemBuilder.of(Material.COMMAND_BLOCK).name(ItemDescription.ITEM_OPEN_AS.getText()).asItem(), event -> {
+            try {
+                createAdminSettingsInventory(player, uuid);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        gui.setItem(48, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.ITEM_ADD_ITEM_TO_IV.getText()).description(ItemDescription.ITEM_ADD_ITEM_TO_IV_LORE_1.getText(), ItemDescription.ITEM_ADD_ITEM_TO_IV_LORE_2.getText()).asItem(), event -> {
+
+        });
+
+        gui.setDefaultClickAction(event -> {
+            event.setCancelled(true);
+        });
         gui.show(player);
     }
 
@@ -252,6 +278,7 @@ public class InventoryManager implements Listener {
     }
 
     private static String getCurrentItemFromDB(UUID uuid) throws SQLException {
+        //TODO: Move to CurrentItem Class
         String item = main.getSrDatabase().getCurrentItem(uuid);
         //TODO: generate the current Item
         return item;
@@ -302,7 +329,6 @@ public class InventoryManager implements Listener {
     }
 
     private static void changeBlockTypeGUI(Player player, String blockType, String title, UUID uuid) throws SQLException {
-        final String newBlockType = blockType;
         new AnvilGUI.Builder()
                 .onClose(stateSnapshot -> {
                     try {

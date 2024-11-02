@@ -23,14 +23,24 @@ public enum ItemDescription {
     AS_DESCRIPTION_LORE_2("&7Hier kannst du verschiedene Einstellungen tätigen:"),
 
     ITEM_ACTION_HISTORY_NAME("&eZeigt die letzten srChest &6Aktionen&e an: "),
-    ITEM_ACTION_HISTORY_LORE1(" "),
 
     ITEM_CHANGE_TITLE("&eKlicke hier um den &6Titel &ezu ändern!"),
 
     ITEM_CHANGE_CHEST_TYPE("&eKlicke hier um den &6Block &eder srChest zu ändern!"),
     ITEM_CHANGE_CHEST_TYPE_LORE_1(" "),
-    ITEM_CHANGE_CHEST_TYPE_LORE_2("&eAktueller BlockType: &6\"Material.%type&e\"")
+    ITEM_CHANGE_CHEST_TYPE_LORE_2("&eAktueller BlockType: &6\"Material.%type&e\""),
 
+    ITEM_COMING_SOON("&c&lCOMING SOON"),
+
+    ITEM_MODIFY_ITEMS("&eKlicke hier um die Items dieser &6Chest &eanzupassen:"),
+    ITEM_MODIFY_ITEMS_LORE_1(" "),
+    ITEM_MODIFY_ITEMS_LORE_2("&7Hier kannst du verschiedene Einstellungen zu jedem Item tätigen!"),
+
+    ITEM_OPEN_AS("&eKlicke hier um die &6Einstellungen &ezu öffnen:"),
+
+    ITEM_ADD_ITEM_TO_IV("&eKlicke hier um neue &6Items zu dieser Chest hinzuzufügen: "),
+    ITEM_ADD_ITEM_TO_IV_LORE_1(" "),
+    ITEM_ADD_ITEM_TO_IV_LORE_2("&7Hier können weitere Einstellungen zu dem jeweiligem Item getätigt werden.")
     ;
 
     private final String text;

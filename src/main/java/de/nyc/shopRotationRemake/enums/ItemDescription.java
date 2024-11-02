@@ -13,6 +13,10 @@ public enum ItemDescription {
     ITEM_DISABLED_LORE_1(" "),
     ITEM_DISABLED_LORE_2("&7Klicke hier um diese zu &aaktivieren&7!"),
 
+    CHEST_HAS_NO_ACTIVE_ITEM("&cDiese srChest hat aktuell kein aktives Item!"),
+    CHEST_HAS_NO_ACTIVE_ITEM_LORE_1(" "),
+    CHEST_HAS_NO_ACTIVE_ITEM_LORE_2("&7Bitte komme zu einem späteren Zeitpunkt zurück"),
+
     ITEM_ENABLE_DISABLE_ALL("&aEnable all&6 / &4Disable all"),
     ITEM_ENABLE_DISABLE_ALL_LORE_1(" "),
     ITEM_ENABLE_DISABLE_ALL_LORE_2("&6Links-Klick &7um alle srChests zu &a&laktivieren&r&7!"),
@@ -38,9 +42,14 @@ public enum ItemDescription {
 
     ITEM_OPEN_AS("&eKlicke hier um die &6Einstellungen &ezu öffnen:"),
 
-    ITEM_ADD_ITEM_TO_IV("&eKlicke hier um neue &6Items zu dieser Chest hinzuzufügen: "),
+    ITEM_ADD_ITEM_TO_IV("&eKlicke hier um neue &6Items &ezu dieser &6Chest &ehinzuzufügen: "),
     ITEM_ADD_ITEM_TO_IV_LORE_1(" "),
-    ITEM_ADD_ITEM_TO_IV_LORE_2("&7Hier können weitere Einstellungen zu dem jeweiligem Item getätigt werden.")
+    ITEM_ADD_ITEM_TO_IV_LORE_2("&7Hier können weitere Einstellungen zu dem jeweiligem Item getätigt werden."),
+
+    ITEM_DELETE_ALL_ITEMS("&cKlicke hier um alle &4&lITEMS &r&cdieser Chest zu löschen!"),
+    ITEM_DELETE_ALL_ITEMS_LORE_1(" "),
+    ITEM_DELETE_ALL_ITEMS_LORE_2("&cWARNING&7: Hiermit setzt du alle Items zurück!")
+
     ;
 
     private final String text;

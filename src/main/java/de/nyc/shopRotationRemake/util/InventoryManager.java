@@ -47,7 +47,7 @@ public class InventoryManager implements Listener {
 
         String item = getCurrentItemFromDB(uuid);
         if(item == null) {
-            gui.setItem(13, ItemBuilder.of(Material.BARRIER).name(Messages.CHEST_HAS_NO_ACTIVE_ITEM.getMessage()).description(Messages.CHEST_HAS_NO_ACTIVE_ITEM_LORE_1.getMessage(), Messages.CHEST_HAS_NO_ACTIVE_ITEM_LORE_2.getMessage()).asItem());
+            gui.setItem(13, ItemBuilder.of(Material.BARRIER).name(ItemDescription.CHEST_HAS_NO_ACTIVE_ITEM.getText()).description(ItemDescription.CHEST_HAS_NO_ACTIVE_ITEM_LORE_1.getText(), ItemDescription.CHEST_HAS_NO_ACTIVE_ITEM_LORE_2.getText()).asItem());
         } else {
             //TODO: HERE
         }
@@ -250,7 +250,15 @@ public class InventoryManager implements Listener {
         });
 
         gui.setItem(48, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.ITEM_ADD_ITEM_TO_IV.getText()).description(ItemDescription.ITEM_ADD_ITEM_TO_IV_LORE_1.getText(), ItemDescription.ITEM_ADD_ITEM_TO_IV_LORE_2.getText()).asItem(), event -> {
+            //TODO: ADD ITEM FUNCTION
+        });
 
+        gui.setItem(50, ItemBuilder.of(Material.REDSTONE_BLOCK).name(ItemDescription.ITEM_DELETE_ALL_ITEMS.getText()).description(ItemDescription.ITEM_DELETE_ALL_ITEMS_LORE_1.getText(), ItemDescription.ITEM_DELETE_ALL_ITEMS_LORE_2.getText()).asItem(), event -> {
+            try {
+                deleteAllItems(player, uuid);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         gui.setDefaultClickAction(event -> {
@@ -365,5 +373,11 @@ public class InventoryManager implements Listener {
                 .title(title)
                 .plugin(main)
                 .open(player);
+    }
+
+    private static void deleteAllItems(Player player, UUID uuid) throws SQLException {
+        main.getSrDatabase().deleteItems(uuid, player);
+        player.sendMessage(Messages.ITEMS_REMOVED_SUCCESS.getMessage().replace("%name", uuid.toString()));
+        createItemsInventory(player, uuid);
     }
 }

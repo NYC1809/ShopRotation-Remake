@@ -189,8 +189,9 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 }
                 Material aMaterial = Utils.getBlockType(args[2]);
                 String aItem = Utils.convertItemStackToString(aMaterial, String.valueOf(aMaterial));
+                UUID randomItemUuid = UUID.randomUUID();
                 try {
-                    this.main.getSrDatabase().addItemToItemsDB(UUID.fromString(aUuid), aItem, amountRequired, player);
+                    this.main.getSrDatabase().addItemToItemsDB(UUID.fromString(aUuid),randomItemUuid, aItem, amountRequired, player);
 
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

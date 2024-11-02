@@ -28,6 +28,7 @@ public class SrDatabase {
             statement.execute("CREATE TABLE IF NOT EXISTS items (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "uuid TEXT NOT NULL, " +
+                    "itemuuid TEXT NOT NULL, " +
                     "item TEXT NOT NULL, " +
                     "holdingamount INTEGER NOT NULL, " +
                     "requiredamount INTEGER NOT NULL)");
@@ -52,6 +53,7 @@ public class SrDatabase {
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS currentitem (" +
                    "uuid TEXT PRIMARY KEY, " +
+                    "itemuuid TEXT NOT NULL, " +
                     "item TEXT NOT NULL, " +
                     "amount INT NOT NULL, " +
                     "holdingamount INT NOT NULL, " +
@@ -77,10 +79,20 @@ public class SrDatabase {
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS player (" +
                     "uuid TEXT PRIMARY KEY, " +
+                    "itemuuid TEXT NOT NULL, " +
                     "item TEXT NOT NULL, " +
                     "player TEXT NOT NULL, " +
                     "givenamount INTEGER, " +
                     "maxamount INTEGER NOT NULL)");
+        }
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("CREATE TABLE IF NOT EXISTS completeditems (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "uuid TEXT NOT NULL, " +
+                    "itemuuid TEXT NOT NULL, " +
+                    "item TEXT NOT NULL, " +
+                    "amount TEXT NOT NULL)");
+
         }
     }
 
@@ -278,24 +290,26 @@ public class SrDatabase {
         }
     }
 
-    public void addItemToCurrentItem(UUID uuid, String item, Integer amount, Boolean completed, Player player) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO currentitem (uuid, item, amount, completed, holdingamount) VALUES (?, ? , ?, ?, ?)")) {
+    public void addItemToCurrentItem(UUID uuid, UUID itemuuid, String item, Integer amount, Boolean completed, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO currentitem (uuid, itemuuid, item, amount, completed, holdingamount) VALUES (?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());
-            preparedStatement.setString(2, item);
-            preparedStatement.setInt(3, amount);
-            preparedStatement.setString(4, completed.toString());
-            preparedStatement.setInt(5, 0);
+            preparedStatement.setString(2, itemuuid.toString());
+            preparedStatement.setString(3, item);
+            preparedStatement.setInt(4, amount);
+            preparedStatement.setString(5, completed.toString());
+            preparedStatement.setInt(6, 0);
             preparedStatement.executeUpdate();
         }
-        addItemToItemsDB(uuid, item, amount, player);
+        addItemToItemsDB(uuid, itemuuid, item, amount, player);
     }
 
-    public void addItemToItemsDB(UUID uuid, String item, Integer amount, Player player) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO items (uuid, item, requiredamount, holdingamount) VALUES (?, ?, ?, ?)")) {
+    public void addItemToItemsDB(UUID uuid,UUID itemuuid, String item, Integer amount, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO items (uuid, itemuuid, item, requiredamount, holdingamount) VALUES (?, ?, ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());
-            preparedStatement.setString(2, item);
-            preparedStatement.setInt(3, amount);
-            preparedStatement.setInt(4,0);
+            preparedStatement.setString(2, uuid.toString());
+            preparedStatement.setString(3, item);
+            preparedStatement.setInt(4, amount);
+            preparedStatement.setInt(5,0);
             preparedStatement.executeUpdate();
         }
 
@@ -311,7 +325,7 @@ public class SrDatabase {
                 this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.ALL_ITEMS_REMOVED, uuid);
                 return;
             }
-            Bukkit.getLogger().warning("[90:66:55] \"" + uuid + "\" has no items!");
+            Bukkit.getLogger().warning("[90:66:55] \"" + uuid + "\" had no items!");
         }
     }
 

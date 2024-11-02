@@ -35,6 +35,8 @@ public enum Messages {
     CHEST_CHANGED_NAME_CANCEL("&7Die srChest hat bereits den &6Titel&7: \"&a%name&7\""),
     CHEST_CHANGED_TYPE_SUCCESS("&7Du hast &aerfolgreich &7den &6BlockType&7 der srChest zu \"&a%type&7\" geändert."),
 
+    ITEMS_REMOVED_SUCCESS("&7Du hast &aerfolgreich &c&lALLE &r&7Items aus der Chest: \"&a%name&7\" entfernt!"),
+
     //srChest help messages
     CHEST_CREATE("&6⁜ &e/srChest create &6» &7Erstellen einer srChest"),
     CHEST_GET("&6⁜ &e/srChest get &6» &7Zeigt alle srChests an"),
@@ -54,9 +56,6 @@ public enum Messages {
 
     //srChest get messages
     GET_UUID_INFO_LINE_1(Utils.getPrefix() + "&2Anklicken zum kopieren:"),
-    CHEST_HAS_NO_ACTIVE_ITEM("&cDiese srChest hat aktuell kein aktives Item!"),
-    CHEST_HAS_NO_ACTIVE_ITEM_LORE_1(" "),
-    CHEST_HAS_NO_ACTIVE_ITEM_LORE_2("&7Bitte komme zu einem späteren Zeitpunkt zurück")
 
 
     //TODO: Add missing messages

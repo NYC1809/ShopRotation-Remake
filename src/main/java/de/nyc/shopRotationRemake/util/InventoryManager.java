@@ -10,9 +10,11 @@ import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
@@ -314,7 +316,14 @@ public class InventoryManager implements Listener {
             List<String> itemUuids = main.getSrDatabase().getListOfItems(uuid);
             for(int i = 10; i < amountOfItemsInThisChest + 10; i++) {
 
+                Material getMaterial = ItemUtils.getItemMaterial(itemUuid);
+                String itemName = ItemUtils.getItemName(itemUuid);
+                List<String> description = ItemUtils.getItemDescription(itemUuid);
 
+                Enchantment enchantment = ItemUtils.getItemEnchantment(itemUuid);
+                Integer enchantmentLevel = ItemUtils.getItemEnchantmentLevel(itemUuid);
+
+                ItemFlag itemFlag =
 
                 ItemStack item = ItemBuilder.of()
                 gui.setItem(i, item, event -> {

@@ -1,13 +1,18 @@
 package de.nyc.shopRotationRemake.util;
 
+import com.google.common.base.Preconditions;
 import de.nyc.shopRotationRemake.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class ItemUtils {
@@ -92,5 +97,74 @@ public class ItemUtils {
         Bukkit.getLogger().info("[89:90:25] getItemName Functions returns name: " + name);
 
         return name;
+    }
+
+    public static Material getItemMaterial(UUID itemUuid) throws SQLException {
+        String itemString = main.getSrDatabase().getItemString(itemUuid);
+        itemString = itemString.substring(1, itemString.length() - 1);
+
+        String[] parts = itemString.split(",", 6);
+        String material = parts[0].replace("Material.", "");
+        Bukkit.getLogger().info("[22:91:25] getItemName Functions returns material: " + material);
+
+        return Material.getMaterial(material);
+    }
+
+    public static List<String> getItemDescription(UUID itemUuid) throws SQLException {
+        String itemString = main.getSrDatabase().getItemString(itemUuid);
+        List<String> itemDescriptionList = new ArrayList<>();
+        itemString = itemString.substring(1, itemString.length() - 1);
+
+        String[] parts = itemString.split(",", 6);
+
+        String descriptionPart = parts[2].trim();
+
+        descriptionPart = descriptionPart.substring(1, descriptionPart.length() - 1);
+
+        String[] descriptionEntries = descriptionPart.split(",");
+        Bukkit.getLogger().info("[10:55:09] getItemDescription Functions returns Entries: " + Arrays.stream(descriptionEntries).toList());
+
+        for (String descriptionEntry : descriptionEntries) {
+            itemDescriptionList.add(descriptionEntry.trim());
+        }
+        return itemDescriptionList;
+    }
+
+    public static Enchantment getItemEnchantment(UUID itemUuid) throws SQLException {
+        String itemString = main.getSrDatabase().getItemString(itemUuid);
+
+        int enchantmentIndex = itemString.indexOf("Enchantment.");
+        int start = enchantmentIndex + "Enchantment.".length();
+        int end = itemString.indexOf(",", start);
+
+        String enchantment = itemString.substring(start, end).trim();
+        if(enchantment.equals("NONE")) {
+            return null;
+        }
+        Bukkit.getLogger().warning("[DEBUG THIS!! [88:11:22] ENCHANTMENT RETURNED: " + getEnchantment(enchantment.toLowerCase()));
+        return getEnchantment(enchantment.toLowerCase());
+
+    }
+
+    public static Integer getItemEnchantmentLevel(UUID itemUuid) throws SQLException {
+        String itemString = main.getSrDatabase().getItemString(itemUuid);
+
+        int levelIndex = itemString.indexOf("Level.");
+        int start = levelIndex + "Level.".length();
+        int end = itemString.indexOf(",", start);
+
+        String levelValue = itemString.substring(start, end).trim();
+        if (!Utils.isNumeric(levelValue)) {
+            Bukkit.getLogger().warning("[00:01:11] WARNING: Levelvalue is not numeric!!");
+            return null;
+        }
+        return Integer.valueOf(levelValue);
+    }
+
+    private static Enchantment getEnchantment(String key) {
+        NamespacedKey namespacedKey = NamespacedKey.minecraft(key);
+        Enchantment enchantment = (Enchantment) Registry.ENCHANTMENT.get(namespacedKey);
+        Preconditions.checkNotNull(enchantment, "No Enchantment found for %s. This is a bug.", namespacedKey);
+        return enchantment;
     }
 }

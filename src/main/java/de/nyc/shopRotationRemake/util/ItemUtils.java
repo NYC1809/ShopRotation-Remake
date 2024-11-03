@@ -92,8 +92,7 @@ public class ItemUtils {
         String[] parts = itemString.split(",", 6);
 
         String name = parts[1];
-        Bukkit.getLogger().info("[89:90:25] getItemName Function returned name: " + name);
-
+        //Bukkit.getLogger().info("[89:90:25] getItemName Function returned name: " + name);
         return name;
     }
 
@@ -103,8 +102,7 @@ public class ItemUtils {
 
         String[] parts = itemString.split(",", 6);
         String material = parts[0].replace("Material.", "");
-        Bukkit.getLogger().info("[22:91:25] getItemName Function returned material: " + material);
-
+        //Bukkit.getLogger().info("[22:91:25] getItemName Function returned material: " + material);
         return Material.getMaterial(material);
     }
 
@@ -120,8 +118,7 @@ public class ItemUtils {
         descriptionPart = descriptionPart.substring(1, descriptionPart.length() - 1);
 
         String[] descriptionEntries = descriptionPart.split(",");
-        Bukkit.getLogger().info("[10:55:09] getItemDescription Function returned Entries: " + Arrays.stream(descriptionEntries).toList());
-
+        //Bukkit.getLogger().info("[10:55:09] getItemDescription Function returned Entries: " + Arrays.stream(descriptionEntries).toList());
         for (String descriptionEntry : descriptionEntries) {
             itemDescriptionList.add(descriptionEntry.trim());
         }
@@ -139,7 +136,7 @@ public class ItemUtils {
         if(enchantment.equals("NONE")) {
             return null;
         }
-        Bukkit.getLogger().warning("[DEBUG THIS!! [88:11:22] ENCHANTMENT RETURNED: " + getEnchantment(enchantment.toLowerCase()));
+        //Bukkit.getLogger().warning("[DEBUG THIS!! [88:11:22] ENCHANTMENT RETURNED: " + getEnchantment(enchantment.toLowerCase()));
         return getEnchantment(enchantment.toLowerCase());
 
     }
@@ -153,7 +150,7 @@ public class ItemUtils {
 
         String levelValue = itemString.substring(start, end).trim();
         if (!Utils.isNumeric(levelValue)) {
-            Bukkit.getLogger().warning("[00:01:11] WARNING: Levelvalue is not numeric!!");
+            //Bukkit.getLogger().warning("[00:01:11] WARNING: Levelvalue is not numeric!!");
             return null;
         }
         return Integer.valueOf(levelValue);
@@ -171,7 +168,7 @@ public class ItemUtils {
         if(itemFlagValue.equals("NONE")) {
             return null;
         }
-        Bukkit.getLogger().info("[02:22:67] getItemFlag Function returned ItemFlag: " + itemFlagValue);
+        //Bukkit.getLogger().info("[02:22:67] getItemFlag Function returned ItemFlag: " + itemFlagValue);
         return ItemFlag.valueOf(itemFlagValue);
     }
 

@@ -33,6 +33,7 @@ public enum ItemDescription {
     ITEM_CHANGE_CHEST_TYPE("&eKlicke hier um den &6Block &eder srChest zu ändern!"),
     ITEM_CHANGE_CHEST_TYPE_LORE_1(" "),
     ITEM_CHANGE_CHEST_TYPE_LORE_2("&eAktueller BlockType: &6\"Material.%type&e\""),
+    ITEM_CHANGE_CHEST_TYPE_LORE_3("&7Achtung: Die &6BlockDirektion &7wird in die Richtung des &6Spielers &7gesetzt."),
 
     ITEM_COMING_SOON("&c&lCOMING SOON"),
 

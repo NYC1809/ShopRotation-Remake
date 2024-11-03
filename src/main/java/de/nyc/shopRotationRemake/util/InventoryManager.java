@@ -10,6 +10,8 @@ import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.Directional;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -192,7 +194,7 @@ public class InventoryManager implements Listener {
         });
 
         String blockType = main.getSrDatabase().getTypeOfChest(uuid.toString());
-        gui.setItem(24, ItemBuilder.of(Material.CHEST).name(ItemDescription.ITEM_CHANGE_CHEST_TYPE.getText()).description(ItemDescription.ITEM_CHANGE_CHEST_TYPE_LORE_1.getText(), ItemDescription.ITEM_CHANGE_CHEST_TYPE_LORE_2.getText().replace("%type", blockType)).asItem(), event -> {
+        gui.setItem(24, ItemBuilder.of(Material.CHEST).name(ItemDescription.ITEM_CHANGE_CHEST_TYPE.getText()).description(ItemDescription.ITEM_CHANGE_CHEST_TYPE_LORE_1.getText(), ItemDescription.ITEM_CHANGE_CHEST_TYPE_LORE_2.getText().replace("%type", blockType), ItemDescription.ITEM_CHANGE_CHEST_TYPE_LORE_3.getText()).asItem(), event -> {
             try {
                 changeBlockTypeGUI(player, blockType, Utils.setColorInMessage("&eNeuen BlockType &eeingeben..."), uuid);
             } catch (SQLException e) {
@@ -286,9 +288,13 @@ public class InventoryManager implements Listener {
                 ItemStack item =  ItemUtils.createItemStack(itemMaterial, itemName, itemEnchantment, enchantmentLevel, itemFlag, String.valueOf(itemDescription));
                 if(counter == 17 || counter == 26 || counter == 35 || counter == 45) { counter = counter + 2; }
 
+                //TODO: Add some descriptions to the items and improve the design
                 gui.setItem(counter, item, event -> {
-                    event.setCancelled(true);
-                    //TODO: Open the specific item modification GUI when clicking on this item
+                    try {
+                        modifyItemInventory(player, uuid, UUID.fromString(itemUuid));
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
                 counter ++;
             }
@@ -437,7 +443,13 @@ public class InventoryManager implements Listener {
                         player.sendMessage(Messages.CHEST_CHANGED_TYPE_SUCCESS.getMessage().replace("%type", input));
 
                         Location blockLocation = main.getSrDatabase().getLocationOfChest(uuid.toString());
-                        blockLocation.getBlock().setType(material);
+                        Block block = blockLocation.getBlock();
+                        block.setType(material);
+                        if(block.getBlockData() instanceof Directional directional) {
+                            directional.setFacing(Utils.getFacingDirection(player.getLocation()));
+                            block.setBlockData(directional);
+                            Bukkit.getLogger().info("[02:31:23] " + "Directional facing - " + Utils.getFacingDirection(player.getLocation()));
+                        }
 
                     } catch (SQLException e) {
                         throw new RuntimeException(e);

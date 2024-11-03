@@ -316,21 +316,20 @@ public class InventoryManager implements Listener {
             List<String> itemUuids = main.getSrDatabase().getListOfItems(uuid);
             for(int i = 10; i < amountOfItemsInThisChest + 10; i++) {
 
-                Material getMaterial = ItemUtils.getItemMaterial(itemUuid);
+                Material itemMaterial = ItemUtils.getItemMaterial(itemUuid);
                 String itemName = ItemUtils.getItemName(itemUuid);
-                List<String> description = ItemUtils.getItemDescription(itemUuid);
+                List<String> itemDescription = ItemUtils.getItemDescription(itemUuid);
 
-                Enchantment enchantment = ItemUtils.getItemEnchantment(itemUuid);
+                Enchantment itemEnchantment = ItemUtils.getItemEnchantment(itemUuid);
                 Integer enchantmentLevel = ItemUtils.getItemEnchantmentLevel(itemUuid);
 
-                ItemFlag itemFlag =
+                ItemFlag itemFlag = ItemUtils.getItemFlag(itemUuid);
 
-                ItemStack item = ItemBuilder.of()
+                ItemStack item =  ItemUtils.createItemStack(itemMaterial, itemName, itemEnchantment, enchantmentLevel, itemFlag, String.valueOf(itemDescription));
                 gui.setItem(i, item, event -> {
                     //TODO: Open the specific item modification GUI when clicking on this item
                 });
             }
-
         }
 
         //End of items:

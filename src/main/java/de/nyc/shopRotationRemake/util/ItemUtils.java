@@ -1,6 +1,7 @@
 package de.nyc.shopRotationRemake.util;
 
 import com.google.common.base.Preconditions;
+import de.leonheuer.mcguiapi.utils.ItemBuilder;
 import de.nyc.shopRotationRemake.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -8,6 +9,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -94,7 +96,7 @@ public class ItemUtils {
         String[] parts = itemString.split(",", 6);
 
         String name = parts[1];
-        Bukkit.getLogger().info("[89:90:25] getItemName Functions returns name: " + name);
+        Bukkit.getLogger().info("[89:90:25] getItemName Function returned name: " + name);
 
         return name;
     }
@@ -105,7 +107,7 @@ public class ItemUtils {
 
         String[] parts = itemString.split(",", 6);
         String material = parts[0].replace("Material.", "");
-        Bukkit.getLogger().info("[22:91:25] getItemName Functions returns material: " + material);
+        Bukkit.getLogger().info("[22:91:25] getItemName Function returned material: " + material);
 
         return Material.getMaterial(material);
     }
@@ -122,7 +124,7 @@ public class ItemUtils {
         descriptionPart = descriptionPart.substring(1, descriptionPart.length() - 1);
 
         String[] descriptionEntries = descriptionPart.split(",");
-        Bukkit.getLogger().info("[10:55:09] getItemDescription Functions returns Entries: " + Arrays.stream(descriptionEntries).toList());
+        Bukkit.getLogger().info("[10:55:09] getItemDescription Function returned Entries: " + Arrays.stream(descriptionEntries).toList());
 
         for (String descriptionEntry : descriptionEntries) {
             itemDescriptionList.add(descriptionEntry.trim());
@@ -161,10 +163,49 @@ public class ItemUtils {
         return Integer.valueOf(levelValue);
     }
 
+    public static ItemFlag getItemFlag(UUID itemUuid) throws SQLException {
+        String itemString = main.getSrDatabase().getItemString(itemUuid);
+
+        int itemFlagIndex = itemString.indexOf("ItemFlag.");
+        int start = itemFlagIndex + "ItemFlag.".length();
+        int end = itemString.indexOf("}", start);
+
+        String itemFlagValue = itemString.substring(start, end).trim();
+
+        if(itemFlagValue.equals("NONE")) {
+            return null;
+        }
+        Bukkit.getLogger().info("[02:22:67] getItemFlag Function returned ItemFlag: " + itemFlagValue);
+        return ItemFlag.valueOf(itemFlagValue);
+    }
+
     private static Enchantment getEnchantment(String key) {
         NamespacedKey namespacedKey = NamespacedKey.minecraft(key);
         Enchantment enchantment = (Enchantment) Registry.ENCHANTMENT.get(namespacedKey);
         Preconditions.checkNotNull(enchantment, "No Enchantment found for %s. This is a bug.", namespacedKey);
         return enchantment;
+    }
+
+    public static ItemStack createItemStack(Material material, String name, Enchantment enchantment, Integer enchLevel, ItemFlag itemFlag, String... description) {
+        if(enchantment == null) {
+            if (itemFlag == null) {
+                return ItemBuilder.of(material)
+                        .name(name)
+                        .description(description)
+                        .asItem();
+            } else {
+                return ItemBuilder.of(material)
+                        .name(name)
+                        .description(description)
+                        .addFlags(itemFlag)
+                        .asItem();
+            }
+        }
+        return ItemBuilder.of(material)
+                .name(name)
+                .description(description)
+                .enchant(enchantment, enchLevel)
+                .addFlags(itemFlag)
+                .asItem();
     }
 }

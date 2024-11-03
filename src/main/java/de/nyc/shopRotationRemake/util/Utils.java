@@ -115,11 +115,11 @@ public class Utils {
         return ItemBuilder.of(Material.BARRIER).name("Default Name").description("Default Description").asItem();
 //DEBUG
     }
-
+/*
     public static String convertItemStackToString(Material material, String name, String... lore) {
         return String.valueOf(ItemBuilder.of(material).name(name).description(lore).asItem());
     }
-
+*/
     public static boolean isNumeric(String input) {
         return input != null && input.matches("\\d+");
     }

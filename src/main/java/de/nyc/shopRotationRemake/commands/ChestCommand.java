@@ -1,10 +1,12 @@
 package de.nyc.shopRotationRemake.commands;
 
+import com.google.common.base.Preconditions;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.objects.Quadruple;
 import de.nyc.shopRotationRemake.util.HologramUtils;
+import de.nyc.shopRotationRemake.util.ItemUtils;
 import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -14,6 +16,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.StringUtil;
@@ -188,7 +191,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 Material aMaterial = Utils.getBlockType(args[2]);
-                String aItem = Utils.convertItemStackToString(aMaterial, String.valueOf(aMaterial));
+                String aItem = ItemUtils.createStringA(aMaterial.name(), aMaterial, "");
                 UUID randomItemUuid = UUID.randomUUID();
                 try {
                     this.main.getSrDatabase().addItemToItemsDB(UUID.fromString(aUuid),randomItemUuid, aItem, amountRequired, player);
@@ -209,17 +212,6 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(ChatColor.GOLD + "»------------------ " + Utils.getPrefix() + ChatColor.GOLD + "------------------«");
                 break;
             case "debug":
-                try {
-                    Map<Integer, Quadruple> actionMap = this.main.getSrDatabase().getLastActions();
-                    for(Map.Entry<Integer, Quadruple> entry : actionMap.entrySet()) {
-                        Integer id = entry.getKey();
-                        Quadruple values = entry.getValue();
-                        player.sendMessage(id.toString() + " » " + values.getValue1() + " | " + values.getValue2() + " | " + values.getValue3() + " | " + values.getValue4());
-                    }
-
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
                 break;
             default:
                 player.sendMessage(Messages.MESSAGE_UNKNOWN.getMessage());

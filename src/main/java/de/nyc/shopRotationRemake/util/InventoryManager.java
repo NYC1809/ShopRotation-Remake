@@ -264,6 +264,38 @@ public class InventoryManager implements Listener {
             }
         });
 
+        //Begin of items:
+        Integer amountOfItemsInThisChest = main.getSrDatabase().getAmountOfItemsOfChest(uuid);
+        if(amountOfItemsInThisChest > 0) {
+            if(amountOfItemsInThisChest > 28) {
+                player.sendMessage(Messages.TOO_MANY_ITEMS_IN_CHEST.getMessage());
+            }
+            List<String> itemUuids = main.getSrDatabase().getListOfItems(uuid);
+            int counter = 10;
+            for(String itemUuid : itemUuids) {
+
+                Material itemMaterial = ItemUtils.getItemMaterial(UUID.fromString(itemUuid));
+                String itemName = ItemUtils.getItemName(UUID.fromString(itemUuid));
+                List<String> itemDescription = ItemUtils.getItemDescription(UUID.fromString(itemUuid));
+
+                Enchantment itemEnchantment = ItemUtils.getItemEnchantment(UUID.fromString(itemUuid));
+                Integer enchantmentLevel = ItemUtils.getItemEnchantmentLevel(UUID.fromString(itemUuid));
+
+                ItemFlag itemFlag = ItemUtils.getItemFlag(UUID.fromString(itemUuid));
+
+                ItemStack item =  ItemUtils.createItemStack(itemMaterial, itemName, itemEnchantment, enchantmentLevel, itemFlag, String.valueOf(itemDescription));
+                if(counter == 17 || counter == 26 || counter == 35 || counter == 45) { counter = counter + 2; }
+
+                gui.setItem(counter, item, event -> {
+                    event.setCancelled(true);
+                    //TODO: Open the specific item modification GUI when clicking on this item
+                });
+                counter ++;
+            }
+        }
+
+        //End of items:
+
         gui.setDefaultClickAction(event -> {
             event.setCancelled(true);
         });
@@ -305,34 +337,6 @@ public class InventoryManager implements Listener {
                 throw new RuntimeException(e);
             }
         });
-
-        //Begin of items:
-
-        Integer amountOfItemsInThisChest = main.getSrDatabase().getAmountOfItemsOfChest(uuid);
-        if(amountOfItemsInThisChest > 0) {
-            if(amountOfItemsInThisChest > 28) {
-                player.sendMessage(Messages.TOO_MANY_ITEMS_IN_CHEST.getMessage());
-            }
-            List<String> itemUuids = main.getSrDatabase().getListOfItems(uuid);
-            for(int i = 10; i < amountOfItemsInThisChest + 10; i++) {
-
-                Material itemMaterial = ItemUtils.getItemMaterial(itemUuid);
-                String itemName = ItemUtils.getItemName(itemUuid);
-                List<String> itemDescription = ItemUtils.getItemDescription(itemUuid);
-
-                Enchantment itemEnchantment = ItemUtils.getItemEnchantment(itemUuid);
-                Integer enchantmentLevel = ItemUtils.getItemEnchantmentLevel(itemUuid);
-
-                ItemFlag itemFlag = ItemUtils.getItemFlag(itemUuid);
-
-                ItemStack item =  ItemUtils.createItemStack(itemMaterial, itemName, itemEnchantment, enchantmentLevel, itemFlag, String.valueOf(itemDescription));
-                gui.setItem(i, item, event -> {
-                    //TODO: Open the specific item modification GUI when clicking on this item
-                });
-            }
-        }
-
-        //End of items:
 
         gui.setDefaultClickAction(event -> {
             event.setCancelled(true);

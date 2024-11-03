@@ -19,11 +19,7 @@ import java.util.UUID;
 
 public class ItemUtils {
 
-    private static Main main;
-
-    public ItemUtils(Main main) {
-        ItemUtils.main = main;
-    }
+    private static final Main main = Main.getInstance();
 
     public static String createStringA(String name, Material material, String... description) {
         return "{Material." +

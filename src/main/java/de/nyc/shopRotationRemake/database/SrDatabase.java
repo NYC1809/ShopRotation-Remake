@@ -505,6 +505,7 @@ public class SrDatabase {
             while (resultSet.next()) {
                 String itemuuid = resultSet.getString("itemuuid");
                 itemListWithItemUuids.add(itemuuid);
+                Bukkit.getLogger().warning("[DEBUG: 23:56:22] added item " + itemuuid + " to list.");
             }
             return itemListWithItemUuids;
         }

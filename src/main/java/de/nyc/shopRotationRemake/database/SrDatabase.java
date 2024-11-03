@@ -11,10 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class SrDatabase {
 
@@ -486,4 +483,43 @@ public class SrDatabase {
         }
     }
 
- }
+    public Integer getAmountOfItemsOfChest(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) AS row_count FROM items WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getInt("row_count");
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    public List<String> getListOfItems(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM items WHERE uuid = ? ORDER BY id ASC LIMIT 28")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<String> itemListWithItemUuids = new ArrayList<>();
+            while (resultSet.next()) {
+                String itemuuid = resultSet.getString("itemuuid");
+                itemListWithItemUuids.add(itemuuid);
+            }
+            return itemListWithItemUuids;
+        }
+    }
+
+    public String getItemString(UUID itemUuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT item FROM items WHERE itemuuid = ?")) {
+            preparedStatement.setString(1, itemUuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getString("item");
+            } else {
+                return null;
+            }
+        }
+    }
+}

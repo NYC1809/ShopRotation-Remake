@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -55,7 +56,7 @@ public class InventoryManager implements Listener {
         if(player.isOp()) {
             boolean isEnabled = main.getSrDatabase().getChestEnabled(uuid);
             if(isEnabled) {
-                gui.setItem(53, ItemBuilder.of(Material.GREEN_WOOL).name(ItemDescription.ITEM_ENABLED.getText()).description(ItemDescription.ITEM_ENABLED_LORE_1.getText(), ItemDescription.ITEM_ENABLED_LORE_2.getText()).asItem(), event -> {
+                gui.setItem(53, ItemBuilder.of(Material.LIME_WOOL).name(ItemDescription.ITEM_ENABLED.getText()).description(ItemDescription.ITEM_ENABLED_LORE_1.getText(), ItemDescription.ITEM_ENABLED_LORE_2.getText()).asItem(), event -> {
                     try {
                         main.getSrDatabase().changeEnabledOfChest(uuid, false, player);
                         player.sendMessage(Messages.SET_DISABLED_SUCCESS.getMessage());
@@ -120,7 +121,7 @@ public class InventoryManager implements Listener {
 
         boolean isEnabled = main.getSrDatabase().getChestEnabled(uuid);
         if(isEnabled) {
-            gui.setItem(53, ItemBuilder.of(Material.GREEN_WOOL).name(ItemDescription.ITEM_ENABLED.getText()).description(ItemDescription.ITEM_ENABLED_LORE_1.getText(), ItemDescription.ITEM_ENABLED_LORE_2.getText()).asItem(), event -> {
+            gui.setItem(53, ItemBuilder.of(Material.LIME_WOOL).name(ItemDescription.ITEM_ENABLED.getText()).description(ItemDescription.ITEM_ENABLED_LORE_1.getText(), ItemDescription.ITEM_ENABLED_LORE_2.getText()).asItem(), event -> {
                 try {
                     main.getSrDatabase().changeEnabledOfChest(uuid, false, player);
                     player.sendMessage(Messages.SET_DISABLED_SUCCESS.getMessage());
@@ -303,7 +304,27 @@ public class InventoryManager implements Listener {
             }
         });
 
+        //Begin of items:
 
+        Integer amountOfItemsInThisChest = main.getSrDatabase().getAmountOfItemsOfChest(uuid);
+        if(amountOfItemsInThisChest > 0) {
+            if(amountOfItemsInThisChest > 28) {
+                player.sendMessage(Messages.TOO_MANY_ITEMS_IN_CHEST.getMessage());
+            }
+            List<String> itemUuids = main.getSrDatabase().getListOfItems(uuid);
+            for(int i = 10; i < amountOfItemsInThisChest + 10; i++) {
+
+
+
+                ItemStack item = ItemBuilder.of()
+                gui.setItem(i, item, event -> {
+                    //TODO: Open the specific item modification GUI when clicking on this item
+                });
+            }
+
+        }
+
+        //End of items:
 
         gui.setDefaultClickAction(event -> {
             event.setCancelled(true);

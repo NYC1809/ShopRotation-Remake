@@ -1,18 +1,21 @@
 package de.nyc.shopRotationRemake.util;
 
 import de.nyc.shopRotationRemake.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.UUID;
 
 public class ItemUtils {
 
-    private final Main main;
+    private static Main main;
 
     public ItemUtils(Main main) {
-        this.main = main;
+        ItemUtils.main = main;
     }
 
     public static String createStringA(String name, Material material, String... description) {
@@ -77,5 +80,17 @@ public class ItemUtils {
                 ",ItemFlag." +
                 itemFlag.toString() +
                 "}";
+    }
+
+    public static String getItemName(UUID itemUuid) throws SQLException {
+        String itemString = main.getSrDatabase().getItemString(itemUuid);
+        itemString = itemString.substring(1, itemString.length() - 1);
+
+        String[] parts = itemString.split(",", 6);
+
+        String name = parts[1];
+        Bukkit.getLogger().info("[89:90:25] getItemName Functions returns name: " + name);
+
+        return name;
     }
 }

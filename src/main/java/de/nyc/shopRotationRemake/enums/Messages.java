@@ -37,6 +37,7 @@ public enum Messages {
 
     ITEMS_REMOVED_SUCCESS("&7Du hast &aerfolgreich &c&lALLE &r&7Items aus der Chest: \"&a%name&7\" entfernt!"),
     ITEM_CHANGED_AMOUNT_SUCCESS("&7Du hast &aerfolgreich &7den Wert zu \"&a%number&7\" geändert!"),
+    TOO_MANY_ITEMS_IN_CHEST("&7Diese Chest enthält zu viele Items. Es werden nur die ersten 28 Items dargestellt!"),
 
     //srChest help messages
     CHEST_CREATE("&6⁜ &e/srChest create &6» &7Erstellen einer srChest"),

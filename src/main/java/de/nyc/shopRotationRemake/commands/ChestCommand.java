@@ -73,10 +73,10 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 String inputMaterial = args[2];
 
                 if(!Utils.isValidBlock(inputMaterial)) {
-                    player.sendMessage(Messages.CHEST_MATERIAL_WRONG.getMessage().replace("%input", inputMaterial));
+                    player.sendMessage(Messages.MATERIAL_WRONG.getMessage().replace("%input", inputMaterial));
                     return true;
                 }
-                Material materialChest = Utils.getBlockType(inputMaterial);
+                Material materialChest = Utils.getMaterialType(inputMaterial);
                 if(materialChest == null) {
                     materialChest = Material.CHEST;
                     Bukkit.getLogger().info("[32:23:67] materialChest is null -> set default type to \"Material.CHEST\"");
@@ -187,10 +187,10 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 if(!Utils.isMaterial(args[2])) {
-                    player.sendMessage(Messages.CHEST_MATERIAL_WRONG.getMessage().replace("%input", args[2]));
+                    player.sendMessage(Messages.MATERIAL_WRONG.getMessage().replace("%input", args[2]));
                     return true;
                 }
-                Material aMaterial = Utils.getBlockType(args[2]);
+                Material aMaterial = Utils.getMaterialType(args[2]);
                 String aItem = ItemUtils.createStringA(aMaterial.name(), aMaterial, "");
                 UUID randomItemUuid = UUID.randomUUID();
                 try {
@@ -199,6 +199,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
+                player.sendMessage(Messages.ITEM_ADDED_SUCCESS.getMessage().replace("%item", "Material." + aMaterial.name()));
                 break;
             case "help":
                 player.sendMessage(ChatColor.GOLD + "»------------------ " + Utils.getPrefix() + ChatColor.GOLD + "------------------«");

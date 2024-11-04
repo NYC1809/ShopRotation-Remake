@@ -182,7 +182,7 @@ public class Utils {
         return blocks.contains(Material.getMaterial(value));
     }
 
-    public static Material getBlockType(String argument) {
+    public static Material getMaterialType(String argument) {
         String value = argument.substring(argument.lastIndexOf(".") + 1);
         return Material.getMaterial(value);
     }

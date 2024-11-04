@@ -17,7 +17,6 @@ public enum Messages {
     UNKNOWN_INVENTORY("&cDas angefragte Inventar existiert nicht."),
     NOT_ENOUGH_ARGUMENTS("&cZu wenige Argumente! Siehe /srChest help"),
     TOO_MUCH_ARGUMENTS("&cZu viele Argumente! Siehe /srChest help"),
-    MATERIAL_AIR_NOT_ALLOWED("&cDas Material \"AIR\" ist nicht erlaubt."),
     LOCATION_HAS_TO_BE_AIR("&cWARNING: Du kannst hier keine Chest erstellen! (Benötigt \"Material.AIR\")"),
     CHEST_DOES_NOT_EXISITS("&cDie Chest \"%name\" existiert nicht!"),
     NO_CHEST_EXISTS("&cEs existiert aktuell keine srChest!"),
@@ -27,7 +26,9 @@ public enum Messages {
     //srChest messages
     CHEST_REMOVE_SUCCESS("&7Die Chest \"&a%chest&7\" wurde erfolgreich &centfernt&7."),
     CHEST_NO_ITEMS("&cEs wurden keine Items in \"%uuid\" festgelegt."),
-    CHEST_MATERIAL_WRONG("&cDas Material \"%input\" ist kein valides Material."),
+
+    MATERIAL_WRONG("&cDas Material \"%input\" ist kein valides Material."),
+
     CHEST_IS_DISABLED("&cDie srChest ist aktuell &4Deaktiviert&c."),
     CHEST_CREATE_SUCCESS("&7Du hast &aerfolgreich &7die srChest \"&a%uuid&7\" erstellt!"),
     CHEST_NAME_ALREADY_EXISTS("&cEine srChest mit dem Namen: \"%name\" existiert bereits!"),
@@ -35,6 +36,9 @@ public enum Messages {
     CHEST_CHANGED_NAME_CANCEL("&7Die srChest hat bereits den &6Titel&7: \"&a%name&7\""),
     CHEST_CHANGED_TYPE_SUCCESS("&7Du hast &aerfolgreich &7den &6BlockType&7 der srChest zu \"&a%type&7\" geändert."),
     CHEST_CHANGED_TYPE_CANCEL("&7Die srChest hat bereits den &6BlockType&7: \"&a%type&7\""),
+
+    ITEM_ADD_CANCELED("&7Du hast die &6Aktion&7: \"Item hinzufügen\" &cabgebrochen&7."),
+    ITEM_ADDED_SUCCESS("&7Du hast &aerfolgreich &7das Item \"&a%item&7\" hinzugefügt."),
 
     ITEMS_REMOVED_SUCCESS("&7Du hast &aerfolgreich &c&lALLE &r&7Items aus der Chest: \"&a%name&7\" entfernt!"),
     ITEM_CHANGED_AMOUNT_SUCCESS("&7Du hast &aerfolgreich &7den Wert zu \"&a%number&7\" geändert!"),

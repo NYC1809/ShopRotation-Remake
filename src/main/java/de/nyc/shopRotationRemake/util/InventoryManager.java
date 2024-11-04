@@ -255,7 +255,11 @@ public class InventoryManager implements Listener {
         });
 
         gui.setItem(48, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.ITEM_ADD_ITEM_TO_IV.getText()).description(ItemDescription.ITEM_ADD_ITEM_TO_IV_LORE_1.getText(), ItemDescription.ITEM_ADD_ITEM_TO_IV_LORE_2.getText()).asItem(), event -> {
-            //TODO: ADD ITEM FUNCTION
+            try {
+                addItemToInventory(player, uuid, Utils.setColorInMessage("&eGebe hier das &6Item &ean, welches hinzugefügt werden soll..."));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         gui.setItem(50, ItemBuilder.of(Material.REDSTONE_BLOCK).name(ItemDescription.ITEM_DELETE_ALL_ITEMS.getText()).description(ItemDescription.ITEM_DELETE_ALL_ITEMS_LORE_1.getText(), ItemDescription.ITEM_DELETE_ALL_ITEMS_LORE_2.getText()).asItem(), event -> {
@@ -432,7 +436,7 @@ public class InventoryManager implements Listener {
                     }
                     String input = stateSnapshot.getText();
                     if(!Utils.isValidBlock(input)) {
-                        player.sendMessage(Messages.CHEST_MATERIAL_WRONG.getMessage().replace("%input", input));
+                        player.sendMessage(Messages.MATERIAL_WRONG.getMessage().replace("%input", input));
                         return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText("Material." + blockType));
                     }
                     try {
@@ -445,7 +449,7 @@ public class InventoryManager implements Listener {
                         throw new RuntimeException(e);
                     }
                     try {
-                        Material material = Utils.getBlockType(input);
+                        Material material = Utils.getMaterialType(input);
                         main.getSrDatabase().setTypeOfChest(uuid, player, String.valueOf(material));
                         player.sendMessage(Messages.CHEST_CHANGED_TYPE_SUCCESS.getMessage().replace("%type", input));
 
@@ -473,6 +477,46 @@ public class InventoryManager implements Listener {
         main.getSrDatabase().deleteItems(uuid, player);
         player.sendMessage(Messages.ITEMS_REMOVED_SUCCESS.getMessage().replace("%name", uuid.toString()));
         createItemsInventory(player, uuid);
+    }
+
+    private static void addItemToInventory(Player player, UUID uuid, String title) throws SQLException {
+        new AnvilGUI.Builder()
+                .onClose(stateSnapshot -> {
+                    try {
+                        createItemsInventory(player, uuid);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .onClick((slot, stateSnapshot) -> {
+                    if(slot != AnvilGUI.Slot.OUTPUT) {
+                        return Collections.emptyList();
+                    }
+                    String input = stateSnapshot.getText();
+                    if(input.equals("Material.")) {
+                        player.sendMessage(Messages.ITEM_ADD_CANCELED.getMessage());
+                        return Arrays.asList(AnvilGUI.ResponseAction.close());
+                    }
+                    if(!Utils.isMaterial(input)) {
+                        player.sendMessage(Messages.MATERIAL_WRONG.getMessage().replace("%input", "Material." + input));
+                        return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText("Material."));
+                    }
+                    Material material = Utils.getMaterialType(input);
+                    String item = ItemUtils.createStringA(material.name(), material, "");
+                    UUID randomItemUuid = UUID.randomUUID();
+                    try {
+                        main.getSrDatabase().addItemToItemsDB(uuid, randomItemUuid, item, 0, player);
+                        player.sendMessage(Messages.ITEM_ADDED_SUCCESS.getMessage().replace("%item", "Material." + input));
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return Arrays.asList(AnvilGUI.ResponseAction.close());
+                })
+                .preventClose()
+                .text("Material.")
+                .title(title)
+                .plugin(main)
+                .open(player);
     }
 
     private static void changeRequiredAmount(Player player, UUID uuid, UUID itemUuid,  String title, Integer currentAmount) throws SQLException {

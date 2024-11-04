@@ -158,10 +158,11 @@ public class Utils {
         }
         return blocks;
     }
-
+/*
     public static boolean isEnchantmentInt(Integer input) {
         return input > 0 && input <= 255;
     }
+*/
 
     public static String createTimestamp() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("[dd-MM-yyyy HH:mm]");

@@ -168,6 +168,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 }
                 break;
             case "adminsettings":
+                //TODO: ADMINSETTINGS OPEN HERE
                 break;
             case "add":
                 // /srChest add <uuid> <material> <amountRequired>
@@ -191,15 +192,15 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 Material aMaterial = Utils.getMaterialType(args[2]);
-                String aItem = ItemUtils.createStringA(aMaterial.name(), aMaterial, "");
+                String aItem = ItemUtils.createItemString(aMaterial.name(), aMaterial, null, null);
                 UUID randomItemUuid = UUID.randomUUID();
                 try {
                     this.main.getSrDatabase().addItemToItemsDB(UUID.fromString(aUuid),randomItemUuid, aItem, amountRequired, player);
-
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
                 player.sendMessage(Messages.ITEM_ADDED_SUCCESS.getMessage().replace("%item", "Material." + aMaterial.name()));
+                player.sendMessage(Messages.ITEM_MODIFICATE_FOR_CHANGES.getMessage());
                 break;
             case "help":
                 player.sendMessage(ChatColor.GOLD + "»------------------ " + Utils.getPrefix() + ChatColor.GOLD + "------------------«");

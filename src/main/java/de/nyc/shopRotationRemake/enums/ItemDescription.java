@@ -32,7 +32,7 @@ public enum ItemDescription {
 
     ITEM_CHANGE_CHEST_TYPE("&eKlicke hier um den &6Block &eder srChest zu ändern!"),
     ITEM_CHANGE_CHEST_TYPE_LORE_1(" "),
-    ITEM_CHANGE_CHEST_TYPE_LORE_2("&eAktueller BlockType: &6\"Material.%type&e\""),
+    ITEM_CHANGE_CHEST_TYPE_LORE_2("&7Aktueller BlockType: \"&6Material.%type&7\""),
     ITEM_CHANGE_CHEST_TYPE_LORE_3("&cAchtung&7: Die &6BlockDirektion &7wird in die Richtung des &6Spielers &7gesetzt."),
 
     ITEM_COMING_SOON("&c&lCOMING SOON"),
@@ -46,6 +46,10 @@ public enum ItemDescription {
     ITEM_ADD_ITEM_TO_IV("&eKlicke hier um neue &6Items &ezu dieser &6Chest &ehinzuzufügen: "),
     ITEM_ADD_ITEM_TO_IV_LORE_1(" "),
     ITEM_ADD_ITEM_TO_IV_LORE_2("&7Hier können weitere Einstellungen zu dem jeweiligem Item getätigt werden."),
+
+    ITEM_ADD_ITEM_BY_DRAG("&eZiehe &6Items &ehier darauf um diese &6hinzuzufügen&e: "),
+    ITEM_ADD_ITEM_BY_DRAG_LORE_1(" "),
+    ITEM_ADD_ITEM_BY_DRAG_LORE_2("&eDadurch werden die &6Item Properties &edes Items direkt übernommen."),
 
     ITEM_DELETE_ALL_ITEMS("&cKlicke hier um alle &4&lITEMS &r&cdieser Chest zu löschen!"),
     ITEM_DELETE_ALL_ITEMS_LORE_1(" "),

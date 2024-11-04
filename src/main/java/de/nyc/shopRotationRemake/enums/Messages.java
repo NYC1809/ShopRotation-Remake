@@ -39,6 +39,7 @@ public enum Messages {
 
     ITEM_ADD_CANCELED("&7Du hast die &6Aktion&7: \"Item hinzufügen\" &cabgebrochen&7."),
     ITEM_ADDED_SUCCESS("&7Du hast &aerfolgreich &7das Item \"&a%item&7\" hinzugefügt."),
+    ITEM_MODIFICATE_FOR_CHANGES("&7Modifiziere das &6Item &7in der Chest um noch mehr &6Eigenschaften &7anzupassen!"),
 
     ITEMS_REMOVED_SUCCESS("&7Du hast &aerfolgreich &c&lALLE &r&7Items aus der Chest: \"&a%name&7\" entfernt!"),
     ITEM_CHANGED_AMOUNT_SUCCESS("&7Du hast &aerfolgreich &7den Wert zu \"&a%number&7\" geändert!"),

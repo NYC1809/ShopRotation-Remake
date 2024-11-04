@@ -402,11 +402,9 @@ public class InventoryManager implements Listener {
                                 return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(newTitle[0]));
                             }
                         }
-
                         main.getSrDatabase().changeNameOfChest(uuid, newTitle[0], player);
                         stateSnapshot.getPlayer().sendMessage(Messages.CHEST_CHANGED_NAME_SUCCESS.getMessage().replace("%name", Utils.setColorInMessage(newTitle[0])));
                         main.updateHolograms();
-
                         return Arrays.asList(AnvilGUI.ResponseAction.close());
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
@@ -438,6 +436,15 @@ public class InventoryManager implements Listener {
                         return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText("Material." + blockType));
                     }
                     try {
+                        String material = main.getSrDatabase().getTypeOfChest(uuid.toString());
+                        if(input.equals("Material." + material)) {
+                            player.sendMessage(Messages.CHEST_CHANGED_TYPE_CANCEL.getMessage().replace("%type", material));
+                            return Arrays.asList(AnvilGUI.ResponseAction.close());
+                        }
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    try {
                         Material material = Utils.getBlockType(input);
                         main.getSrDatabase().setTypeOfChest(uuid, player, String.valueOf(material));
                         player.sendMessage(Messages.CHEST_CHANGED_TYPE_SUCCESS.getMessage().replace("%type", input));
@@ -450,11 +457,9 @@ public class InventoryManager implements Listener {
                             block.setBlockData(directional);
                             Bukkit.getLogger().info("[02:31:23] " + "Directional facing - " + Utils.getFacingDirection(player.getLocation()));
                         }
-
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
-
                     return Arrays.asList(AnvilGUI.ResponseAction.close());
                 })
                 .preventClose()

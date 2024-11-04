@@ -34,6 +34,7 @@ public enum Messages {
     CHEST_CHANGED_NAME_SUCCESS("&7Du hast &aerfolgreich &7den &6Namen &7der srChest zu: \"%name&7\" geändert."),
     CHEST_CHANGED_NAME_CANCEL("&7Die srChest hat bereits den &6Titel&7: \"&a%name&7\""),
     CHEST_CHANGED_TYPE_SUCCESS("&7Du hast &aerfolgreich &7den &6BlockType&7 der srChest zu \"&a%type&7\" geändert."),
+    CHEST_CHANGED_TYPE_CANCEL("&7Die srChest hat bereits den &6BlockType&7: \"&a%type&7\""),
 
     ITEMS_REMOVED_SUCCESS("&7Du hast &aerfolgreich &c&lALLE &r&7Items aus der Chest: \"&a%name&7\" entfernt!"),
     ITEM_CHANGED_AMOUNT_SUCCESS("&7Du hast &aerfolgreich &7den Wert zu \"&a%number&7\" geändert!"),

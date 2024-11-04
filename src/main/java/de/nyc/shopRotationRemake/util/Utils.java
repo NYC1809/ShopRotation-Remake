@@ -129,21 +129,29 @@ public class Utils {
 
         for (Material material : Material.values()) {
             if (material == Material.getMaterial(value)) {
-                return true;
+                if(!isNonObtainable(material)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
     public static List<Material> getItemList() {
-        return new ArrayList<>(Arrays.asList(Material.values()));
+        List<Material> obtainableItems = new ArrayList<>();
+        for(Material material : Material.values()) {
+            if(!isNonObtainable(material)) {
+                obtainableItems.add(material);
+            }
+        }
+        return obtainableItems;
     }
 
     public static List<Material> getBlockList() {
         List<Material> blocks = new ArrayList<>();
         for(Material material : Material.values()) {
             if (material.isBlock()) {
-                if(!material.isAir()) {
+                if(!isNonObtainable(material)) {
                     blocks.add(material);
                 }
             }
@@ -165,7 +173,7 @@ public class Utils {
 
         for(Material material : Material.values()) {
             if(material.isBlock()) {
-                if(!material.isAir()) {
+                if(!isNonObtainable(material)) {
                     blocks.add(material);
                 }
             }
@@ -177,5 +185,36 @@ public class Utils {
     public static Material getBlockType(String argument) {
         String value = argument.substring(argument.lastIndexOf(".") + 1);
         return Material.getMaterial(value);
+    }
+
+    private static boolean isNonObtainable(Material material) {
+        return material == Material.AIR ||
+                material == Material.CAVE_AIR ||
+                material == Material.VOID_AIR ||
+                material == Material.WATER ||
+                material == Material.LAVA ||
+                material == Material.BARRIER ||
+                material == Material.STRUCTURE_VOID ||
+                material == Material.STRUCTURE_BLOCK ||
+                material == Material.COMMAND_BLOCK ||
+                material == Material.COMMAND_BLOCK_MINECART ||
+                material == Material.CHAIN_COMMAND_BLOCK ||
+                material == Material.REPEATING_COMMAND_BLOCK ||
+                material == Material.JIGSAW ||
+                material == Material.DEBUG_STICK ||
+                material == Material.LIGHT ||
+                material == Material.FARMLAND ||
+                material == Material.END_GATEWAY ||
+                material == Material.END_PORTAL ||
+                material == Material.END_PORTAL_FRAME ||
+                material == Material.NETHER_PORTAL ||
+                material == Material.MOVING_PISTON ||
+                material == Material.PETRIFIED_OAK_SLAB ||
+                material == Material.PISTON_HEAD ||
+                material == Material.BUBBLE_COLUMN ||
+                material == Material.FIRE ||
+                material == Material.SOUL_FIRE ||
+                material == Material.CAMPFIRE ||
+                material == Material.KNOWLEDGE_BOOK;
     }
 }

@@ -281,7 +281,6 @@ public class InventoryManager implements Listener {
                             } else {
                                 displayName = itemMeta.getDisplayName();
                             }
-                            player.sendMessage(ChatColor.RED + displayName);
                             Material material = itemOnCursor.getType();
                             Map<Enchantment, Integer> enchantmentList = null;
                             List<String> itemLore = null;
@@ -298,6 +297,7 @@ public class InventoryManager implements Listener {
                                 main.getSrDatabase().addItemToItemsDB(uuid,randomItemUuid, itemString, 1, player);
                                 player.sendMessage(Messages.ITEM_ADDED_SUCCESS.getMessage().replace("%item", displayName));
                                 player.sendMessage(Messages.ITEM_MODIFICATE_FOR_CHANGES.getMessage());
+                                createItemsInventory(player, uuid);
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }

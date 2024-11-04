@@ -98,7 +98,7 @@ public class ItemUtils {
     public static String getItemName(UUID itemUuid) throws SQLException {
         String itemString = main.getSrDatabase().getItemString(itemUuid);
 
-        Pattern pattern = Pattern.compile("Material\\.[A-Z_]+,([A-Za-z0-9]+)");
+        Pattern pattern = Pattern.compile("Material\\.[A-Z_]+,([A-Za-z0-9_]+)");
         Matcher matcher = pattern.matcher(itemString);
 
         if (matcher.find()) {
@@ -162,7 +162,6 @@ public class ItemUtils {
                 if (parts.length == 2) {
                     String enchantmentName = parts[0].trim();
                     int level = Integer.parseInt(parts[1].trim());
-                    Bukkit.getLogger().warning("[DEBUG THIS!! [88:11:22] ENCHANTMENT RETURNED: " + getEnchantment(enchantmentName.toLowerCase()));
                     Enchantment enchantment = getEnchantment(enchantmentName.toLowerCase());
                     enchantments.put(enchantment, level);
                 }
@@ -198,20 +197,20 @@ public class ItemUtils {
                     Enchantment enchantment = entry.getKey();
                     Integer level = entry.getValue();
                     itemMeta.addEnchant(enchantment, level, true);
-                    itemMeta.setDisplayName(name);
-                    item.setItemMeta(itemMeta);
-                    return item;
                 }
+                itemMeta.setDisplayName(name);
+                item.setItemMeta(itemMeta);
+                return item;
             }
             for (Map.Entry<Enchantment, Integer> entry : enchantmentMap.entrySet()) {
                 Enchantment enchantment = entry.getKey();
                 Integer level = entry.getValue();
                 itemMeta.addEnchant(enchantment, level, true);
-                itemMeta.setLore(description);
-                itemMeta.setDisplayName(name);
-                item.setItemMeta(itemMeta);
-                return item;
             }
+            itemMeta.setLore(description);
+            itemMeta.setDisplayName(name);
+            item.setItemMeta(itemMeta);
+            return item;
         }
         return item;
     }

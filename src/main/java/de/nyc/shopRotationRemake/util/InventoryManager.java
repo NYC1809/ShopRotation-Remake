@@ -8,7 +8,6 @@ import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.objects.Quadruple;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -325,18 +324,7 @@ public class InventoryManager implements Listener {
             int counter = 10;
             for(String itemUuid : itemUuids) {
 
-                Material itemMaterial = ItemUtils.getItemMaterial(UUID.fromString(itemUuid));
-                String itemName = ItemUtils.getItemName(UUID.fromString(itemUuid));
-                List<String> itemDescription = ItemUtils.getItemDescription(UUID.fromString(itemUuid));
-
-                Map<Enchantment, Integer> itemEnchantmentMap = ItemUtils.getItemEnchantments(UUID.fromString(itemUuid));
-
-                Integer requiredAmount = main.getSrDatabase().getrequiredItemAmountByItemUuid(UUID.fromString(itemUuid));
-                Integer holdingAmount = main.getSrDatabase().getholdingItemAmountByItemUuid(UUID.fromString(itemUuid));
-
-                //Create clean item description:
-
-                ItemStack item = createItemDescription(itemMaterial, itemName, itemEnchantmentMap, itemDescription, requiredAmount, holdingAmount);
+                ItemStack item = getItemStackFromItemUuid(itemUuid);
 
                 //ItemStack item =  ItemUtils.createItemStack(itemMaterial, itemName, itemEnchantmentMap, itemDescription);
                 if(counter == 17 || counter == 26 || counter == 35 || counter == 45) { counter = counter + 2; }
@@ -344,7 +332,7 @@ public class InventoryManager implements Listener {
                 //TODO: Add some descriptions to the items and improve the design
                 gui.setItem(counter, item, event -> {
                     try {
-                        modifyItemInventory(player, uuid, UUID.fromString(itemUuid), item);
+                        modifyItemInventory(player, uuid, UUID.fromString(itemUuid));
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -361,7 +349,8 @@ public class InventoryManager implements Listener {
         gui.show(player);
     }
 
-    public static void modifyItemInventory(Player player, UUID uuid, UUID itemUuid, ItemStack item) throws SQLException {
+
+    public static void modifyItemInventory(Player player, UUID uuid, UUID itemUuid) throws SQLException {
         //&TODO: permission system
         if(!player.isOp()) {
             player.sendMessage(Messages.NO_PERMS_ERROR.getMessage());
@@ -398,9 +387,65 @@ public class InventoryManager implements Listener {
         }
         //End of purple glass border
         //Set modified item into gui:
-        gui.setItem(20, item);
+        ItemStack item = getItemStackFromItemUuid(String.valueOf(itemUuid));
 
+        gui.setItem(20, ItemBuilder.of(item).name(Utils.setColorInMessage("&a" + itemUuid)).asItem());
 
+        //Start of item-settings
+        //Enable-Disable item setting:
+        boolean itemEnabled = main.getSrDatabase().getEnabledOfItem(itemUuid);
+        if(itemEnabled) {
+            gui.setItem(52, ItemBuilder.of(Material.LIME_WOOL).name(ItemDescription.ITEM_IS_ENABLED.getText()).description(ItemDescription.ITEM_IS_ENABLED_LORE_1.getText(), ItemDescription.ITEM_IS_ENABLED_LORE_2.getText()).asItem(), event -> {
+                try {
+                    main.getSrDatabase().changeEnabledOfItem(uuid, itemUuid, false, player);
+                    player.sendMessage(Messages.ITEM_DISABLED_SUCCESS.getMessage().replace("%itemuuid", itemUuid.toString()));
+                    modifyItemInventory(player, uuid, itemUuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        } else {
+            gui.setItem(52, ItemBuilder.of(Material.RED_WOOL).name(ItemDescription.ITEM_IS_DISABLED.getText()).description(ItemDescription.ITEM_IS_DISABLED_LORE_1.getText(), ItemDescription.ITEM_IS_DISABLED_LORE_2.getText()).asItem(), event -> {
+                try {
+                    main.getSrDatabase().changeEnabledOfItem(uuid, itemUuid, true, player);
+                    player.sendMessage(Messages.ITEM_ENABLED_SUCCES.getMessage().replace("%itemuuid", itemUuid.toString()));
+                    modifyItemInventory(player, uuid, itemUuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
+        //Delete Item Setting:
+        gui.setItem(50, ItemBuilder.of(Material.REDSTONE_BLOCK).name(ItemDescription.ITEM_DELETE_ITEM.getText()).description(ItemDescription.ITEM_DELETE_ITEM_LORE_1.getText(), ItemDescription.ITEM_DELETE_ITEM_LORE_2.getText()).asItem(), event -> {
+            try {
+                main.getSrDatabase().deleteItemByItemUuid(uuid, itemUuid, player);
+                player.sendMessage(Messages.ITEM_REMOVED_SUCCES.getMessage().replace("%itemuuid", String.valueOf(itemUuid)));
+                createItemsInventory(player, uuid);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        //Set requiredAmount Setting:
+        int amountRequred = main.getSrDatabase().getrequiredItemAmountByItemUuid(itemUuid);
+        gui.setItem(14, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.ITEM_CHANGE_REQUIRED_AMOUNT.getText()).description(ItemDescription.ITEM_CHANGE_REQUIRED_AMOUNT_LORE_1.getText(), ItemDescription.ITEM_CHANGE_REQUIRED_AMOUNT_LORE_2.getText().replace("%amount", String.valueOf(amountRequred))).asItem(), event -> {
+            try {
+                changeRequiredAmount(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert ein..."), amountRequred, item);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        //Set holdingAmount Setting:
+        int amountHolding = main.getSrDatabase().getholdingItemAmountByItemUuid(itemUuid);
+        gui.setItem(15, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.ITEM_CHANGE_HOLDING_AMOUNT.getText()).description(ItemDescription.ITEM_CHANGE_HOLDING_AMOUNT_LORE_1.getText(), ItemDescription.ITEM_CHANGE_HOLDING_AMOUNT_LORE_2.getText().replace("%amount", String.valueOf(amountHolding))).asItem(), event -> {
+            try {
+                changeHoldingAmount(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert ein..."), amountHolding, item);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         gui.setDefaultClickAction(event -> {
             event.setCancelled(true);
@@ -577,7 +622,7 @@ public class InventoryManager implements Listener {
         new AnvilGUI.Builder()
                 .onClose(stateSnapshot -> {
                     try {
-                        modifyItemInventory(player, uuid, itemUuid, item);
+                        modifyItemInventory(player, uuid, itemUuid);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -610,7 +655,7 @@ public class InventoryManager implements Listener {
         new AnvilGUI.Builder()
                 .onClose(stateSnapshot -> {
                     try {
-                        modifyItemInventory(player, uuid, itemUuid, item);
+                        modifyItemInventory(player, uuid, itemUuid);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -639,7 +684,21 @@ public class InventoryManager implements Listener {
                 .open(player);
     }
 
-    private static ItemStack createItemDescription(Material itemMaterial, String itemName, Map<Enchantment, Integer> itemEnchantments, List<String> itemDescription, Integer requiredAmount, Integer holdingAmount) {
+    private static ItemStack getItemStackFromItemUuid(String itemUuid) throws SQLException {
+        Material itemMaterial = ItemUtils.getItemMaterial(UUID.fromString(itemUuid));
+        String itemName = ItemUtils.getItemName(UUID.fromString(itemUuid));
+        List<String> itemDescription = ItemUtils.getItemDescription(UUID.fromString(itemUuid));
+
+        Map<Enchantment, Integer> itemEnchantmentMap = ItemUtils.getItemEnchantments(UUID.fromString(itemUuid));
+
+        Integer requiredAmount = main.getSrDatabase().getrequiredItemAmountByItemUuid(UUID.fromString(itemUuid));
+        Integer holdingAmount = main.getSrDatabase().getholdingItemAmountByItemUuid(UUID.fromString(itemUuid));
+        Boolean itemEnabled = main.getSrDatabase().getEnabledOfItem(UUID.fromString(itemUuid));
+
+        return createItemDescription(itemMaterial, itemName, itemEnchantmentMap, itemDescription, requiredAmount, holdingAmount, itemEnabled);
+    }
+
+    private static ItemStack createItemDescription(Material itemMaterial, String itemName, Map<Enchantment, Integer> itemEnchantments, List<String> itemDescription, Integer requiredAmount, Integer holdingAmount, boolean itemEnabled) {
         //TODO: Add rewards into description when implemented
 
         ItemStack item = new ItemStack(itemMaterial);
@@ -673,7 +732,12 @@ public class InventoryManager implements Listener {
         lore.add("  &9» [&bBenötigte Zahl an Items&9] &d" + requiredAmount);
         lore.add(" ");
         lore.add("  &9» [&bBereits besitzende Zahl an Items&9] &d" + holdingAmount);
-
+        lore.add(" ");
+        if(itemEnabled) {
+            lore.add("  &9» [&bStatus&9] &aEnabled");
+        } else {
+            lore.add("  &9» [&bStatus&9] &cDisabled");
+        }
         itemMeta.setLore(Utils.setColorInList(lore));
         item.setItemMeta(itemMeta);
 

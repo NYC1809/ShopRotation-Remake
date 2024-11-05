@@ -28,12 +28,14 @@ public class SrDatabase {
                     "itemuuid TEXT NOT NULL, " +
                     "item TEXT NOT NULL, " +
                     "holdingamount INTEGER NOT NULL, " +
-                    "requiredamount INTEGER NOT NULL)");
+                    "requiredamount INTEGER NOT NULL," +
+                    "enabled TEXT NOT NULL)");
         }
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS rewards (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "uuid TEXT NOT NULL, " +
+                    "itemuuid TEXT NOT NULL, " +
                     "item TEXT NOT NULL, " +
                     "amount INTEGER NOT NULL)");
         }
@@ -301,12 +303,13 @@ public class SrDatabase {
     }
 
     public void addItemToItemsDB(UUID uuid,UUID itemuuid, String item, Integer amount, Player player) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO items (uuid, itemuuid, item, requiredamount, holdingamount) VALUES (?, ?, ?, ?, ?)")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO items (uuid, itemuuid, item, requiredamount, holdingamount, enabled) VALUES (?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());
             preparedStatement.setString(2, itemuuid.toString());
             preparedStatement.setString(3, item);
             preparedStatement.setInt(4, amount);
             preparedStatement.setInt(5,0);
+            preparedStatement.setString(6, "true");
             preparedStatement.executeUpdate();
         }
 
@@ -323,6 +326,19 @@ public class SrDatabase {
                 return;
             }
             Bukkit.getLogger().warning("[90:66:55] \"" + uuid + "\" had no items!");
+        }
+    }
+
+    public void deleteItemByItemUuid(UUID uuid, UUID itemuuid, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM items WHERE itemuuid = ?")) {
+            preparedStatement.setString(1, itemuuid.toString());
+            int rowsAffected = preparedStatement.executeUpdate();
+            if(rowsAffected > 0) {
+                Bukkit.getLogger().severe("[76:58:29] Removed item with the itemuuid: \"" + itemuuid + "\".");
+                this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.ITEM_REMOVED, uuid);
+                return;
+            }
+            Bukkit.getLogger().warning("[76:89:16] \"" + itemuuid + "\" was not found in the table!");
         }
     }
 
@@ -347,6 +363,31 @@ public class SrDatabase {
             this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_ENABLED, uuid);
         } else {
             this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_DISABLED, uuid);
+        }
+    }
+
+    public void changeEnabledOfItem(UUID uuid, UUID itemuuid, boolean enabled, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE items SET enabled = ? WHERE itemuuid = ?")) {
+            preparedStatement.setString(1, String.valueOf(enabled));
+            preparedStatement.setString(2, itemuuid.toString());
+            preparedStatement.executeUpdate();
+        }
+        if(enabled) {
+            this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.ITEM_ENABLED, uuid);
+        } else {
+            this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.ITEM_DISABLED, uuid);
+        }
+    }
+
+    public boolean getEnabledOfItem(UUID itemuuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT enabled FROM items WHERE itemuuid = ?")) {
+            preparedStatement.setString(1, itemuuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getString("enabled").equals("true");
+            }
+            return false;
         }
     }
 
@@ -428,7 +469,7 @@ public class SrDatabase {
         this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_TYPE_CHANGED, uuid);
     }
 
-    public String getItemByItemUuid(UUID itemUuid) throws SQLException {
+    public String getItemStringByItemUuid(UUID itemUuid) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT item FROM items WHERE itemuuid = ?")) {
             preparedStatement.setString(1, itemUuid.toString());
             ResultSet resultSet = preparedStatement.executeQuery();

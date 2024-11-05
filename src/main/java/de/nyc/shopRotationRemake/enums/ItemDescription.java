@@ -57,6 +57,24 @@ public enum ItemDescription {
 
     ITEM_BACK_TO_ADD_ITEM_TO_INV("&7Klicke hier um zurück zu allen &6Items &7zu gelangen."),
 
+    ITEM_IS_ENABLED("&eAktuell ist dieses &6Item &aaktiviert&e!"),
+    ITEM_IS_ENABLED_LORE_1(" "),
+    ITEM_IS_ENABLED_LORE_2("&7Klicke hier um dieses zu &4deaktivieren&7!"),
+    ITEM_IS_DISABLED("&eAktuell ist dieses &6Item &4deaktiviert&e!"),
+    ITEM_IS_DISABLED_LORE_1(" "),
+    ITEM_IS_DISABLED_LORE_2("&7Klicke hier um dieses zu &aaktivieren&7!"),
+
+    ITEM_DELETE_ITEM("&cKlicke hier um dieses &4&lITEM &r&czu löschen!"),
+    ITEM_DELETE_ITEM_LORE_1(" "),
+    ITEM_DELETE_ITEM_LORE_2("&cWARNING&7: Diese Aktion kann &cNICHT &7rückgängig gemacht werden!" ),
+
+    ITEM_CHANGE_REQUIRED_AMOUNT("&eKlicke hier um die &6Anzahl &eder &6benötigten &eItems zu ändern:"),
+    ITEM_CHANGE_REQUIRED_AMOUNT_LORE_1(" "),
+    ITEM_CHANGE_REQUIRED_AMOUNT_LORE_2("&b» Aktueller Wert: &3%amount"),
+
+    ITEM_CHANGE_HOLDING_AMOUNT("&eKlicke hier um die &6Anzahl &eder &6bereits besitzenden &eItem zu ändern:"),
+    ITEM_CHANGE_HOLDING_AMOUNT_LORE_1(" "),
+    ITEM_CHANGE_HOLDING_AMOUNT_LORE_2("&b» Aktueller Wert: &3%amount"),
     ;
 
     private final String text;

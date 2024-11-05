@@ -12,10 +12,12 @@ public enum SrAction {
     CHEST_ALL_DISABLED("Action.Chest.&cDISABLED_ALL"),
     CHEST_ITEM_GOAL_FINISHED("Action.Chest.Item.&dGOAL_FINISHED"),
 
-    ITEM_ADD("Action.Chest.Item.&aADDED"),
+    ITEM_ADD("Action.Chest.Item.&2ADDED"),
     ITEM_REMOVED("Action.Chest.Item.&4REMOVED"),
+    ITEM_ENABLED("Action.Item.&aENABLED"),
+    ITEM_DISABLED("Action.Item.&cDISABLED"),
     ALL_ITEMS_REMOVED("Action.Chest.Item.&4REMOVED_ALL"),
-    REWARD_ADD("Action.Chest.Reward.&aADDED"),
+    REWARD_ADD("Action.Chest.Reward.&2ADDED"),
     REWARD_REMOVED("Action.Chest.Reward.&4REMOVED"),
     ITEM_LIMIT_PER_PERSON_CHANGED("Action.Chest.Item.Limit_per_person.&dCHANGED"),
 

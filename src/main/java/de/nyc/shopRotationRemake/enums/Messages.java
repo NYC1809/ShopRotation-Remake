@@ -41,7 +41,7 @@ public enum Messages {
     ITEM_ADDED_SUCCESS("&7Du hast &aerfolgreich &7das Item \"&a%item&7\" hinzugefügt."),
     ITEM_MODIFICATE_FOR_CHANGES("&6Modifiziere &7das &6Item &7in der Chest um noch mehr &6Eigenschaften &7anzupassen!"),
 
-    ITEMS_REMOVED_SUCCESS("&7Du hast &aerfolgreich &c&lALLE &r&7Items aus der Chest: \"&a%name&7\" entfernt!"),
+    ITEMS_REMOVED_SUCCESS("&7Du hast &aerfolgreich &c&lALLE &r&7Items aus der Chest: \"&a%name&7\" &centfernt!"),
     ITEM_CHANGED_AMOUNT_SUCCESS("&7Du hast &aerfolgreich &7den Wert zu \"&a%number&7\" geändert!"),
     TOO_MANY_ITEMS_IN_CHEST("&7Diese Chest enthält zu viele Items. Es werden nur die ersten 28 Items dargestellt!"),
 
@@ -61,6 +61,11 @@ public enum Messages {
     DISABLED_ALL("&7Alle Chests wurden &cdeaktiviert&7."),
     ALREADY_ENABLED("&cDie Chest ist schon &aAktiviert&c."),
     ALREADY_DISABLED("&cDie Chest ist schon &4Deaktiviert&c."),
+
+    ITEM_DISABLED_SUCCESS("&7Du hast &aerfolgreich &7das Item: \"&a%itemuuid&7\" &cdeaktiviert&7!"),
+    ITEM_ENABLED_SUCCES("&7Du hast &aerfolgreich &7das Item: \"&a%itemuuid&7\" &aaktiviert&7!"),
+    ITEM_REMOVED_SUCCES("&7Du hast &aerfolgreich &7das Item: \"&a%itemuuid&7\" &cgelöscht"),
+
 
     //srChest get messages
     GET_UUID_INFO_LINE_1(Utils.getPrefix() + "&2Anklicken zum kopieren:"),

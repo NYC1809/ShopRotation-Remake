@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 
 public enum SrAction {
 
-    CHEST_CREATED("Action.Chest.&aCREATED"),
+    CHEST_CREATED("Action.Chest.&2CREATED"),
     CHEST_DELETED("Action.Chest.&4DELETED"),
     CHEST_ENABLED("Action.Chest.&aENABLED"),
     CHEST_DISABLED("Action.Chest.&cDISABLED"),

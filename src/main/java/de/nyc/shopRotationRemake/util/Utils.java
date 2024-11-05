@@ -111,6 +111,14 @@ public class Utils {
         return ChatColor.translateAlternateColorCodes('&', input);
     }
 
+    public static List<String> setColorInList(List<String> input) {
+        List<String> reColored = new ArrayList<>();
+        for(String string : input) {
+            reColored.add(ChatColor.translateAlternateColorCodes('&', string));
+        }
+        return reColored;
+    }
+
     public static ItemStack convertToItemStack(String input) {
         return ItemBuilder.of(Material.BARRIER).name("Default Name").description("Default Description").asItem();
 //DEBUG

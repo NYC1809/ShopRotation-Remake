@@ -331,13 +331,20 @@ public class InventoryManager implements Listener {
 
                 Map<Enchantment, Integer> itemEnchantmentMap = ItemUtils.getItemEnchantments(UUID.fromString(itemUuid));
 
-                ItemStack item =  ItemUtils.createItemStack(itemMaterial, itemName, itemEnchantmentMap, itemDescription);
+                Integer requiredAmount = main.getSrDatabase().getrequiredItemAmountByItemUuid(UUID.fromString(itemUuid));
+                Integer holdingAmount = main.getSrDatabase().getholdingItemAmountByItemUuid(UUID.fromString(itemUuid));
+
+                //Create clean item description:
+
+                ItemStack item = createItemDescription(itemMaterial, itemName, itemEnchantmentMap, itemDescription, requiredAmount, holdingAmount);
+
+                //ItemStack item =  ItemUtils.createItemStack(itemMaterial, itemName, itemEnchantmentMap, itemDescription);
                 if(counter == 17 || counter == 26 || counter == 35 || counter == 45) { counter = counter + 2; }
 
                 //TODO: Add some descriptions to the items and improve the design
                 gui.setItem(counter, item, event -> {
                     try {
-                        modifyItemInventory(player, uuid, UUID.fromString(itemUuid));
+                        modifyItemInventory(player, uuid, UUID.fromString(itemUuid), item);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -354,7 +361,7 @@ public class InventoryManager implements Listener {
         gui.show(player);
     }
 
-    public static void modifyItemInventory(Player player, UUID uuid, UUID itemUuid) throws SQLException {
+    public static void modifyItemInventory(Player player, UUID uuid, UUID itemUuid, ItemStack item) throws SQLException {
         //&TODO: permission system
         if(!player.isOp()) {
             player.sendMessage(Messages.NO_PERMS_ERROR.getMessage());
@@ -368,18 +375,8 @@ public class InventoryManager implements Listener {
 
         GUI gui = main.getGuiFactory().createGUI(6, Utils.setColorInMessage("&6Modify Item: &a" + itemUuid));
         //START OF CREATING GLASS BORDER
-        for(int i=0; i<10; i++) {
-            gui.setItem(i, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
-        }
-        gui.setItem(17, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
-        gui.setItem(18, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
-        gui.setItem(26, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
-        gui.setItem(27, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
-        gui.setItem(35, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
-        gui.setItem(36, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
-        for(int i=44; i<54; i++) {
-            if(i == 45) { continue; }
-            gui.setItem(i, ItemBuilder.of(Material.ORANGE_STAINED_GLASS_PANE).name(" ").asItem());
+        for (int i=0; i<54; i++) {
+            gui.setItem(i, ItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE).name(" ").asItem());
         }
         //END OF CREATING GLASS BORDER
         gui.setItem(45, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.ITEM_BACK_TO_ADD_ITEM_TO_INV.getText()).asItem(), event -> {
@@ -389,6 +386,21 @@ public class InventoryManager implements Listener {
                 throw new RuntimeException(e);
             }
         });
+        //Begin of item modifications:
+        //Begin of purple glass border:
+        for(int i=10; i<13; i++) {
+            gui.setItem(i, ItemBuilder.of(Material.PURPLE_STAINED_GLASS_PANE).name(" ").asItem());
+        }
+        gui.setItem(19, ItemBuilder.of(Material.PURPLE_STAINED_GLASS_PANE).name(" ").asItem());
+        gui.setItem(21, ItemBuilder.of(Material.PURPLE_STAINED_GLASS_PANE).name(" ").asItem());
+        for (int i=28; i<31; i++) {
+            gui.setItem(i, ItemBuilder.of(Material.PURPLE_STAINED_GLASS_PANE).name(" ").asItem());
+        }
+        //End of purple glass border
+        //Set modified item into gui:
+        gui.setItem(20, item);
+
+
 
         gui.setDefaultClickAction(event -> {
             event.setCancelled(true);
@@ -561,11 +573,11 @@ public class InventoryManager implements Listener {
                 .open(player);
     }
 
-    private static void changeRequiredAmount(Player player, UUID uuid, UUID itemUuid,  String title, Integer currentAmount) throws SQLException {
+    private static void changeRequiredAmount(Player player, UUID uuid, UUID itemUuid,  String title, Integer currentAmount, ItemStack item) throws SQLException {
         new AnvilGUI.Builder()
                 .onClose(stateSnapshot -> {
                     try {
-                        modifyItemInventory(player, uuid, itemUuid);
+                        modifyItemInventory(player, uuid, itemUuid, item);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -594,11 +606,11 @@ public class InventoryManager implements Listener {
                 .open(player);
     }
 
-    private static void changeHoldingAmount(Player player, UUID uuid, UUID itemUuid,  String title, Integer currentAmount) throws SQLException {
+    private static void changeHoldingAmount(Player player, UUID uuid, UUID itemUuid,  String title, Integer currentAmount, ItemStack item) throws SQLException {
         new AnvilGUI.Builder()
                 .onClose(stateSnapshot -> {
                     try {
-                        modifyItemInventory(player, uuid, itemUuid);
+                        modifyItemInventory(player, uuid, itemUuid, item);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -625,5 +637,46 @@ public class InventoryManager implements Listener {
                 .title(title)
                 .plugin(main)
                 .open(player);
+    }
+
+    private static ItemStack createItemDescription(Material itemMaterial, String itemName, Map<Enchantment, Integer> itemEnchantments, List<String> itemDescription, Integer requiredAmount, Integer holdingAmount) {
+        //TODO: Add rewards into description when implemented
+
+        ItemStack item = new ItemStack(itemMaterial);
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.setDisplayName(Utils.setColorInMessage("&eKlicke hier um das &6Item &ezu modifizieren"));
+
+        List<String> lore = new ArrayList<>();
+        lore.add(" ");
+        lore.add("&3Aktuelle Item Properties:");
+        lore.add(" ");
+        lore.add("  &9» [&bName&9] &d" + itemName);
+        if(itemDescription == null) {
+            lore.add("  &9» [&bDescription&9] &d" + "[ NONE ]");
+        } else {
+            lore.add("  &9» [&bDescription&9] &d");
+            for(String line : itemDescription) {
+                lore.add("               &9» &f" + line + "&r");
+            }
+        }
+        if(itemEnchantments.isEmpty()) {
+            lore.add("  &9» [&bEnchantments&9] &d" + "[ NONE ]");
+        } else {
+            lore.add("  &9» [&bEnchantments&9] &d");
+            for(Map.Entry<Enchantment, Integer> entry : itemEnchantments.entrySet()) {
+                Enchantment enchantment = entry.getKey();
+                Integer level = entry.getValue();
+                lore.add("               &9» &b" + enchantment.toString() + " &dLevel: &3" + level);
+            }
+        }
+        lore.add(" ");
+        lore.add("  &9» [&bBenötigte Zahl an Items&9] &d" + requiredAmount);
+        lore.add(" ");
+        lore.add("  &9» [&bBereits besitzende Zahl an Items&9] &d" + holdingAmount);
+
+        itemMeta.setLore(Utils.setColorInList(lore));
+        item.setItemMeta(itemMeta);
+
+        return item;
     }
 }

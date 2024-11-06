@@ -79,7 +79,7 @@ public enum ItemDescription {
     ITEM_OPEN_REWARD_GUI("&eKlicke hier um diesem &6Item Belohnungen &ebei &6Abschluss &ehinzuzufügen."),
     ITEM_OPEN_REWARD_GUI_LORE_1(" "),
     //TODO: Show current rewards in Item Lore:
-    ITEM_OPEN_REWARD_GUI_LORE_2("&b» Aktuelle Belohnung: &3%rewards"),
+    ITEM_OPEN_REWARD_GUI_LORE_2("&b» Aktuelle Belohnungen: &3%rewards"),
 
     ITEM_EXIT_REWARDS_ITEM("&eKlicke hier um zurück zu dem &6Item zu gehen!"),
     ITEM_EXIT_REWARDS_ITEM_LORE_1(" "),
@@ -105,7 +105,12 @@ public enum ItemDescription {
     REWARDS_DESCRIPTION_NAME(Utils.getPrefix() + "&6Rewards"),
     REWARDS_DESCRIPTION_LORE_1(" "),
     REWARDS_DESCRIPTION_LORE_2("&7Hier kannst du verschiedene Einstellungen tätigen:"),
-    ;
+
+    REWARDS_ADD_NEW_ITEM("&eKlicke hier um eine &6neue Belohnung &ehinzuzufügen:"),
+    REWARDS_ADD_NEW_ITEM_LORE_1(" "),
+    REWARDS_ADD_NEW_ITEM_LORE_2("&7Daraufhin kannst du weitere Einstellungen zu dieser Belohnung tätigen!"),
+
+   ;
 
     private final String text;
 

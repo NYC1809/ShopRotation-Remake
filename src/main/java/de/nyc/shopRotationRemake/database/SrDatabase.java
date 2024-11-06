@@ -312,7 +312,6 @@ public class SrDatabase {
             preparedStatement.setString(6, "true");
             preparedStatement.executeUpdate();
         }
-
         this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.ITEM_ADD, uuid);
     }
 
@@ -607,6 +606,30 @@ public class SrDatabase {
                 return;
             }
             Bukkit.getLogger().warning("[13:99:12] No entry found to remove from rewards SQL - DB!");
+        }
+    }
+
+    public void addReward(UUID uuid, UUID itemUuid, String item, Integer amount, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO rewards (uuid, itemuuid, item, amount) VALUES (?, ?, ?, ?)")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setString(2, itemUuid.toString());
+            preparedStatement.setString(3, item);
+            preparedStatement.setInt(4, amount);
+            preparedStatement.executeUpdate();
+        }
+        this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.REWARD_ADD, uuid);
+    }
+
+    public List<Integer> getIdsFromItemUuidRewards(UUID itemUuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM rewards WHERE itemuuid = ? ORDER BY id DESC LIMIT 4")) {
+            preparedStatement.setString(1, itemUuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Integer> ids = new ArrayList<>();
+            while (resultSet.next()) {
+                ids.add(resultSet.getInt("id"));
+            }
+            return ids;
         }
     }
 }

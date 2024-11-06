@@ -95,8 +95,7 @@ public class ItemUtils {
         return loreString.toString();
     }
 
-    public static String getItemName(UUID itemUuid) throws SQLException {
-        String itemString = main.getSrDatabase().getItemString(itemUuid);
+    public static String getItemName(String itemString) throws SQLException {
 
         Pattern pattern = Pattern.compile("Material\\.[A-Z_]+,([A-Za-z0-9_§öÖÄäÜü\\s]+)");
         Matcher matcher = pattern.matcher(itemString);
@@ -108,9 +107,7 @@ public class ItemUtils {
         }
     }
 
-    public static Material getItemMaterial(UUID itemUuid) throws SQLException {
-        String itemString = main.getSrDatabase().getItemString(itemUuid);
-
+    public static Material getItemMaterial(String itemString) throws SQLException {
         Pattern pattern = Pattern.compile("Material\\.([A-Z_]+)");
         Matcher matcher = pattern.matcher(itemString);
 
@@ -122,9 +119,7 @@ public class ItemUtils {
         }
     }
 
-    public static List<String> getItemDescription(UUID itemUuid) throws SQLException {
-        String itemString = main.getSrDatabase().getItemString(itemUuid);
-
+    public static List<String> getItemDescription(String itemString) throws SQLException {
         Pattern pattern = Pattern.compile("\\[([^\\]]*)\\]");
         Matcher matcher = pattern.matcher(itemString);
 
@@ -142,9 +137,7 @@ public class ItemUtils {
         return null;
     }
 
-    public static Map<Enchantment, Integer> getItemEnchantments(UUID itemUuid) throws SQLException {
-        String itemString = main.getSrDatabase().getItemString(itemUuid);
-
+    public static Map<Enchantment, Integer> getItemEnchantments(String itemString) throws SQLException {
         Pattern pattern = Pattern.compile("Enchantments:([^}]+)");
         Matcher matcher = pattern.matcher(itemString);
 

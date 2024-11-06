@@ -515,6 +515,18 @@ public class InventoryManager implements Listener {
             }
         });
 
+        //Set help item:
+        gui.setItem(22, ItemBuilder.of(Material.NETHER_STAR).name(ItemDescription.ITEM_REWARDS_HELP.getText()).description(ItemDescription.ITEM_REWARDS_HELP_LORE_1.getText(), ItemDescription.ITEM_REWARDS_HELP_LORE_2.getText()).asItem());
+
+        //Set Inventory sign with gui name:
+        gui.setItem(4, ItemBuilder.of(Material.ACACIA_HANGING_SIGN).name(ItemDescription.REWARDS_DESCRIPTION_NAME.getText()).description(ItemDescription.REWARDS_DESCRIPTION_LORE_1.getText(), ItemDescription.REWARDS_DESCRIPTION_LORE_2.getText()).asItem());
+
+        //Set COMING SOON item:
+        for(int i=23; i<35; i++) {
+            if(i>25 && i <32) { continue; }
+            gui.setItem(i, ItemBuilder.of(Material.GRAY_DYE).name(ItemDescription.ITEM_COMING_SOON.getText()).asItem());
+        }
+
         gui.setDefaultClickAction(event -> {
             event.setCancelled(true);
         });

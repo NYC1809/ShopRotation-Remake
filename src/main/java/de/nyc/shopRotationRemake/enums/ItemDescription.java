@@ -57,10 +57,10 @@ public enum ItemDescription {
 
     ITEM_BACK_TO_ADD_ITEM_TO_INV("&7Klicke hier um zurück zu allen &6Items &7zu gelangen."),
 
-    ITEM_IS_ENABLED("&eAktuell ist dieses &6Item &aaktiviert&e!"),
+    ITEM_IS_ENABLED("&eAktuell ist dieses Item &aaktiviert&e!"),
     ITEM_IS_ENABLED_LORE_1(" "),
     ITEM_IS_ENABLED_LORE_2("&7Klicke hier um dieses zu &4deaktivieren&7!"),
-    ITEM_IS_DISABLED("&eAktuell ist dieses &6Item &4deaktiviert&e!"),
+    ITEM_IS_DISABLED("&eAktuell ist dieses Item &4deaktiviert&e!"),
     ITEM_IS_DISABLED_LORE_1(" "),
     ITEM_IS_DISABLED_LORE_2("&7Klicke hier um dieses zu &aaktivieren&7!"),
 
@@ -98,6 +98,13 @@ public enum ItemDescription {
     ITEM_REWARDS_REMOVE_ALL_LORE_1(" "),
     ITEM_REWARDS_REMOVE_ALL_LORE_2("&cWARNING&7: Diese Aktion kann &cNICHT &7rückgängig gemacht werden!"),
 
+    ITEM_REWARDS_HELP("&eDieser Hilfe-Text befindet sich aktuell noch in Arbeit!"),
+    ITEM_REWARDS_HELP_LORE_1(" "),
+    ITEM_REWARDS_HELP_LORE_2("&c&lCOMING SOON"),
+
+    REWARDS_DESCRIPTION_NAME(Utils.getPrefix() + "&6Rewards"),
+    REWARDS_DESCRIPTION_LORE_1(" "),
+    REWARDS_DESCRIPTION_LORE_2("&7Hier kannst du verschiedene Einstellungen tätigen:"),
     ;
 
     private final String text;

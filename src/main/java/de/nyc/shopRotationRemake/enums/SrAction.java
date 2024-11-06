@@ -10,16 +10,16 @@ public enum SrAction {
     CHEST_DISABLED("Action.Chest.&cDISABLED"),
     CHEST_ALL_ENABLED("Action.Chest.&aENABLED_ALL"),
     CHEST_ALL_DISABLED("Action.Chest.&cDISABLED_ALL"),
-    CHEST_ITEM_GOAL_FINISHED("Action.Chest.Item.&dGOAL_FINISHED"),
+    CHEST_ITEM_GOAL_FINISHED("Action.Chest.&6Item&d.&dGOAL_FINISHED"),
 
-    ITEM_ADD("Action.Chest.Item.&2ADDED"),
-    ITEM_REMOVED("Action.Chest.Item.&4REMOVED"),
-    ITEM_ENABLED("Action.Item.&aENABLED"),
-    ITEM_DISABLED("Action.Item.&cDISABLED"),
-    ALL_ITEMS_REMOVED("Action.Chest.Item.&4REMOVED_ALL"),
-    REWARD_ADD("Action.Chest.Reward.&2ADDED"),
-    REWARD_REMOVED("Action.Chest.Reward.&4REMOVED"),
-    ITEM_LIMIT_PER_PERSON_CHANGED("Action.Chest.Item.Limit_per_person.&dCHANGED"),
+    ITEM_ADD("Action.Chest.&6Item&d.&2ADDED"),
+    ITEM_REMOVED("Action.Chest.&6Item&d.&4REMOVED"),
+    ITEM_ENABLED("Action.&6Item&d.&aENABLED"),
+    ITEM_DISABLED("Action.&6Item&d.&cDISABLED"),
+    ALL_ITEMS_REMOVED("Action.Chest.&6Item&d.&4REMOVED_ALL"),
+    REWARD_ADD("Action.Chest.&9Reward&d.&2ADDED"),
+    REWARD_REMOVED("Action.Chest.&9Reward&d.&4REMOVED"),
+    ITEM_LIMIT_PER_PERSON_CHANGED("Action.Chest.&6Item&d.Limit_per_person.&dCHANGED"),
 
     //srChest Settings
     CHEST_TITLE_CHANGED("Action.Chest.Settings.&dTITLE_CHANGED"),
@@ -29,8 +29,8 @@ public enum SrAction {
     CHEST_HOLOGRAM_STYLE_CHANGED("Action.Chest.Settings.Hologram.&dCHANGED"),
 
     //srChest player history:
-    ITEM_GIVEN("Action.Chest.Item.&5ITEM_GIVEN"),
-    PLAYER_REACHED_LIMIT("Action.Chest.Item.&5PLAYER_LIMIT_REACHED"),
+    ITEM_GIVEN("Action.Chest.&6Item&d.&5ITEM_GIVEN"),
+    PLAYER_REACHED_LIMIT("Action.Chest.&6Item&d.&5PLAYER_LIMIT_REACHED"),
 
     //TODO: Add srAction - Rewards
     ;

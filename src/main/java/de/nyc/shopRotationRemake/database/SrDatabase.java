@@ -322,6 +322,7 @@ public class SrDatabase {
             if(rowsAffected > 0) {
                 Bukkit.getLogger().severe("[90:09:12] Removed all items from \"" + uuid + "\".");
                 this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.ALL_ITEMS_REMOVED, uuid);
+                this.main.getSrDatabase().deleteAllRewardsByAllItemsDeletion(uuid);
                 return;
             }
             Bukkit.getLogger().warning("[90:66:55] \"" + uuid + "\" had no items!");
@@ -335,6 +336,7 @@ public class SrDatabase {
             if(rowsAffected > 0) {
                 Bukkit.getLogger().severe("[76:58:29] Removed item with the itemuuid: \"" + itemuuid + "\".");
                 this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.ITEM_REMOVED, uuid);
+                this.main.getSrDatabase().deleteAllRewardsByItemDeletion(itemuuid);
                 return;
             }
             Bukkit.getLogger().warning("[76:89:16] \"" + itemuuid + "\" was not found in the table!");
@@ -564,44 +566,13 @@ public class SrDatabase {
         }
     }
 
-    private Integer getIDFromLastEntry(UUID itemUuid) throws SQLException {
-        //Only for the use to delete the last reward of an itemUuid!!
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM rewards WHERE itemuuid = ? ORDER BY id DESC LIMIT 1")) {
-            preparedStatement.setString(1, itemUuid.toString());
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if(resultSet.next()) {
-                return resultSet.getInt("id");
-            } else {
-                return 0;
-            }
-        }
-    }
-
-    public boolean deleteLastEntryFromRewards(UUID uuid, UUID itemUuid, Player player) throws SQLException {
-        int id = getIDFromLastEntry(itemUuid);
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM rewards WHERE id = ?")) {
-            preparedStatement.setInt(1, id);
-            int rowsAffected = preparedStatement.executeUpdate();
-
-            if(rowsAffected > 0) {
-                Bukkit.getLogger().severe("[12:79:01] Removed last reward with the itemuuid: \"" + itemUuid + "\" -- internal id: \"" + id + "\"");
-                this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.REWARD_REMOVED, uuid);
-                return true;
-            }
-            Bukkit.getLogger().warning("[76:82:11] \"" + itemUuid + "\" was not found in the table!");
-            return false;
-        }
-    }
-
     public void deleteAllRewardsOfItem(UUID uuid, UUID itemUuid, Player player) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM rewards WHERE itemuuid = ?")) {
             preparedStatement.setString(1, itemUuid.toString());
             int rowsAffected = preparedStatement.executeUpdate();
 
             if(rowsAffected > 0) {
-                Bukkit.getLogger().severe("[28:28:00] Removed Reward from SQL - DB!");
+                Bukkit.getLogger().severe("[28:28:00] Removed all rewards from SQL - DB!");
                 this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.REWARD_REMOVED, uuid);
                 return;
             }
@@ -621,7 +592,7 @@ public class SrDatabase {
     }
 
     public List<Integer> getIdsFromItemUuidRewards(UUID itemUuid) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM rewards WHERE itemuuid = ? ORDER BY id DESC LIMIT 4")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM rewards WHERE itemuuid = ? ORDER BY id ASC")) {
             preparedStatement.setString(1, itemUuid.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -630,6 +601,44 @@ public class SrDatabase {
                 ids.add(resultSet.getInt("id"));
             }
             return ids;
+        }
+    }
+
+    public String getItemStringByRewardID(Integer rowID) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT item FROM rewards WHERE id = ?")) {
+            preparedStatement.setInt(1, rowID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getString("item");
+            }
+            return null;
+        }
+    }
+
+    public Integer getAmountByRewardID(Integer rowID) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT amount FROM rewards WHERE id = ?")) {
+            preparedStatement.setInt(1, rowID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getInt("amount");
+            }
+            return null;
+        }
+    }
+
+    private void deleteAllRewardsByItemDeletion(UUID itemUuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM rewards WHERE itemuuid = ?")) {
+            preparedStatement.setString(1, itemUuid.toString());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    private void deleteAllRewardsByAllItemsDeletion(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM rewards WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.executeUpdate();
         }
     }
 }

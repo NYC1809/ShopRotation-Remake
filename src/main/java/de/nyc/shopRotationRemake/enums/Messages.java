@@ -74,6 +74,8 @@ public enum Messages {
     ADD_REWARD_CANCEL("&7Du hast die &6Aktion&7: \"Belohnung hinzufügen\" &cabgebrochen&7."),
     REWARD_ADDED_SUCCESS("&7Du hast &aerfolgreich &7die Belohnung \"&a%item&7\" hinzugefügt."),
 
+    TOO_MANY_REWARDS("&7Dieses Item hat zu viele Belohnungen. Es werden nur die ersten 4 dargestellt!"),
+
     //srChest get messages
     GET_UUID_INFO_LINE_1(Utils.getPrefix() + "&2Anklicken zum kopieren:"),
 

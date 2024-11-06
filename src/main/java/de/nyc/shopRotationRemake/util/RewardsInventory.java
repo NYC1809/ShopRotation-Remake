@@ -6,13 +6,15 @@ import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.ItemDescription;
 import de.nyc.shopRotationRemake.enums.Messages;
 import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
 
 public class RewardsInventory {
 
@@ -75,6 +77,31 @@ public class RewardsInventory {
             }
         });
 
+        //Set the rewards to the gui:
+        List<Integer> rowIDs = main.getSrDatabase().getIdsFromItemUuidRewards(itemUuid);
+        if(!rowIDs.isEmpty()) {
+            Integer firstID = rowIDs.getFirst();
+            ItemStack firstItem = createRewardItemStack(firstID);
+            gui.setItem(1, firstItem);
+        }
+        if(rowIDs.size() >= 2) {
+            Integer secondID = rowIDs.get(1);
+            ItemStack secondItem = createRewardItemStack(secondID);
+            gui.setItem(10, secondItem);
+        }
+        if(rowIDs.size() >= 3) {
+            Integer thirdID = rowIDs.get(2);
+            ItemStack thirdItem = createRewardItemStack(thirdID);
+            gui.setItem(19, thirdItem);
+        }
+        if(rowIDs.size() == 4) {
+            Integer fourthID = rowIDs.get(3);
+            ItemStack fourthItem = createRewardItemStack(fourthID);
+            gui.setItem(28, fourthItem);
+        }
+        if(rowIDs.size() > 4) {
+            player.sendMessage(Messages.TOO_MANY_REWARDS.getMessage());
+        }
         //SET COMING SOON ITEM:
         gui.setItem(47, ItemBuilder.of(Material.GRAY_DYE).name(ItemDescription.ITEM_COMING_SOON.getText()).asItem());
         gui.setItem(50, ItemBuilder.of(Material.GRAY_DYE).name(ItemDescription.ITEM_COMING_SOON.getText()).asItem());
@@ -128,4 +155,57 @@ public class RewardsInventory {
                 .plugin(main)
                 .open(player);
     }
+
+    private static ItemStack createRewardItemStack(Integer rowID) throws SQLException {
+        String itemString = main.getSrDatabase().getItemStringByRewardID(rowID);
+
+        Material material = ItemUtils.getItemMaterial(itemString);
+        String itemName = ItemUtils.getItemName(itemString);
+        List<String> itemDescription = ItemUtils.getItemDescription(itemString);
+
+        Map<Enchantment, Integer> itemEnchantmentMap = ItemUtils.getItemEnchantments(itemString);
+
+        Integer amount = main.getSrDatabase().getAmountByRewardID(rowID);
+
+        return createRewardDescription(material, itemName, itemEnchantmentMap, itemDescription, amount);
+    }
+
+    private static ItemStack createRewardDescription(Material material, String itemName, Map<Enchantment, Integer> itemEnchantmentMap, List<String> itemDescription, Integer amount) {
+        ItemStack item = new ItemStack(material);
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.setDisplayName(Utils.setColorInMessage("&dBelohnung: "));
+
+        List<String> lore = new ArrayList<>();
+        lore.add(" ");
+        lore.add("&3Aktuelle Item Properties:");
+        lore.add(" ");
+        lore.add("  &9» [&bName&9] &d" + itemName);
+        if(itemDescription == null) {
+            lore.add("  &9» [&bDescription&9] &d" + "[ NONE ]");
+        } else {
+            lore.add("  &9» [&bDescription&9] &d");
+            for(String line : itemDescription) {
+                lore.add("               &9» &f" + line + "&r");
+            }
+        }
+        if(itemEnchantmentMap.isEmpty()) {
+            lore.add("  &9» [&bEnchantments&9] &d" + "[ NONE ]");
+        } else {
+            lore.add("  &9» [&bEnchantments&9] &d");
+            for(Map.Entry<Enchantment, Integer> entry : itemEnchantmentMap.entrySet()) {
+                Enchantment enchantment = entry.getKey();
+                Integer level = entry.getValue();
+                lore.add("               &9» &b" + enchantment.toString() + " &dLevel: &3" + level);
+            }
+        }
+        lore.add(" ");
+        lore.add("  &9» [&bAnzahl des Items&9] &d" + amount);
+        lore.add(" ");
+
+        itemMeta.setLore(Utils.setColorInList(lore));
+        item.setItemMeta(itemMeta);
+
+        return item;
+    }
+
 }

@@ -1,9 +1,7 @@
 package de.nyc.shopRotationRemake.util;
 
 import com.google.common.base.Preconditions;
-import de.leonheuer.mcguiapi.utils.ItemBuilder;
 import de.nyc.shopRotationRemake.Main;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -11,8 +9,10 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,7 +95,7 @@ public class ItemUtils {
         return loreString.toString();
     }
 
-    public static String getItemName(String itemString) throws SQLException {
+    public static String getItemName(String itemString) {
 
         Pattern pattern = Pattern.compile("Material\\.[A-Z_]+,([A-Za-z0-9_§öÖÄäÜü\\s]+)");
         Matcher matcher = pattern.matcher(itemString);
@@ -107,7 +107,7 @@ public class ItemUtils {
         }
     }
 
-    public static Material getItemMaterial(String itemString) throws SQLException {
+    public static Material getItemMaterial(String itemString) {
         Pattern pattern = Pattern.compile("Material\\.([A-Z_]+)");
         Matcher matcher = pattern.matcher(itemString);
 
@@ -119,7 +119,7 @@ public class ItemUtils {
         }
     }
 
-    public static List<String> getItemDescription(String itemString) throws SQLException {
+    public static List<String> getItemDescription(String itemString) {
         Pattern pattern = Pattern.compile("\\[([^\\]]*)\\]");
         Matcher matcher = pattern.matcher(itemString);
 
@@ -137,7 +137,7 @@ public class ItemUtils {
         return null;
     }
 
-    public static Map<Enchantment, Integer> getItemEnchantments(String itemString) throws SQLException {
+    public static Map<Enchantment, Integer> getItemEnchantments(String itemString) {
         Pattern pattern = Pattern.compile("Enchantments:([^}]+)");
         Matcher matcher = pattern.matcher(itemString);
 

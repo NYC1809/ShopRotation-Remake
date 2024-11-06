@@ -39,7 +39,7 @@ public enum ItemDescription {
 
     ITEM_MODIFY_ITEMS("&eKlicke hier um die Items dieser &6Chest &eanzupassen:"),
     ITEM_MODIFY_ITEMS_LORE_1(" "),
-    ITEM_MODIFY_ITEMS_LORE_2("&7Hier kannst du verschiedene Einstellungen zu jedem Item tätigen!"),
+    ITEM_MODIFY_ITEMS_LORE_2("&7Hier kannst du die &bItems &7und die &bBelohnungen &7anpassen!"),
 
     ITEM_OPEN_AS("&eKlicke hier um die &6Einstellungen &ezu öffnen:"),
 
@@ -81,7 +81,7 @@ public enum ItemDescription {
     //TODO: Show current rewards in Item Lore:
     ITEM_OPEN_REWARD_GUI_LORE_2("&b» Aktuelle Belohnungen: &3%rewards"),
 
-    ITEM_EXIT_REWARDS_ITEM("&eKlicke hier um zurück zu dem &6Item zu gehen!"),
+    ITEM_EXIT_REWARDS_ITEM("&eKlicke hier um zurück zu dem &6Item &ezu gehen!"),
     ITEM_EXIT_REWARDS_ITEM_LORE_1(" "),
     ITEM_EXIT_REWARDS_ITEM_LORE_2("&7Hier kommst du zu dem &6Item &7zurück welches aktuell &6modifiziert &7wird."),
 
@@ -89,10 +89,6 @@ public enum ItemDescription {
     ITEM_ADD_REWARD_ITEM_LORE_1(" "),
     ITEM_ADD_REWARD_ITEM_LORE_2("&7Hier kannst du eine &6Belohnung hinzufügen &7und &6modifizieren&7!"),
     ITEM_ADD_REWARD_ITEM_LORE_3("&7Du kannst auch mehrere &6Belohnungen &7für ein &6Item erstellen&7!"),
-
-    ITEM_REWARDS_REMOVE_LAST("&eKlicke hier um die letzte &6Belohnung &edes Items zu &centfernen&e!"),
-    ITEM_REWARDS_REMOVE_LAST_LORE_1(" "),
-    ITEM_REWARDS_REMOVE_LAST_LORE_2("&cWARNING&7: Diese Aktion kann &cNICHT &7rückgängig gemacht werden!"),
 
     ITEM_REWARDS_REMOVE_ALL("&cKlicke hier um alle &4&lBELOHNUNGEN &r&cdieses Items zu löschen!"),
     ITEM_REWARDS_REMOVE_ALL_LORE_1(" "),

@@ -30,8 +30,9 @@ public enum SrAction {
 
     //srChest player history:
     ITEM_GIVEN("Action.Chest.Item.&5ITEM_GIVEN"),
-    PLAYER_REACHED_LIMIT("Action.Chest.Item.&5PLAYER_LIMIT_REACHED")
+    PLAYER_REACHED_LIMIT("Action.Chest.Item.&5PLAYER_LIMIT_REACHED"),
 
+    //TODO: Add srAction - Rewards
     ;
 
     private final String action;

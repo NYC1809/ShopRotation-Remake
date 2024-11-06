@@ -98,7 +98,7 @@ public class ItemUtils {
     public static String getItemName(UUID itemUuid) throws SQLException {
         String itemString = main.getSrDatabase().getItemString(itemUuid);
 
-        Pattern pattern = Pattern.compile("Material\\.[A-Z_]+,([A-Za-z0-9_]+)");
+        Pattern pattern = Pattern.compile("Material\\.[A-Z_]+,([A-Za-z0-9_§öÖÄäÜü\\s]+)");
         Matcher matcher = pattern.matcher(itemString);
 
         if (matcher.find()) {

@@ -92,7 +92,7 @@ public class SrDatabase {
                     "item TEXT NOT NULL, " +
                     "amount TEXT NOT NULL)");
 
-        }
+        } //TODO: New Table: pending rewards for player who have been offline
     }
 
     public void closeConnection() throws SQLException {
@@ -562,6 +562,51 @@ public class SrDatabase {
             } else {
                 return null;
             }
+        }
+    }
+
+    private Integer getIDFromLastEntry(UUID itemUuid) throws SQLException {
+        //Only for the use to delete the last reward of an itemUuid!!
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM rewards WHERE itemuuid = ? ORDER BY id DESC LIMIT 1")) {
+            preparedStatement.setString(1, itemUuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getInt("id");
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    public boolean deleteLastEntryFromRewards(UUID uuid, UUID itemUuid, Player player) throws SQLException {
+        int id = getIDFromLastEntry(itemUuid);
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM rewards WHERE id = ?")) {
+            preparedStatement.setInt(1, id);
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if(rowsAffected > 0) {
+                Bukkit.getLogger().severe("[12:79:01] Removed last reward with the itemuuid: \"" + itemUuid + "\" -- internal id: \"" + id + "\"");
+                this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.REWARD_REMOVED, uuid);
+                return true;
+            }
+            Bukkit.getLogger().warning("[76:82:11] \"" + itemUuid + "\" was not found in the table!");
+            return false;
+        }
+    }
+
+    public void deleteAllRewardsOfItem(UUID uuid, UUID itemUuid, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM rewards WHERE itemuuid = ?")) {
+            preparedStatement.setString(1, itemUuid.toString());
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if(rowsAffected > 0) {
+                Bukkit.getLogger().severe("[28:28:00] Removed Reward from SQL - DB!");
+                this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.REWARD_REMOVED, uuid);
+                return;
+            }
+            Bukkit.getLogger().warning("[13:99:12] No entry found to remove from rewards SQL - DB!");
         }
     }
 }

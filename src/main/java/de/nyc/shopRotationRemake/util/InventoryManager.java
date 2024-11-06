@@ -16,7 +16,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -269,7 +268,6 @@ public class InventoryManager implements Listener {
 
             if(itemOnCursor != null) {
                 if(!itemOnCursor.getType().equals(Material.AIR)) {
-                    //TODO: Remove Debug when finished:
                     if(itemOnCursor.hasItemMeta()) {
                         ItemMeta itemMeta = itemOnCursor.getItemMeta();
                         if(itemMeta != null) {
@@ -329,7 +327,6 @@ public class InventoryManager implements Listener {
                 //ItemStack item =  ItemUtils.createItemStack(itemMaterial, itemName, itemEnchantmentMap, itemDescription);
                 if(counter == 17 || counter == 26 || counter == 35 || counter == 45) { counter = counter + 2; }
 
-                //TODO: Add some descriptions to the items and improve the design
                 gui.setItem(counter, item, event -> {
                     try {
                         modifyItemInventory(player, uuid, UUID.fromString(itemUuid));
@@ -356,12 +353,6 @@ public class InventoryManager implements Listener {
             player.sendMessage(Messages.NO_PERMS_ERROR.getMessage());
             return;
         }
-        String title = main.getSrDatabase().getNameOfChest(uuid);
-        if(title == null) {
-            Bukkit.getLogger().severe("[23:55:76] uuid or title of the inventory is null! -> canceling...");
-            return;
-        }
-
         GUI gui = main.getGuiFactory().createGUI(6, Utils.setColorInMessage("&6Modify Item: &a" + itemUuid));
         //START OF CREATING GLASS BORDER
         for (int i=0; i<54; i++) {
@@ -447,11 +438,89 @@ public class InventoryManager implements Listener {
             }
         });
 
+        //Set Rewards Settings:
+
+        gui.setItem(16, ItemBuilder.of(Material.DIAMOND).name(ItemDescription.ITEM_OPEN_REWARD_GUI.getText()).description(ItemDescription.ITEM_OPEN_REWARD_GUI_LORE_1.getText(), ItemDescription.ITEM_OPEN_REWARD_GUI_LORE_2.getText()).asItem(), event -> {
+            try {
+                openRewardsInventory(player, uuid, itemUuid);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         gui.setDefaultClickAction(event -> {
             event.setCancelled(true);
         });
         gui.show(player);
     }
+
+    public static void openRewardsInventory(Player player, UUID uuid, UUID itemUuid) throws SQLException {
+        //&TODO: permission system
+        if(!player.isOp()) {
+            player.sendMessage(Messages.NO_PERMS_ERROR.getMessage());
+            return;
+        }
+        GUI gui = main.getGuiFactory().createGUI(6, Utils.setColorInMessage("&6Belohnungen für: &a" + itemUuid));
+
+        //START OF CREATING GLASS BORDER
+        for (int i=0; i<54; i++) {
+            gui.setItem(i, ItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE).name(" ").asItem());
+        }
+        //END OF CREATING GLASS BORDER
+
+        //Begin of pink glass border
+        for(int i=10; i<13; i++) {
+            gui.setItem(i, ItemBuilder.of(Material.PINK_STAINED_GLASS_PANE).name(" ").asItem());
+        }
+        gui.setItem(19, ItemBuilder.of(Material.PINK_STAINED_GLASS_PANE).name(" ").asItem());
+        gui.setItem(21, ItemBuilder.of(Material.PINK_STAINED_GLASS_PANE).name(" ").asItem());
+        for (int i=28; i<31; i++) {
+            gui.setItem(i, ItemBuilder.of(Material.PINK_STAINED_GLASS_PANE).name(" ").asItem());
+        }
+        //Set modified item into gui:
+        ItemStack item = getItemStackFromItemUuid(String.valueOf(itemUuid));
+        gui.setItem(20, ItemBuilder.of(item).name(Utils.setColorInMessage("&b Belohnungen für &a" + itemUuid)).asItem());
+
+        //Back to the item gui - button:
+        gui.setItem(45, ItemBuilder.of(item.getType()).name(ItemDescription.ITEM_EXIT_REWARDS_ITEM.getText()).description(ItemDescription.ITEM_EXIT_REWARDS_ITEM_LORE_1.getText(), ItemDescription.ITEM_EXIT_REWARDS_ITEM_LORE_2.getText()).asItem(), event -> {
+            try {
+                modifyItemInventory(player, uuid, itemUuid);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        //Add rewards item:
+        gui.setItem(14, ItemBuilder.of(Material.BOOK).name(ItemDescription.ITEM_ADD_REWARD_ITEM.getText()).description(ItemDescription.ITEM_ADD_REWARD_ITEM_LORE_1.getText(), ItemDescription.ITEM_ADD_REWARD_ITEM_LORE_2.getText(), ItemDescription.ITEM_ADD_REWARD_ITEM_LORE_3.getText()).asItem(), event -> {
+            //TODO: Create new GUI to add and modify the reward!
+        });
+
+        //Remove last reward:
+        gui.setItem(15, ItemBuilder.of(Material.REDSTONE).name(ItemDescription.ITEM_REWARDS_REMOVE_LAST.getText()).description(ItemDescription.ITEM_REWARDS_REMOVE_LAST_LORE_1.getText(), ItemDescription.ITEM_REWARDS_REMOVE_LAST_LORE_2.getText()).asItem(), event -> {
+            try {
+                removeLastReward(player, uuid, itemUuid);
+                openRewardsInventory(player, uuid, itemUuid);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        //Remove all rewards:
+        gui.setItem(16, ItemBuilder.of(Material.REDSTONE_BLOCK).name(ItemDescription.ITEM_REWARDS_REMOVE_ALL.getText()).description(ItemDescription.ITEM_REWARDS_REMOVE_ALL_LORE_1.getText(), ItemDescription.ITEM_REWARDS_REMOVE_ALL_LORE_2.getText()).asItem(), event -> {
+            try {
+                removeAllRewards(player, uuid, itemUuid);
+                openRewardsInventory(player, uuid, itemUuid);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        gui.setDefaultClickAction(event -> {
+            event.setCancelled(true);
+        });
+        gui.show(player);
+    }
+
 
     private static StringBuilder getStringBuilder(Map.Entry<Integer, Quadruple> entry) {
         Integer id = entry.getKey();
@@ -742,5 +811,19 @@ public class InventoryManager implements Listener {
         item.setItemMeta(itemMeta);
 
         return item;
+    }
+
+    private static void removeLastReward(Player player, UUID uuid, UUID itemUuid) throws SQLException {
+        boolean entryDeleted = main.getSrDatabase().deleteLastEntryFromRewards(uuid, itemUuid, player);
+        if(entryDeleted) {
+            player.sendMessage(Messages.REWARD_REMOVED_SUCCESS.getMessage());
+            return;
+        }
+        player.sendMessage(Messages.LAST_REWARD_DIDNT_EXIST.getMessage());
+    }
+
+    private static void removeAllRewards(Player player, UUID uuid, UUID itemUuid) throws SQLException {
+        main.getSrDatabase().deleteAllRewardsOfItem(uuid, itemUuid, player);
+        player.sendMessage(Messages.All_REWARDS_REMOVED.getMessage().replace("%itemuuid", itemUuid.toString()));
     }
 }

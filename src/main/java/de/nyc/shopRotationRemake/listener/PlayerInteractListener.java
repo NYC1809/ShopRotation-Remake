@@ -53,7 +53,5 @@ public class PlayerInteractListener implements Listener {
         }
 
         InventoryManager.createDefaultInventory(player, uuid);
-
-        //TODO: Inventory Manager^^
     }
 }

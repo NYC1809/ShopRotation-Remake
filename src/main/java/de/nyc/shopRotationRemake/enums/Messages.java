@@ -64,14 +64,15 @@ public enum Messages {
 
     ITEM_DISABLED_SUCCESS("&7Du hast &aerfolgreich &7das Item: \"&a%itemuuid&7\" &cdeaktiviert&7!"),
     ITEM_ENABLED_SUCCES("&7Du hast &aerfolgreich &7das Item: \"&a%itemuuid&7\" &aaktiviert&7!"),
-    ITEM_REMOVED_SUCCES("&7Du hast &aerfolgreich &7das Item: \"&a%itemuuid&7\" &cgelöscht"),
+    ITEM_REMOVED_SUCCES("&7Du hast &aerfolgreich &7das Item: \"&a%itemuuid&7\" &cgelöscht&7!"),
 
+    REWARD_REMOVED_SUCCESS("&7Du hast &aerfolgreich &7die letzte &aBelohnung &cgelöscht&7!"),
+    LAST_REWARD_DIDNT_EXIST("&7Das Item besitzt aktuell &ckeine &7Belohnungen!"),
+    All_REWARDS_REMOVED("&7Du hast &aerfolgreich &c&lALLE &r&7Belohnungen von dem Item: \"&a%itemuuid&7\" &centfernt!"),
 
     //srChest get messages
     GET_UUID_INFO_LINE_1(Utils.getPrefix() + "&2Anklicken zum kopieren:"),
 
-
-    //TODO: Add missing messages
     ;
 
     private final String message;

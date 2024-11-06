@@ -75,6 +75,29 @@ public enum ItemDescription {
     ITEM_CHANGE_HOLDING_AMOUNT("&eKlicke hier um die &6Anzahl &eder &6bereits besitzenden &eItem zu ändern:"),
     ITEM_CHANGE_HOLDING_AMOUNT_LORE_1(" "),
     ITEM_CHANGE_HOLDING_AMOUNT_LORE_2("&b» Aktueller Wert: &3%amount"),
+
+    ITEM_OPEN_REWARD_GUI("&eKlicke hier um diesem &6Item Belohnungen &ebei &6Abschluss &ehinzuzufügen."),
+    ITEM_OPEN_REWARD_GUI_LORE_1(" "),
+    //TODO: Show current rewards in Item Lore:
+    ITEM_OPEN_REWARD_GUI_LORE_2("&b» Aktuelle Belohnung: &3%rewards"),
+
+    ITEM_EXIT_REWARDS_ITEM("&eKlicke hier um zurück zu dem &6Item zu gehen!"),
+    ITEM_EXIT_REWARDS_ITEM_LORE_1(" "),
+    ITEM_EXIT_REWARDS_ITEM_LORE_2("&7Hier kommst du zu dem &6Item &7zurück welches aktuell &6modifiziert &7wird."),
+
+    ITEM_ADD_REWARD_ITEM("&eKlicke hier um eine neue &6Belohnung &ehinzuzufügen"),
+    ITEM_ADD_REWARD_ITEM_LORE_1(" "),
+    ITEM_ADD_REWARD_ITEM_LORE_2("&7Hier kannst du eine &6Belohnung hinzufügen &7und &6modifizieren&7!"),
+    ITEM_ADD_REWARD_ITEM_LORE_3("&7Du kannst auch mehrere &6Belohnungen &7für ein &6Item erstellen&7!"),
+
+    ITEM_REWARDS_REMOVE_LAST("&eKlicke hier um die letzte &6Belohnung &edes Items zu &centfernen&e!"),
+    ITEM_REWARDS_REMOVE_LAST_LORE_1(" "),
+    ITEM_REWARDS_REMOVE_LAST_LORE_2("&cWARNING&7: Diese Aktion kann &cNICHT &7rückgängig gemacht werden!"),
+
+    ITEM_REWARDS_REMOVE_ALL("&cKlicke hier um alle &4&lBELOHNUNGEN &r&cdieses Items zu löschen!"),
+    ITEM_REWARDS_REMOVE_ALL_LORE_1(" "),
+    ITEM_REWARDS_REMOVE_ALL_LORE_2("&cWARNING&7: Diese Aktion kann &cNICHT &7rückgängig gemacht werden!"),
+
     ;
 
     private final String text;

@@ -213,6 +213,9 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(Messages.CHEST_HELP.getMessage());
                 player.sendMessage(ChatColor.GOLD + "»------------------ " + Utils.getPrefix() + ChatColor.GOLD + "------------------«");
                 break;
+            case "addthis":
+                //TODO: Implement "addthis" command
+                break;
             case "debug":
                 break;
             default:

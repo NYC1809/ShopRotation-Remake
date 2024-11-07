@@ -79,29 +79,120 @@ public class RewardsInventory {
 
         //Set the rewards to the gui:
         List<Integer> rowIDs = main.getSrDatabase().getIdsFromItemUuidRewards(itemUuid);
+        //First reward:
         if(!rowIDs.isEmpty()) {
             Integer firstID = rowIDs.getFirst();
             ItemStack firstItem = createRewardItemStack(firstID);
             gui.setItem(1, firstItem);
+
+            Integer firstAmount = main.getSrDatabase().getAmountOfRewardByID(firstID);
+            //Set the changeAmount Item for the first reward
+            gui.setItem(3, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.REWARDS_CHANGE_AMOUNT.getText()).description(ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_1.getText(), ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_2.getText(), ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_3.getText(), ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_4.getText().replace("%number", String.valueOf(firstAmount))).asItem(), event -> {
+                try {
+                    changeAmountOfReward(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert ein..."), firstID, firstAmount);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            //Set the delete this reward item for the first reward
+            gui.setItem(7, ItemBuilder.of(Material.REDSTONE).name(ItemDescription.REWARDS_ITEM_DELETE.getText()).description(ItemDescription.REWARDS_ITEM_DELETE_LORE_1.getText(), ItemDescription.REWARDS_ITEM_DELETE_LORE_2.getText()).asItem(), event -> {
+                try {
+                    main.getSrDatabase().deleteRewardByRowID(firstID);
+                    player.sendMessage(Messages.REWARD_REMOVED_SUCCESS.getMessage());
+                    openRewardsInventory(player, uuid, itemUuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
         }
+        //Second reward:
         if(rowIDs.size() >= 2) {
             Integer secondID = rowIDs.get(1);
             ItemStack secondItem = createRewardItemStack(secondID);
             gui.setItem(10, secondItem);
+
+            Integer secondAmount = main.getSrDatabase().getAmountOfRewardByID(secondID);
+            //Set the changeAmount Item for the second reward
+            gui.setItem(12, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.REWARDS_CHANGE_AMOUNT.getText()).description(ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_1.getText(), ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_2.getText(), ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_3.getText(), ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_4.getText().replace("%number", String.valueOf(secondAmount))).asItem(), event -> {
+                try {
+                    changeAmountOfReward(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert ein..."), secondID, secondAmount);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            //Set the delete this reward item for the second reward
+            gui.setItem(16, ItemBuilder.of(Material.REDSTONE).name(ItemDescription.REWARDS_ITEM_DELETE.getText()).description(ItemDescription.REWARDS_ITEM_DELETE_LORE_1.getText(), ItemDescription.REWARDS_ITEM_DELETE_LORE_2.getText()).asItem(), event -> {
+                try {
+                    main.getSrDatabase().deleteRewardByRowID(secondID);
+                    player.sendMessage(Messages.REWARD_REMOVED_SUCCESS.getMessage());
+                    openRewardsInventory(player, uuid, itemUuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
+        //Third reward:
         if(rowIDs.size() >= 3) {
             Integer thirdID = rowIDs.get(2);
             ItemStack thirdItem = createRewardItemStack(thirdID);
             gui.setItem(19, thirdItem);
+
+            Integer thirdAmount = main.getSrDatabase().getAmountOfRewardByID(thirdID);
+            //Set the changeAmount Item for the third reward
+            gui.setItem(21, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.REWARDS_CHANGE_AMOUNT.getText()).description(ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_1.getText(), ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_2.getText(), ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_3.getText(), ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_4.getText().replace("%number", String.valueOf(thirdAmount))).asItem(), event -> {
+                try {
+                    changeAmountOfReward(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert ein..."), thirdID, thirdAmount);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            //Set the delete this reward item for the third reward
+            gui.setItem(25, ItemBuilder.of(Material.REDSTONE).name(ItemDescription.REWARDS_ITEM_DELETE.getText()).description(ItemDescription.REWARDS_ITEM_DELETE_LORE_1.getText(), ItemDescription.REWARDS_ITEM_DELETE_LORE_2.getText()).asItem(), event -> {
+                try {
+                    main.getSrDatabase().deleteRewardByRowID(thirdID);
+                    player.sendMessage(Messages.REWARD_REMOVED_SUCCESS.getMessage());
+                    openRewardsInventory(player, uuid, itemUuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
-        if(rowIDs.size() == 4) {
+        //Fourth reward:
+        if(rowIDs.size() >= 4) {
             Integer fourthID = rowIDs.get(3);
             ItemStack fourthItem = createRewardItemStack(fourthID);
             gui.setItem(28, fourthItem);
+
+            Integer fourthAmount = main.getSrDatabase().getAmountOfRewardByID(fourthID);
+
+            //Set the changeAmount Item for the fourth reward
+            gui.setItem(30, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.REWARDS_CHANGE_AMOUNT.getText()).description(ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_1.getText(), ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_2.getText(), ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_3.getText(), ItemDescription.REWARDS_CHANGE_AMOUNT_LORE_4.getText().replace("%number", String.valueOf(fourthAmount))).asItem(), event -> {
+                try {
+                    changeAmountOfReward(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert ein..."), fourthID, fourthAmount);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            //Set the delete this reward item for the fourth reward
+            gui.setItem(34, ItemBuilder.of(Material.REDSTONE).name(ItemDescription.REWARDS_ITEM_DELETE.getText()).description(ItemDescription.REWARDS_ITEM_DELETE_LORE_1.getText(), ItemDescription.REWARDS_ITEM_DELETE_LORE_2.getText()).asItem(), event -> {
+                try {
+                    main.getSrDatabase().deleteRewardByRowID(fourthID);
+                    player.sendMessage(Messages.REWARD_REMOVED_SUCCESS.getMessage());
+                    openRewardsInventory(player, uuid, itemUuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
         if(rowIDs.size() > 4) {
             player.sendMessage(Messages.TOO_MANY_REWARDS.getMessage());
         }
+
         //SET COMING SOON ITEM:
         gui.setItem(47, ItemBuilder.of(Material.GRAY_DYE).name(ItemDescription.ITEM_COMING_SOON.getText()).asItem());
         gui.setItem(50, ItemBuilder.of(Material.GRAY_DYE).name(ItemDescription.ITEM_COMING_SOON.getText()).asItem());
@@ -165,7 +256,7 @@ public class RewardsInventory {
 
         Map<Enchantment, Integer> itemEnchantmentMap = ItemUtils.getItemEnchantments(itemString);
 
-        Integer amount = main.getSrDatabase().getAmountByRewardID(rowID);
+        Integer amount = main.getSrDatabase().getAmountOfRewardByID(rowID);
 
         return createRewardDescription(material, itemName, itemEnchantmentMap, itemDescription, amount);
     }
@@ -208,4 +299,36 @@ public class RewardsInventory {
         return item;
     }
 
+    private static void changeAmountOfReward(Player player, UUID uuid, UUID itemuuid, String title, Integer rowID, Integer currentAmount) throws SQLException {
+        new AnvilGUI.Builder()
+                .onClose(stateSnapshot -> {
+                    try {
+                        openRewardsInventory(player, uuid, itemuuid);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .onClick((slot, stateSnapshot) -> {
+                    if(slot != AnvilGUI.Slot.OUTPUT) {
+                        return Collections.emptyList();
+                    }
+                    String input = stateSnapshot.getText();
+                    if(!Utils.isNumeric(input)) {
+                        player.sendMessage(Messages.IS_NOT_NUMERIC.getMessage().replace("%input", input));
+                        return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(currentAmount.toString()));
+                    }
+                    try {
+                        main.getSrDatabase().setAmountOfRewardByID(rowID, Integer.parseInt(input));
+                        player.sendMessage(Messages.REWARD_AMOUNT_CHANGED_SUCCESS.getMessage().replace("%number", input));
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return Arrays.asList(AnvilGUI.ResponseAction.close());
+                })
+                .preventClose()
+                .text(currentAmount.toString())
+                .title(title)
+                .plugin(main)
+                .open(player);
+    }
 }

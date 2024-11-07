@@ -19,6 +19,7 @@ public enum SrAction {
     ALL_ITEMS_REMOVED("Action.Chest.&6Item&d.&4REMOVED_ALL"),
     REWARD_ADD("Action.Chest.&9Reward&d.&2ADDED"),
     REWARD_REMOVED("Action.Chest.&9Reward&d.&4REMOVED"),
+    REWARD__ALL_REMOVED("Action.Chest.&9Reward&d.&4REMOVED_ALL"),
     ITEM_LIMIT_PER_PERSON_CHANGED("Action.Chest.&6Item&d.Limit_per_person.&dCHANGED"),
 
     //srChest Settings

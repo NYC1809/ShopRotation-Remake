@@ -67,7 +67,7 @@ public enum Messages {
     ITEM_ENABLED_SUCCES("&7Du hast &aerfolgreich &7das Item: \"&a%itemuuid&7\" &aaktiviert&7!"),
     ITEM_REMOVED_SUCCES("&7Du hast &aerfolgreich &7das Item: \"&a%itemuuid&7\" &cgelöscht&7!"),
 
-    REWARD_REMOVED_SUCCESS("&7Du hast &aerfolgreich &7die letzte &aBelohnung &cgelöscht&7!"),
+    REWARD_REMOVED_SUCCESS("&7Du hast &aerfolgreich &7diese &aBelohnung &cgelöscht&7!"),
     LAST_REWARD_DIDNT_EXIST("&7Dieses Item besitzt aktuell &ckeine &7Belohnungen!"),
     All_REWARDS_REMOVED("&7Du hast &aerfolgreich &c&lALLE &r&7Belohnungen von dem Item: \"&a%itemuuid&7\" &centfernt!"),
 
@@ -75,6 +75,7 @@ public enum Messages {
     REWARD_ADDED_SUCCESS("&7Du hast &aerfolgreich &7die Belohnung \"&a%item&7\" hinzugefügt."),
 
     TOO_MANY_REWARDS("&7Dieses Item hat zu viele Belohnungen. Es werden nur die ersten 4 dargestellt!"),
+    REWARD_AMOUNT_CHANGED_SUCCESS("&7Du hast &aerfolgreich &7den Wert zu \"&a%number&7\" geändert!"),
 
     //srChest get messages
     GET_UUID_INFO_LINE_1(Utils.getPrefix() + "&2Anklicken zum kopieren:"),

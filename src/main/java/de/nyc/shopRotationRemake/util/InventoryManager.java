@@ -418,7 +418,7 @@ public class InventoryManager {
         int amountRequred = main.getSrDatabase().getrequiredItemAmountByItemUuid(itemUuid);
         gui.setItem(14, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.ITEM_CHANGE_REQUIRED_AMOUNT.getText()).description(ItemDescription.ITEM_CHANGE_REQUIRED_AMOUNT_LORE_1.getText(), ItemDescription.ITEM_CHANGE_REQUIRED_AMOUNT_LORE_2.getText().replace("%amount", String.valueOf(amountRequred))).asItem(), event -> {
             try {
-                changeRequiredAmount(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert ein..."), amountRequred, item);
+                changeRequiredAmount(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert ein..."), amountRequred);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -428,7 +428,7 @@ public class InventoryManager {
         int amountHolding = main.getSrDatabase().getholdingItemAmountByItemUuid(itemUuid);
         gui.setItem(15, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.ITEM_CHANGE_HOLDING_AMOUNT.getText()).description(ItemDescription.ITEM_CHANGE_HOLDING_AMOUNT_LORE_1.getText(), ItemDescription.ITEM_CHANGE_HOLDING_AMOUNT_LORE_2.getText().replace("%amount", String.valueOf(amountHolding))).asItem(), event -> {
             try {
-                changeHoldingAmount(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert ein..."), amountHolding, item);
+                changeHoldingAmount(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert ein..."), amountHolding);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -615,7 +615,7 @@ public class InventoryManager {
                 .open(player);
     }
 
-    private static void changeRequiredAmount(Player player, UUID uuid, UUID itemUuid,  String title, Integer currentAmount, ItemStack item) throws SQLException {
+    private static void changeRequiredAmount(Player player, UUID uuid, UUID itemUuid,  String title, Integer currentAmount) throws SQLException {
         new AnvilGUI.Builder()
                 .onClose(stateSnapshot -> {
                     try {
@@ -648,7 +648,7 @@ public class InventoryManager {
                 .open(player);
     }
 
-    private static void changeHoldingAmount(Player player, UUID uuid, UUID itemUuid,  String title, Integer currentAmount, ItemStack item) throws SQLException {
+    private static void changeHoldingAmount(Player player, UUID uuid, UUID itemUuid,  String title, Integer currentAmount) throws SQLException {
         new AnvilGUI.Builder()
                 .onClose(stateSnapshot -> {
                     try {
@@ -701,7 +701,7 @@ public class InventoryManager {
 
         ItemStack item = new ItemStack(itemMaterial);
         ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setDisplayName(Utils.setColorInMessage("&eKlicke hier um das &6Item &ezu modifizieren"));
+        itemMeta.setDisplayName(Utils.setColorInMessage("&eKlicke hier um dieses &6Item &ezu modifizieren"));
 
         List<String> lore = new ArrayList<>();
         lore.add(" ");

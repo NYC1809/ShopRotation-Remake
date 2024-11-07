@@ -573,7 +573,7 @@ public class SrDatabase {
 
             if(rowsAffected > 0) {
                 Bukkit.getLogger().severe("[28:28:00] Removed all rewards from SQL - DB!");
-                this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.REWARD_REMOVED, uuid);
+                this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.REWARD__ALL_REMOVED, uuid);
                 return;
             }
             Bukkit.getLogger().warning("[13:99:12] No entry found to remove from rewards SQL - DB!");
@@ -616,7 +616,29 @@ public class SrDatabase {
         }
     }
 
-    public Integer getAmountByRewardID(Integer rowID) throws SQLException {
+    private void deleteAllRewardsByItemDeletion(UUID itemUuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM rewards WHERE itemuuid = ?")) {
+            preparedStatement.setString(1, itemUuid.toString());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    private void deleteAllRewardsByAllItemsDeletion(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM rewards WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public void setAmountOfRewardByID(Integer rowID, Integer amount) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE rewards SET amount = ? WHERE id = ?")) {
+            preparedStatement.setInt(1, amount);
+            preparedStatement.setInt(2, rowID);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public Integer getAmountOfRewardByID(Integer rowID) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT amount FROM rewards WHERE id = ?")) {
             preparedStatement.setInt(1, rowID);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -628,16 +650,9 @@ public class SrDatabase {
         }
     }
 
-    private void deleteAllRewardsByItemDeletion(UUID itemUuid) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM rewards WHERE itemuuid = ?")) {
-            preparedStatement.setString(1, itemUuid.toString());
-            preparedStatement.executeUpdate();
-        }
-    }
-
-    private void deleteAllRewardsByAllItemsDeletion(UUID uuid) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM rewards WHERE uuid = ?")) {
-            preparedStatement.setString(1, uuid.toString());
+    public void deleteRewardByRowID(Integer rowID) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM rewards WHERE id = ?")) {
+            preparedStatement.setInt(1, rowID);
             preparedStatement.executeUpdate();
         }
     }

@@ -66,7 +66,7 @@ public enum ItemDescription {
 
     ITEM_DELETE_ITEM("&cKlicke hier um dieses &4&lITEM &r&czu löschen!"),
     ITEM_DELETE_ITEM_LORE_1(" "),
-    ITEM_DELETE_ITEM_LORE_2("&cWARNING&7: Diese Aktion kann &cNICHT &7rückgängig gemacht werden!" ),
+    ITEM_DELETE_ITEM_LORE_2("&cWARNING&7: Diese Aktion kann &cNICHT &7rückgängig gemacht werden!"),
 
     ITEM_CHANGE_REQUIRED_AMOUNT("&eKlicke hier um die &6Anzahl &eder &6benötigten &eItems zu ändern:"),
     ITEM_CHANGE_REQUIRED_AMOUNT_LORE_1(" "),
@@ -105,6 +105,16 @@ public enum ItemDescription {
     REWARDS_ADD_NEW_ITEM("&eKlicke hier um eine &6neue Belohnung &ehinzuzufügen:"),
     REWARDS_ADD_NEW_ITEM_LORE_1(" "),
     REWARDS_ADD_NEW_ITEM_LORE_2("&7Daraufhin kannst du weitere Einstellungen zu dieser Belohnung tätigen!"),
+
+    REWARDS_CHANGE_AMOUNT("&eKlicke hier um die &6Anzahl &edes &6Items &ezu verändern:"),
+    REWARDS_CHANGE_AMOUNT_LORE_1(" "),
+    REWARDS_CHANGE_AMOUNT_LORE_2("&7Diese Zahl bestimmt wie oft dieses Item als Belohnung herausgegeben wird!"),
+    REWARDS_CHANGE_AMOUNT_LORE_3(" "),
+    REWARDS_CHANGE_AMOUNT_LORE_4("&3» &bAktuelle Zahl: &3%number"),
+
+    REWARDS_ITEM_DELETE("&cKlicke hier um diese &4&lBelohnung &r&czu löschen!"),
+    REWARDS_ITEM_DELETE_LORE_1(" "),
+    REWARDS_ITEM_DELETE_LORE_2("&cWARNING&7: Diese Aktion kann &cNICHT &7rückgängig gemacht werden!"),
 
    ;
 

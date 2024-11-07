@@ -604,7 +604,7 @@ public class SrDatabase {
         }
     }
 
-    public String getItemStringByRewardID(Integer rowID) throws SQLException {
+    public String getRewardsItemStringByRewardID(Integer rowID) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT item FROM rewards WHERE id = ?")) {
             preparedStatement.setInt(1, rowID);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -650,9 +650,21 @@ public class SrDatabase {
         }
     }
 
-    public void deleteRewardByRowID(Integer rowID) throws SQLException {
+    public void deleteRewardByRowID(Integer rowID, Player player, UUID uuid) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM rewards WHERE id = ?")) {
             preparedStatement.setInt(1, rowID);
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if(rowsAffected > 0) {
+                this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.REWARD_REMOVED, uuid);
+            }
+        }
+    }
+
+    public void setNewRewardsItemStringByRowID(Integer rowID, String item) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE rewards SET item = ? WHERE id = ?")) {
+            preparedStatement.setString(1, item);
+            preparedStatement.setInt(2, rowID);
             preparedStatement.executeUpdate();
         }
     }

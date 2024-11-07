@@ -76,6 +76,8 @@ public enum Messages {
 
     TOO_MANY_REWARDS("&7Dieses Item hat zu viele Belohnungen. Es werden nur die ersten 4 dargestellt!"),
     REWARD_AMOUNT_CHANGED_SUCCESS("&7Du hast &aerfolgreich &7den Wert zu \"&a%number&7\" geändert!"),
+    REWARD_ITEM_CHANGE_NAME_CANCEL("&7Diese Belohnung hat bereits den &6Titel&7: \"&a%name&7\""),
+    REWARD_ITEM_CHANGE_NAME_SUCCESS("&7Du hast &aerfolgreich &7den &6Namen &7der Belohnung zu: \"&a%name&7\" geändert."),
 
     REWARD_MODIFICATE_FOR_CHANGES("&6Modifiziere &7das &6Item &7um noch mehr &6Eigenschaften &7anzupassen!"),
     //srChest get messages

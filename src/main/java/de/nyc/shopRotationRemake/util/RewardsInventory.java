@@ -6,7 +6,6 @@ import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.ItemDescription;
 import de.nyc.shopRotationRemake.enums.Messages;
 import net.wesjd.anvilgui.AnvilGUI;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -116,9 +115,6 @@ public class RewardsInventory {
                     }
                 }
             }
-
-
-
         });
 
         //Set the rewards to the gui:
@@ -142,7 +138,7 @@ public class RewardsInventory {
             //Set the delete this reward item for the first reward
             gui.setItem(7, ItemBuilder.of(Material.REDSTONE).name(ItemDescription.REWARDS_ITEM_DELETE.getText()).description(ItemDescription.REWARDS_ITEM_DELETE_LORE_1.getText(), ItemDescription.REWARDS_ITEM_DELETE_LORE_2.getText()).asItem(), event -> {
                 try {
-                    main.getSrDatabase().deleteRewardByRowID(firstID);
+                    main.getSrDatabase().deleteRewardByRowID(firstID, player, uuid);
                     player.sendMessage(Messages.REWARD_REMOVED_SUCCESS.getMessage());
                     openRewardsInventory(player, uuid, itemUuid);
                 } catch (SQLException e) {
@@ -150,6 +146,17 @@ public class RewardsInventory {
                 }
             });
 
+            String firstItemString = main.getSrDatabase().getRewardsItemStringByRewardID(firstID);
+            String firstItemName = ItemUtils.getItemName(firstItemString);
+
+            //Set the change name item for the first reward
+            gui.setItem(5, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARD_CHANGE_ITEM_NAME.getText()).description(ItemDescription.REWARD_CHANGE_ITEM_NAME_LORE_1.getText(), ItemDescription.REWARD_CHANGE_ITEM_NAME_LORE_2.getText()).asItem(), event -> {
+                try {
+                    changeItemName(player, uuid, itemUuid, Utils.setColorInMessage("&eNeuen &6Namen &eeingeben..."), firstItemName, firstID);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
         //Second reward:
         if(rowIDs.size() >= 2) {
@@ -170,9 +177,21 @@ public class RewardsInventory {
             //Set the delete this reward item for the second reward
             gui.setItem(16, ItemBuilder.of(Material.REDSTONE).name(ItemDescription.REWARDS_ITEM_DELETE.getText()).description(ItemDescription.REWARDS_ITEM_DELETE_LORE_1.getText(), ItemDescription.REWARDS_ITEM_DELETE_LORE_2.getText()).asItem(), event -> {
                 try {
-                    main.getSrDatabase().deleteRewardByRowID(secondID);
+                    main.getSrDatabase().deleteRewardByRowID(secondID, player, uuid);
                     player.sendMessage(Messages.REWARD_REMOVED_SUCCESS.getMessage());
                     openRewardsInventory(player, uuid, itemUuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            String secondItemString = main.getSrDatabase().getRewardsItemStringByRewardID(secondID);
+            String secondItemName = ItemUtils.getItemName(secondItemString);
+
+            //Set the change name item for the second reward
+            gui.setItem(14, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARD_CHANGE_ITEM_NAME.getText()).description(ItemDescription.REWARD_CHANGE_ITEM_NAME_LORE_1.getText(), ItemDescription.REWARD_CHANGE_ITEM_NAME_LORE_2.getText()).asItem(), event -> {
+                try {
+                    changeItemName(player, uuid, itemUuid, Utils.setColorInMessage("&eNeuen &6Namen &eeingeben..."), secondItemName, secondID);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -197,9 +216,21 @@ public class RewardsInventory {
             //Set the delete this reward item for the third reward
             gui.setItem(25, ItemBuilder.of(Material.REDSTONE).name(ItemDescription.REWARDS_ITEM_DELETE.getText()).description(ItemDescription.REWARDS_ITEM_DELETE_LORE_1.getText(), ItemDescription.REWARDS_ITEM_DELETE_LORE_2.getText()).asItem(), event -> {
                 try {
-                    main.getSrDatabase().deleteRewardByRowID(thirdID);
+                    main.getSrDatabase().deleteRewardByRowID(thirdID, player, uuid);
                     player.sendMessage(Messages.REWARD_REMOVED_SUCCESS.getMessage());
                     openRewardsInventory(player, uuid, itemUuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            String thirdItemString = main.getSrDatabase().getRewardsItemStringByRewardID(thirdID);
+            String thirdItemName = ItemUtils.getItemName(thirdItemString);
+
+            //Set the change name item for the third reward
+            gui.setItem(23, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARD_CHANGE_ITEM_NAME.getText()).description(ItemDescription.REWARD_CHANGE_ITEM_NAME_LORE_1.getText(), ItemDescription.REWARD_CHANGE_ITEM_NAME_LORE_2.getText()).asItem(), event -> {
+                try {
+                    changeItemName(player, uuid, itemUuid, Utils.setColorInMessage("&eNeuen &6Namen &eeingeben..."), thirdItemName, thirdID);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -225,9 +256,21 @@ public class RewardsInventory {
             //Set the delete this reward item for the fourth reward
             gui.setItem(34, ItemBuilder.of(Material.REDSTONE).name(ItemDescription.REWARDS_ITEM_DELETE.getText()).description(ItemDescription.REWARDS_ITEM_DELETE_LORE_1.getText(), ItemDescription.REWARDS_ITEM_DELETE_LORE_2.getText()).asItem(), event -> {
                 try {
-                    main.getSrDatabase().deleteRewardByRowID(fourthID);
+                    main.getSrDatabase().deleteRewardByRowID(fourthID, player, uuid);
                     player.sendMessage(Messages.REWARD_REMOVED_SUCCESS.getMessage());
                     openRewardsInventory(player, uuid, itemUuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            String fourthItemString = main.getSrDatabase().getRewardsItemStringByRewardID(fourthID);
+            String fourthItemName = ItemUtils.getItemName(fourthItemString);
+
+            //Set the change name item for the fourth reward
+            gui.setItem(23, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARD_CHANGE_ITEM_NAME.getText()).description(ItemDescription.REWARD_CHANGE_ITEM_NAME_LORE_1.getText(), ItemDescription.REWARD_CHANGE_ITEM_NAME_LORE_2.getText()).asItem(), event -> {
+                try {
+                    changeItemName(player, uuid, itemUuid, Utils.setColorInMessage("&eNeuen &6Namen &eeingeben..."), fourthItemName, fourthID);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -292,7 +335,7 @@ public class RewardsInventory {
     }
 
     private static ItemStack createRewardItemStack(Integer rowID) throws SQLException {
-        String itemString = main.getSrDatabase().getItemStringByRewardID(rowID);
+        String itemString = main.getSrDatabase().getRewardsItemStringByRewardID(rowID);
 
         Material material = ItemUtils.getItemMaterial(itemString);
         String itemName = ItemUtils.getItemName(itemString);
@@ -371,6 +414,45 @@ public class RewardsInventory {
                 })
                 .preventClose()
                 .text(currentAmount.toString())
+                .title(title)
+                .plugin(main)
+                .open(player);
+    }
+
+    private static void changeItemName(Player player, UUID uuid, UUID itemUuid, String title, String itemName, Integer rowID) throws SQLException {
+        new AnvilGUI.Builder()
+                .onClose(stateSnapshot -> {
+                    try {
+                        openRewardsInventory(player, uuid, itemUuid);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .onClick((slot, statesnapshot) -> {
+                    if(slot != AnvilGUI.Slot.OUTPUT) {
+                        return Collections.emptyList();
+                    }
+                    String input = statesnapshot.getText();
+                    if(input.equals(itemName.replace("§", "&"))) {
+                        player.sendMessage(Messages.REWARD_ITEM_CHANGE_NAME_CANCEL.getMessage().replace("%name", input));
+                        return Arrays.asList(AnvilGUI.ResponseAction.close());
+                    }
+                    try {
+                        String itemString = main.getSrDatabase().getRewardsItemStringByRewardID(rowID);
+                        Material material = ItemUtils.getItemMaterial(itemString);
+                        List<String> itemDescription = ItemUtils.getItemDescription(itemString);
+                        Map<Enchantment, Integer> itemEnchantmentMap = ItemUtils.getItemEnchantments(itemString);
+                        String newItemString = ItemUtils.createItemString(Utils.setColorInMessage(input), material, itemEnchantmentMap, itemDescription);
+
+                        main.getSrDatabase().setNewRewardsItemStringByRowID(rowID, newItemString);
+                        player.sendMessage(Messages.REWARD_ITEM_CHANGE_NAME_SUCCESS.getMessage().replace("%name", input));
+                        return Arrays.asList(AnvilGUI.ResponseAction.close());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .preventClose()
+                .text(itemName.replace("§", "&"))
                 .title(title)
                 .plugin(main)
                 .open(player);

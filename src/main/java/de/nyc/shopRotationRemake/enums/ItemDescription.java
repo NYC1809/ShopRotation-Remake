@@ -120,7 +120,9 @@ public enum ItemDescription {
     REWARD_ADD_ITEM_BY_DRAG_LORE_1(" "),
     REWARD_ADD_ITEM_BY_DRAG_LORE_2("&eDadurch werden die &6Item Properties &edes Items direkt übernommen."),
 
-
+    REWARD_CHANGE_ITEM_NAME("&eKlicke hier um den &6Namen &eder &6Belohnung &ezu ändern!"),
+    REWARD_CHANGE_ITEM_NAME_LORE_1(" "),
+    REWARD_CHANGE_ITEM_NAME_LORE_2("&7Dies ändert den Namen der ausgegeben Belohnung."),
     ;
 
     private final String text;

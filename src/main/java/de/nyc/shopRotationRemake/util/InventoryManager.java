@@ -503,7 +503,7 @@ public class InventoryManager {
                             }
                         }
                         main.getSrDatabase().changeNameOfChest(uuid, newTitle[0], player);
-                        stateSnapshot.getPlayer().sendMessage(Messages.CHEST_CHANGED_NAME_SUCCESS.getMessage().replace("%name", Utils.setColorInMessage(newTitle[0])));
+                        player.sendMessage(Messages.CHEST_CHANGED_NAME_SUCCESS.getMessage().replace("%name", Utils.setColorInMessage(newTitle[0])));
                         main.updateHolograms();
                         return Arrays.asList(AnvilGUI.ResponseAction.close());
                     } catch (SQLException e) {

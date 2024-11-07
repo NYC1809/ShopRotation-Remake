@@ -77,6 +77,50 @@ public class RewardsInventory {
             }
         });
 
+        //Set addthis item:
+        gui.setItem(49, ItemBuilder.of(Material.BRUSH).name(ItemDescription.REWARD_ADD_ITEM_BY_DRAG.getText()).description(ItemDescription.REWARD_ADD_ITEM_BY_DRAG_LORE_1.getText(), ItemDescription.REWARD_ADD_ITEM_BY_DRAG_LORE_2.getText()).asItem(), event -> {
+            ItemStack itemOnCursor = event.getCursor();
+
+            if(itemOnCursor != null) {
+                if(!itemOnCursor.getType().equals(Material.AIR)) {
+                    if(itemOnCursor.hasItemMeta()) {
+                        ItemMeta itemMeta = itemOnCursor.getItemMeta();
+                        if(itemMeta != null) {
+                            String displayName;
+                            if(itemMeta.getDisplayName().isEmpty()) {
+                                displayName = itemOnCursor.getType().name();
+                            } else {
+                                displayName = itemMeta.getDisplayName();
+                            }
+                            Material material = itemOnCursor.getType();
+                            Map<Enchantment, Integer> enchantmentList = null;
+                            List<String> itemLore = null;
+
+                            if(itemMeta.hasEnchants()) {
+                                enchantmentList = itemMeta.getEnchants();
+                            }
+                            if(itemMeta.hasLore()) {
+                                itemLore = itemMeta.getLore();
+                            }
+                            String itemOnCursorString = ItemUtils.createItemString(displayName, material, enchantmentList, itemLore);
+                            try {
+                                main.getSrDatabase().addReward(uuid, itemUuid, itemOnCursorString, 1, player);
+                                player.sendMessage(Messages.REWARD_ADDED_SUCCESS.getMessage().replace("%item", displayName));
+                                player.sendMessage(Messages.REWARD_MODIFICATE_FOR_CHANGES.getMessage());
+                                openRewardsInventory(player, uuid, itemUuid);
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                        }
+                    }
+                }
+            }
+
+
+
+        });
+
         //Set the rewards to the gui:
         List<Integer> rowIDs = main.getSrDatabase().getIdsFromItemUuidRewards(itemUuid);
         //First reward:

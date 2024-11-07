@@ -116,7 +116,12 @@ public enum ItemDescription {
     REWARDS_ITEM_DELETE_LORE_1(" "),
     REWARDS_ITEM_DELETE_LORE_2("&cWARNING&7: Diese Aktion kann &cNICHT &7rückgängig gemacht werden!"),
 
-   ;
+    REWARD_ADD_ITEM_BY_DRAG("&eZiehe &6Items &ehier darauf um diese &6hinzuzufügen&e: "),
+    REWARD_ADD_ITEM_BY_DRAG_LORE_1(" "),
+    REWARD_ADD_ITEM_BY_DRAG_LORE_2("&eDadurch werden die &6Item Properties &edes Items direkt übernommen."),
+
+
+    ;
 
     private final String text;
 

@@ -287,7 +287,7 @@ public class InventoryManager {
                             String itemString = ItemUtils.createItemString(displayName, material, enchantmentList, itemLore);
                             UUID randomItemUuid = UUID.randomUUID();
                             try {
-                                main.getSrDatabase().addItemToItemsDB(uuid,randomItemUuid, itemString, 1, player);
+                                main.getSrDatabase().addItemToItemsDB(uuid, randomItemUuid, itemString, 1, player);
                                 player.sendMessage(Messages.ITEM_ADDED_SUCCESS.getMessage().replace("%item", displayName));
                                 player.sendMessage(Messages.ITEM_MODIFICATE_FOR_CHANGES.getMessage());
                                 createItemsInventory(player, uuid);

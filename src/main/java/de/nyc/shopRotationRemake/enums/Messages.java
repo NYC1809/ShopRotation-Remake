@@ -81,6 +81,9 @@ public enum Messages {
 
     REWARD_MODIFICATE_FOR_CHANGES("&6Modifiziere &7das &6Item &7um noch mehr &6Eigenschaften &7anzupassen!"),
     REWARD_LORE_LINE_REMOVED_SUCCESS("&7Du hast &aerfolgreich &7die Zeile: \"&a%text&7\" &centfernt&7!"),
+    REWARD_LORE_LINE_CHANGED_SUCCESS("&7Du hast &aerfolgreich &7die Zeile &6%line &7zu \"&a%text&7\" &ageändert&7!"),
+    REWARD_LORE_ALREADY_EXISTS("&7Diese Zeile hat bereits den Text: \"&a%input&7\"."),
+    REWARD_LORE_ADD_CANCEL("&7Du hast die &6Aktion&7: \"Beschreibung hinzufügen\" &cabgebrochen&7."),
 
     //srChest get messages
     GET_UUID_INFO_LINE_1(Utils.getPrefix() + "&2Anklicken zum kopieren:"),

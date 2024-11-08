@@ -164,7 +164,7 @@ public class RewardsInventory {
             //Set the change Lore item for the first reward:
             gui.setItem(6, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARD_CHANGE_ITEM_LORE.getText()).description(ItemDescription.REWARD_CHANGE_ITEM_LORE_LORE_1.getText(), ItemDescription.REWARD_CHANGE_ITEM_LORE_LORE_2.getText()).asItem(), event -> {
                 try {
-                    changeRewardsLoreInventory(player, uuid, itemUuid, firstID, firstItem);
+                    changeRewardsLoreInventory(player, uuid, itemUuid, firstID);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -212,7 +212,7 @@ public class RewardsInventory {
             //Set the change Lore item for the second reward:
             gui.setItem(15, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARD_CHANGE_ITEM_LORE.getText()).description(ItemDescription.REWARD_CHANGE_ITEM_LORE_LORE_1.getText(), ItemDescription.REWARD_CHANGE_ITEM_LORE_LORE_2.getText()).asItem(), event -> {
                 try {
-                    changeRewardsLoreInventory(player, uuid, itemUuid, secondID, secondItem);
+                    changeRewardsLoreInventory(player, uuid, itemUuid, secondID);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -260,7 +260,7 @@ public class RewardsInventory {
             //Set the change Lore item for the third reward:
             gui.setItem(24, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARD_CHANGE_ITEM_LORE.getText()).description(ItemDescription.REWARD_CHANGE_ITEM_LORE_LORE_1.getText(), ItemDescription.REWARD_CHANGE_ITEM_LORE_LORE_2.getText()).asItem(), event -> {
                 try {
-                    changeRewardsLoreInventory(player, uuid, itemUuid, thirdID, thirdItem);
+                    changeRewardsLoreInventory(player, uuid, itemUuid, thirdID);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -309,7 +309,7 @@ public class RewardsInventory {
             //Set the change Lore item for the first reward:
             gui.setItem(33, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARD_CHANGE_ITEM_LORE.getText()).description(ItemDescription.REWARD_CHANGE_ITEM_LORE_LORE_1.getText(), ItemDescription.REWARD_CHANGE_ITEM_LORE_LORE_2.getText()).asItem(), event -> {
                 try {
-                    changeRewardsLoreInventory(player, uuid, itemUuid, fourthID, fourthItem);
+                    changeRewardsLoreInventory(player, uuid, itemUuid, fourthID);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -497,7 +497,7 @@ public class RewardsInventory {
                 .open(player);
     }
 
-    private static void changeRewardsLoreInventory(Player player, UUID uuid, UUID itemUuid, Integer rowID, ItemStack item) throws SQLException {
+    private static void changeRewardsLoreInventory(Player player, UUID uuid, UUID itemUuid, Integer rowID) throws SQLException {
         //&TODO: permission system
         if(!player.isOp()) {
             player.sendMessage(Messages.NO_PERMS_ERROR.getMessage());
@@ -510,6 +510,8 @@ public class RewardsInventory {
             gui.setItem(i, ItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE).name(" ").asItem());
         }
         //Set item into Slot:
+        ItemStack item = createRewardItemStack(rowID);
+
         gui.setItem(20, item);
 
         //Set nether star into Slot:
@@ -557,17 +559,27 @@ public class RewardsInventory {
                     try {
                         main.getSrDatabase().setNewRewardsItemStringByRowID(rowID, newItemString);
                         player.sendMessage(Messages.REWARD_LORE_LINE_REMOVED_SUCCESS.getMessage().replace("%text", lineToRemove));
-                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID, item);
+                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                //TODO xxx
+                if(event.getClick().equals(ClickType.LEFT)) {
+                    try {
+                        changeItemLoreLineA(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), itemLore.getFirst(), rowID, itemLore, 1);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             });
         } else {
             lore_1 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");
             gui.setItem(14, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARDS_LORE_NAME.getText().replace("%number", "1")).description(ItemDescription.REWARDS_LORE_LORE_1.getText(), lore_1, ItemDescription.REWARDS_LORE_LORE_3.getText(), ItemDescription.REWARDS_LORE_LORE_4.getText(), ItemDescription.REWARDS_LORE_LORE_5.getText()).asItem(), event -> {
-                //TODO xxx
+                try {
+                    changeItemLoreLineB(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), rowID, itemLore);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             });
         }
 
@@ -583,17 +595,27 @@ public class RewardsInventory {
                     try {
                         main.getSrDatabase().setNewRewardsItemStringByRowID(rowID, newItemString);
                         player.sendMessage(Messages.REWARD_LORE_LINE_REMOVED_SUCCESS.getMessage().replace("%text", lineToRemove));
-                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID, item);
+                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                //TODO xxx
+                if(event.getClick().equals(ClickType.LEFT)) {
+                    try {
+                        changeItemLoreLineA(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), itemLore.get(1), rowID, itemLore, 2);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             });
         } else {
             lore_2 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");
             gui.setItem(23, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARDS_LORE_NAME.getText().replace("%number", "2")).description(ItemDescription.REWARDS_LORE_LORE_1.getText(), lore_2, ItemDescription.REWARDS_LORE_LORE_3.getText(), ItemDescription.REWARDS_LORE_LORE_4.getText(), ItemDescription.REWARDS_LORE_LORE_5.getText()).asItem(), event -> {
-                //TODO xxx
+                try {
+                    changeItemLoreLineB(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), rowID, itemLore);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             });
         }
 
@@ -609,17 +631,27 @@ public class RewardsInventory {
                     try {
                         main.getSrDatabase().setNewRewardsItemStringByRowID(rowID, newItemString);
                         player.sendMessage(Messages.REWARD_LORE_LINE_REMOVED_SUCCESS.getMessage().replace("%text", lineToRemove));
-                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID, item);
+                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                //TODO xxx
+                if(event.getClick().equals(ClickType.LEFT)) {
+                    try {
+                        changeItemLoreLineA(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), itemLore.get(2), rowID, itemLore, 3);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             });
         } else {
             lore_3 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");
             gui.setItem(32, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARDS_LORE_NAME.getText().replace("%number", "3")).description(ItemDescription.REWARDS_LORE_LORE_1.getText(), lore_3, ItemDescription.REWARDS_LORE_LORE_3.getText(), ItemDescription.REWARDS_LORE_LORE_4.getText(), ItemDescription.REWARDS_LORE_LORE_5.getText()).asItem(), event -> {
-                //TODO xxx
+                try {
+                    changeItemLoreLineB(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), rowID, itemLore);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             });
         }
 
@@ -635,17 +667,27 @@ public class RewardsInventory {
                     try {
                         main.getSrDatabase().setNewRewardsItemStringByRowID(rowID, newItemString);
                         player.sendMessage(Messages.REWARD_LORE_LINE_REMOVED_SUCCESS.getMessage().replace("%text", lineToRemove));
-                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID, item);
+                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                //TODO xxx
+                if(event.getClick().equals(ClickType.LEFT)) {
+                    try {
+                        changeItemLoreLineA(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), itemLore.get(3), rowID, itemLore, 4);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             });
         } else {
             lore_4 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");
             gui.setItem(41, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARDS_LORE_NAME.getText().replace("%number", "4")).description(ItemDescription.REWARDS_LORE_LORE_1.getText(), lore_4, ItemDescription.REWARDS_LORE_LORE_3.getText(), ItemDescription.REWARDS_LORE_LORE_4.getText(), ItemDescription.REWARDS_LORE_LORE_5.getText()).asItem(), event -> {
-                //TODO xxx
+                try {
+                    changeItemLoreLineB(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), rowID, itemLore);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             });
         }
 
@@ -661,17 +703,27 @@ public class RewardsInventory {
                     try {
                         main.getSrDatabase().setNewRewardsItemStringByRowID(rowID, newItemString);
                         player.sendMessage(Messages.REWARD_LORE_LINE_REMOVED_SUCCESS.getMessage().replace("%text", lineToRemove));
-                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID, item);
+                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                //TODO xxx
+                if(event.getClick().equals(ClickType.LEFT)) {
+                    try {
+                        changeItemLoreLineA(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), itemLore.get(4), rowID, itemLore, 5);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             });
         } else {
             lore_5 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");
             gui.setItem(16, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARDS_LORE_NAME.getText().replace("%number", "5")).description(ItemDescription.REWARDS_LORE_LORE_1.getText(), lore_5, ItemDescription.REWARDS_LORE_LORE_3.getText(), ItemDescription.REWARDS_LORE_LORE_4.getText(), ItemDescription.REWARDS_LORE_LORE_5.getText()).asItem(), event -> {
-                //TODO xxx
+                try {
+                    changeItemLoreLineB(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), rowID, itemLore);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             });
         }
 
@@ -687,17 +739,27 @@ public class RewardsInventory {
                     try {
                         main.getSrDatabase().setNewRewardsItemStringByRowID(rowID, newItemString);
                         player.sendMessage(Messages.REWARD_LORE_LINE_REMOVED_SUCCESS.getMessage().replace("%text", lineToRemove));
-                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID, item);
+                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                //TODO xxx
+                if(event.getClick().equals(ClickType.LEFT)) {
+                    try {
+                        changeItemLoreLineA(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), itemLore.get(5), rowID, itemLore, 6);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             });
         } else {
             lore_6 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");
             gui.setItem(25, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARDS_LORE_NAME.getText().replace("%number", "6")).description(ItemDescription.REWARDS_LORE_LORE_1.getText(), lore_6, ItemDescription.REWARDS_LORE_LORE_3.getText(), ItemDescription.REWARDS_LORE_LORE_4.getText(), ItemDescription.REWARDS_LORE_LORE_5.getText()).asItem(), event -> {
-                //TODO xxx
+                try {
+                    changeItemLoreLineB(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), rowID, itemLore);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             });
         }
 
@@ -713,17 +775,27 @@ public class RewardsInventory {
                     try {
                         main.getSrDatabase().setNewRewardsItemStringByRowID(rowID, newItemString);
                         player.sendMessage(Messages.REWARD_LORE_LINE_REMOVED_SUCCESS.getMessage().replace("%text", lineToRemove));
-                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID, item);
+                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                //TODO xxx
+                if(event.getClick().equals(ClickType.LEFT)) {
+                    try {
+                        changeItemLoreLineA(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), itemLore.get(6), rowID, itemLore, 7);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             });
         } else {
             lore_7 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");
             gui.setItem(34, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARDS_LORE_NAME.getText().replace("%number", "7")).description(ItemDescription.REWARDS_LORE_LORE_1.getText(), lore_7, ItemDescription.REWARDS_LORE_LORE_3.getText(), ItemDescription.REWARDS_LORE_LORE_4.getText(), ItemDescription.REWARDS_LORE_LORE_5.getText()).asItem(), event -> {
-                //TODO xxx
+                try {
+                    changeItemLoreLineB(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), rowID, itemLore);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             });
         }
 
@@ -739,17 +811,27 @@ public class RewardsInventory {
                     try {
                         main.getSrDatabase().setNewRewardsItemStringByRowID(rowID, newItemString);
                         player.sendMessage(Messages.REWARD_LORE_LINE_REMOVED_SUCCESS.getMessage().replace("%text", lineToRemove));
-                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID, item);
+                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                //TODO xxx
+                if(event.getClick().equals(ClickType.LEFT)) {
+                    try {
+                        changeItemLoreLineA(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), itemLore.get(7), rowID, itemLore, 8);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             });
         } else {
             lore_8 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");
             gui.setItem(43, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARDS_LORE_NAME.getText().replace("%number", "8")).description(ItemDescription.REWARDS_LORE_LORE_1.getText(), lore_8, ItemDescription.REWARDS_LORE_LORE_3.getText(), ItemDescription.REWARDS_LORE_LORE_4.getText(), ItemDescription.REWARDS_LORE_LORE_5.getText()).asItem(), event -> {
-                //TODO xxx
+                try {
+                    changeItemLoreLineB(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Text &eein..."), rowID, itemLore);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             });
         }
 
@@ -758,4 +840,94 @@ public class RewardsInventory {
         });
         gui.show(player);
     }
+
+    private static void changeItemLoreLineA(Player player, UUID uuid, UUID itemUuid, String title, String loreText, Integer rowID, List<String> description, Integer loreNumber) throws SQLException {
+        new AnvilGUI.Builder()
+                .onClose(stateSnapshot -> {
+                    try {
+                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .onClick((slot, statesnapshot) -> {
+                    if(slot != AnvilGUI.Slot.OUTPUT) {
+                        return Collections.emptyList();
+                    }
+                    String input = statesnapshot.getText();
+                    if(input.equals(loreText.replace("§", "&"))) {
+                        player.sendMessage(Messages.REWARD_LORE_ALREADY_EXISTS.getMessage().replace("%input", Utils.setColorInMessage(input)));
+                        return Arrays.asList(AnvilGUI.ResponseAction.close());
+                    }
+                    if(description.size() >= loreNumber) {
+                        description.set(loreNumber - 1, Utils.setColorInMessage(input));
+                    } else {
+                        description.add(Utils.setColorInMessage(input));
+                    }
+
+                    try {
+                        String itemString = main.getSrDatabase().getRewardsItemStringByRowID(rowID);
+                        String itemName = ItemUtils.getItemName(itemString);
+                        Material itemMaterial = ItemUtils.getItemMaterial(itemString);
+                        Map<Enchantment, Integer> itemEnchantments = ItemUtils.getItemEnchantments(itemString);
+
+                        String newItemString = ItemUtils.createItemString(itemName, itemMaterial, itemEnchantments, description);
+                        main.getSrDatabase().setNewRewardsItemStringByRowID(rowID, newItemString);
+                        player.sendMessage(Messages.REWARD_LORE_LINE_CHANGED_SUCCESS.getMessage().replace("%text", Utils.setColorInMessage(input)).replace("%line", String.valueOf(loreNumber)));
+                        return Arrays.asList(AnvilGUI.ResponseAction.close());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .preventClose()
+                .text(loreText.replace("§", "&"))
+                .title(title)
+                .plugin(main)
+                .open(player);
+    }
+
+    private static void changeItemLoreLineB(Player player, UUID uuid, UUID itemUuid, String title, Integer rowID, List<String> description) throws SQLException {
+        new AnvilGUI.Builder()
+                .onClose(stateSnapshot -> {
+                    try {
+                        changeRewardsLoreInventory(player, uuid, itemUuid, rowID);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .onClick((slot, statesnapshot) -> {
+                    if(slot != AnvilGUI.Slot.OUTPUT) {
+                        return Collections.emptyList();
+                    }
+                    String input = statesnapshot.getText();
+                    if(input == null || input.equals("§f")) {
+                        player.sendMessage(Messages.REWARD_LORE_ADD_CANCEL.getMessage());
+                        return Arrays.asList(AnvilGUI.ResponseAction.close());
+                    }
+                    try {
+                        String itemString = main.getSrDatabase().getRewardsItemStringByRowID(rowID);
+                        String itemName = ItemUtils.getItemName(itemString);
+                        Material itemMaterial = ItemUtils.getItemMaterial(itemString);
+                        Map<Enchantment, Integer> itemEnchantments = ItemUtils.getItemEnchantments(itemString);
+
+                        description.add(Utils.setColorInMessage(input));
+
+                        String newItemString = ItemUtils.createItemString(itemName, itemMaterial, itemEnchantments, description);
+                        main.getSrDatabase().setNewRewardsItemStringByRowID(rowID, newItemString);
+
+                        String lineNumber = String.valueOf(description.size());
+                        player.sendMessage(Messages.REWARD_LORE_LINE_CHANGED_SUCCESS.getMessage().replace("%text", Utils.setColorInMessage(input)).replace("%line", lineNumber));
+                        return Arrays.asList(AnvilGUI.ResponseAction.close());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .preventClose()
+                .text("§f")
+                .title(title)
+                .plugin(main)
+                .open(player);
+
+    }
+
 }

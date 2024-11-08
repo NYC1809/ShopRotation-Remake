@@ -41,7 +41,7 @@ public enum Messages {
     ITEM_ADDED_SUCCESS("&7Du hast &aerfolgreich &7das Item \"&a%item&7\" hinzugefügt."),
     ITEM_MODIFICATE_FOR_CHANGES("&6Modifiziere &7das &6Item &7in der Chest um noch mehr &6Eigenschaften &7anzupassen!"),
 
-    ITEMS_REMOVED_SUCCESS("&7Du hast &aerfolgreich &c&lALLE &r&7Items aus der Chest: \"&a%name&7\" &centfernt!"),
+    ITEMS_REMOVED_SUCCESS("&7Du hast &aerfolgreich &c&lALLE &r&7Items aus der Chest: \"&a%name&7\" &centfernt&7!"),
     ITEM_CHANGED_AMOUNT_SUCCESS("&7Du hast &aerfolgreich &7den Wert zu \"&a%number&7\" geändert!"),
     TOO_MANY_ITEMS_IN_CHEST("&7Diese Chest enthält zu viele Items. Es werden nur die ersten 28 Items dargestellt!"),
 
@@ -69,7 +69,7 @@ public enum Messages {
 
     REWARD_REMOVED_SUCCESS("&7Du hast &aerfolgreich &7diese &aBelohnung &cgelöscht&7!"),
     LAST_REWARD_DIDNT_EXIST("&7Dieses Item besitzt aktuell &ckeine &7Belohnungen!"),
-    All_REWARDS_REMOVED("&7Du hast &aerfolgreich &c&lALLE &r&7Belohnungen von dem Item: \"&a%itemuuid&7\" &centfernt!"),
+    All_REWARDS_REMOVED("&7Du hast &aerfolgreich &c&lALLE &r&7Belohnungen von dem Item: \"&a%itemuuid&7\" &centfernt&7!"),
 
     ADD_REWARD_CANCEL("&7Du hast die &6Aktion&7: \"Belohnung hinzufügen\" &cabgebrochen&7."),
     REWARD_ADDED_SUCCESS("&7Du hast &aerfolgreich &7die Belohnung \"&a%item&7\" hinzugefügt."),

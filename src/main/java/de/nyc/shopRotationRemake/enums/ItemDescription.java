@@ -53,7 +53,8 @@ public enum ItemDescription {
 
     ITEM_DELETE_ALL_ITEMS("&cKlicke hier um alle &4&lITEMS &r&cdieser Chest zu löschen!"),
     ITEM_DELETE_ALL_ITEMS_LORE_1(" "),
-    ITEM_DELETE_ALL_ITEMS_LORE_2("&cWARNING&7: Hiermit setzt du alle Items zurück!"),
+    ITEM_DELETE_ALL_ITEMS_LORE_2("&6&lDouble-Klick &7um diese Aktion auszuführen!"),
+    ITEM_DELETE_ALL_ITEMS_LORE_3("&cWARNING&7: Hiermit setzt du alle Items zurück!"),
 
     ITEM_BACK_TO_ADD_ITEM_TO_INV("&7Klicke hier um zurück zu allen &6Items &7zu gelangen."),
 
@@ -92,7 +93,8 @@ public enum ItemDescription {
 
     ITEM_REWARDS_REMOVE_ALL("&cKlicke hier um alle &4&lBELOHNUNGEN &r&cdieses Items zu löschen!"),
     ITEM_REWARDS_REMOVE_ALL_LORE_1(" "),
-    ITEM_REWARDS_REMOVE_ALL_LORE_2("&cWARNING&7: Diese Aktion kann &cNICHT &7rückgängig gemacht werden!"),
+    ITEM_REWARDS_REMOVE_ALL_LORE_2("&6&lDouble-Klick &7um diese Aktion auszuführen!"),
+    ITEM_REWARDS_REMOVE_ALL_LORE_3("&cWARNING&7: Diese Aktion kann &cNICHT &7rückgängig gemacht werden!"),
 
     REWARDS_ADD_NEW_ITEM("&eKlicke hier um eine &6neue Belohnung &ehinzuzufügen:"),
     REWARDS_ADD_NEW_ITEM_LORE_1(" "),

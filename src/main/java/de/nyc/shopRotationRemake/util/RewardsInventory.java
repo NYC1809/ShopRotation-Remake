@@ -59,12 +59,14 @@ public class RewardsInventory {
         });
 
         //Delete all rewards item:
-        gui.setItem(51, ItemBuilder.of(Material.REDSTONE_BLOCK).name(ItemDescription.ITEM_REWARDS_REMOVE_ALL.getText()).description(ItemDescription.ITEM_REWARDS_REMOVE_ALL_LORE_1.getText(), ItemDescription.ITEM_REWARDS_REMOVE_ALL_LORE_2.getText()).asItem(), event -> {
-            try {
-                removeAllRewards(player, uuid, itemUuid);
-                openRewardsInventory(player, uuid, itemUuid);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+        gui.setItem(51, ItemBuilder.of(Material.REDSTONE_BLOCK).name(ItemDescription.ITEM_REWARDS_REMOVE_ALL.getText()).description(ItemDescription.ITEM_REWARDS_REMOVE_ALL_LORE_1.getText(), ItemDescription.ITEM_REWARDS_REMOVE_ALL_LORE_2.getText(), ItemDescription.ITEM_REWARDS_REMOVE_ALL_LORE_3.getText()).asItem(), event -> {
+            if(event.getClick().equals(ClickType.DOUBLE_CLICK)) {
+                try {
+                    removeAllRewards(player, uuid, itemUuid);
+                    openRewardsInventory(player, uuid, itemUuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -560,6 +562,7 @@ public class RewardsInventory {
                         throw new RuntimeException(e);
                     }
                 }
+                //TODO xxx
             });
         } else {
             lore_1 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");
@@ -585,6 +588,7 @@ public class RewardsInventory {
                         throw new RuntimeException(e);
                     }
                 }
+                //TODO xxx
             });
         } else {
             lore_2 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");
@@ -610,6 +614,7 @@ public class RewardsInventory {
                         throw new RuntimeException(e);
                     }
                 }
+                //TODO xxx
             });
         } else {
             lore_3 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");
@@ -635,6 +640,7 @@ public class RewardsInventory {
                         throw new RuntimeException(e);
                     }
                 }
+                //TODO xxx
             });
         } else {
             lore_4 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");
@@ -660,6 +666,7 @@ public class RewardsInventory {
                         throw new RuntimeException(e);
                     }
                 }
+                //TODO xxx
             });
         } else {
             lore_5 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");
@@ -685,6 +692,7 @@ public class RewardsInventory {
                         throw new RuntimeException(e);
                     }
                 }
+                //TODO xxx
             });
         } else {
             lore_6 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");
@@ -710,6 +718,7 @@ public class RewardsInventory {
                         throw new RuntimeException(e);
                     }
                 }
+                //TODO xxx
             });
         } else {
             lore_7 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");
@@ -735,6 +744,7 @@ public class RewardsInventory {
                         throw new RuntimeException(e);
                     }
                 }
+                //TODO xxx
             });
         } else {
             lore_8 = ItemDescription.REWARDS_LORE_LORE_2.getText().replace("%text", "&d[ NONE ]");

@@ -300,11 +300,13 @@ public class InventoryManager {
             }
         });
 
-        gui.setItem(50, ItemBuilder.of(Material.REDSTONE_BLOCK).name(ItemDescription.ITEM_DELETE_ALL_ITEMS.getText()).description(ItemDescription.ITEM_DELETE_ALL_ITEMS_LORE_1.getText(), ItemDescription.ITEM_DELETE_ALL_ITEMS_LORE_2.getText()).asItem(), event -> {
-            try {
-                deleteAllItems(player, uuid);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+        gui.setItem(50, ItemBuilder.of(Material.REDSTONE_BLOCK).name(ItemDescription.ITEM_DELETE_ALL_ITEMS.getText()).description(ItemDescription.ITEM_DELETE_ALL_ITEMS_LORE_1.getText(), ItemDescription.ITEM_DELETE_ALL_ITEMS_LORE_2.getText(), ItemDescription.ITEM_DELETE_ALL_ITEMS_LORE_3.getText()).asItem(), event -> {
+            if(event.getClick().equals(ClickType.DOUBLE_CLICK)) {
+                try {
+                    deleteAllItems(player, uuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 

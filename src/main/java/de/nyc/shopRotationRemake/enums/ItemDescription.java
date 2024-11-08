@@ -94,14 +94,6 @@ public enum ItemDescription {
     ITEM_REWARDS_REMOVE_ALL_LORE_1(" "),
     ITEM_REWARDS_REMOVE_ALL_LORE_2("&cWARNING&7: Diese Aktion kann &cNICHT &7rückgängig gemacht werden!"),
 
-    ITEM_REWARDS_HELP("&eDieser Hilfe-Text befindet sich aktuell noch in Arbeit!"),
-    ITEM_REWARDS_HELP_LORE_1(" "),
-    ITEM_REWARDS_HELP_LORE_2("&c&lCOMING SOON"),
-
-    REWARDS_DESCRIPTION_NAME(Utils.getPrefix() + "&6Rewards"),
-    REWARDS_DESCRIPTION_LORE_1(" "),
-    REWARDS_DESCRIPTION_LORE_2("&7Hier kannst du verschiedene Einstellungen tätigen:"),
-
     REWARDS_ADD_NEW_ITEM("&eKlicke hier um eine &6neue Belohnung &ehinzuzufügen:"),
     REWARDS_ADD_NEW_ITEM_LORE_1(" "),
     REWARDS_ADD_NEW_ITEM_LORE_2("&7Daraufhin kannst du weitere Einstellungen zu dieser Belohnung tätigen!"),
@@ -123,6 +115,26 @@ public enum ItemDescription {
     REWARD_CHANGE_ITEM_NAME("&eKlicke hier um den &6Namen &eder &6Belohnung &ezu ändern!"),
     REWARD_CHANGE_ITEM_NAME_LORE_1(" "),
     REWARD_CHANGE_ITEM_NAME_LORE_2("&7Dies ändert den Namen der ausgegeben Belohnung."),
+
+    REWARD_CHANGE_ITEM_LORE("&eKlicke hier um die &6Beschreibung &edes &6Items &eanzupassen."),
+    REWARD_CHANGE_ITEM_LORE_LORE_1(" "),
+    REWARD_CHANGE_ITEM_LORE_LORE_2("&7Dies öffnet ein weiteres Inventar wo weitere Einstellungen getätigt werden können!"),
+
+    REWARD_LORE_NETHER_STAR("&eDieser Hilfe-Text befindet sich aktuell noch in Arbeit!"),
+    REWARD_LORE_NETHER_STAR_LORE_1(" "),
+    REWARD_LORE_NETHER_STAR_LORE_2("&c&lCOMING SOON"),
+
+    LORE_EXIT_REWARDS_ITEM("&eKlicke hier um zurück zu dem &6Item &ezu gehen!"),
+    LORE_EXIT_REWARDS_ITEM_LORE_1(" "),
+    LORE_EXIT_REWARDS_ITEM_LORE_2("&7Hier kommst du zu dem &6Item &7zurück welches aktuell &6modifiziert &7wird."),
+
+    REWARDS_LORE_NAME("&eZeile [&6%number&e] &6» &eBeschreibung des Items:"),
+    REWARDS_LORE_LORE_1(" "),
+    REWARDS_LORE_LORE_2("   &3» &bAktueller Text: &e\"&r%text&e\""),
+    REWARDS_LORE_LORE_3(" "),
+    REWARDS_LORE_LORE_4("&6Klicke &ehier um diese &6Zeile &ezu ändern!"),
+    REWARDS_LORE_LORE_5("&6Shift-Klicke &ehier um diese &6Zeile &ezu &clöschen&e!"),
+
     ;
 
     private final String text;

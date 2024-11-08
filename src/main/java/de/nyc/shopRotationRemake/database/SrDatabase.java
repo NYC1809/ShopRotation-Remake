@@ -604,7 +604,7 @@ public class SrDatabase {
         }
     }
 
-    public String getRewardsItemStringByRewardID(Integer rowID) throws SQLException {
+    public String getRewardsItemStringByRowID(Integer rowID) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT item FROM rewards WHERE id = ?")) {
             preparedStatement.setInt(1, rowID);
             ResultSet resultSet = preparedStatement.executeQuery();

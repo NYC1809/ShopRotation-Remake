@@ -35,7 +35,7 @@ public enum Messages {
     CHEST_CHANGED_NAME_SUCCESS("&7Du hast &aerfolgreich &7den &6Namen &7der srChest zu: \"%name&7\" geändert."),
     CHEST_CHANGED_NAME_CANCEL("&7Die srChest hat bereits den &6Titel&7: \"&a%name&7\""),
     CHEST_CHANGED_TYPE_SUCCESS("&7Du hast &aerfolgreich &7den &6BlockType&7 der srChest zu \"&a%type&7\" geändert."),
-    CHEST_CHANGED_TYPE_CANCEL("&7Die srChest hat bereits den &6BlockType&7: \"&a%type&7\""),
+    CHEST_CHANGED_TYPE_CANCEL("&7Die srChest hat bereits den &6BlockType&7: \"&aMaterial.%type&7\""),
 
     ITEM_ADD_CANCELED("&7Du hast die &6Aktion&7: \"Item hinzufügen\" &cabgebrochen&7."),
     ITEM_ADDED_SUCCESS("&7Du hast &aerfolgreich &7das Item \"&a%item&7\" hinzugefügt."),
@@ -80,6 +80,8 @@ public enum Messages {
     REWARD_ITEM_CHANGE_NAME_SUCCESS("&7Du hast &aerfolgreich &7den &6Namen &7der Belohnung zu: \"&a%name&7\" geändert."),
 
     REWARD_MODIFICATE_FOR_CHANGES("&6Modifiziere &7das &6Item &7um noch mehr &6Eigenschaften &7anzupassen!"),
+    REWARD_LORE_LINE_REMOVED_SUCCESS("&7Du hast &aerfolgreich &7die Zeile: \"&a%text&7\" &centfernt&7!"),
+
     //srChest get messages
     GET_UUID_INFO_LINE_1(Utils.getPrefix() + "&2Anklicken zum kopieren:"),
 

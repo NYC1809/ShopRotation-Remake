@@ -6,9 +6,9 @@ import de.nyc.shopRotationRemake.database.SrDatabase;
 import de.nyc.shopRotationRemake.listener.BlockBreakListener;
 import de.nyc.shopRotationRemake.listener.ChatListener;
 import de.nyc.shopRotationRemake.listener.PlayerInteractListener;
+import de.nyc.shopRotationRemake.objects.EnchantmentsMap;
 import de.nyc.shopRotationRemake.objects.Hologram;
 import de.nyc.shopRotationRemake.util.HologramUtils;
-import de.nyc.shopRotationRemake.util.InventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -17,8 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public final class Main extends JavaPlugin {
 
@@ -27,6 +26,7 @@ public final class Main extends JavaPlugin {
     private final List<String> chestNames = new ArrayList<>();
 
     private final List<Hologram> hologramList = new ArrayList<>();
+    private final Map<UUID, EnchantmentsMap> addEnchantmentsMap = new HashMap<>();
     private GUIFactory guiFactory;
 
     private static Main instance;
@@ -106,5 +106,9 @@ public final class Main extends JavaPlugin {
 
     public void updateHolograms() {
         HologramUtils.createHologram();
+    }
+
+    public Map<UUID, EnchantmentsMap> getAddEnchantmentsMap() {
+        return addEnchantmentsMap;
     }
 }

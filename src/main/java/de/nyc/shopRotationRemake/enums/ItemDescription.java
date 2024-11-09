@@ -137,6 +137,29 @@ public enum ItemDescription {
     REWARDS_LORE_LORE_4("&6Klicke &ehier um diese &6Zeile &ezu ändern!"),
     REWARDS_LORE_LORE_5("&6Shift-Klicke &ehier um diese &6Zeile &ezu &clöschen&e!"),
 
+    REWARD_ENCHANTMENTS_NETHER_STAR("&eDieser Hilfe-Text befindet sich aktuell noch in Arbeit!"),
+    REWARD_ENCHANTMENTS_NETHER_STAR_LORE_1(" "),
+    REWARD_ENCHANTMENTS_NETHER_STAR_LORE_2("&c&lCOMING SOON"),
+
+    REWARD_ENCHANTMENTS_CONFIRMATION("&a&lKlicke hier um zu bestätigen!"),
+    REWARD_ENCHANTMENTS_CONFIRMATION_LORE_1(" "),
+    REWARD_ENCHANTMENTS_CONFIRMATION_LORE_2("&eDies fügt dein &6Enchantment &edem &6Item &ehinzu!"),
+    REWARD_ENCHANTMENTS_CONFIRMATION_LORE_3("&6Shift-Klicke &eum diese Aktion &cabzubrechen&e!"),
+
+    REWARD_ENCHANTMENTS_ADD("&eKlicke hier um ein &6Enchantment &ehinzuzufügen!"),
+    REWARD_ENCHANTMENTS_ADD_LORE_1(" "),
+    REWARD_ENCHANTMENTS_ADD_LORE_2("&3» &bAktuelles Enchantment: &3%name"),
+    REWARD_ENCHANTMENTS_ADD_LORE_3("&7Dies öffnet ein Textfenster zum eingeben."),
+
+    REWARD_ENCHANTMENTS_ADD_LEVEL("&eKlicke hier um das dazugehörige &6Level &eeinzugeben!"),
+    REWARD_ENCHANTMENTS_ADD_LEVEL_LORE_1(" "),
+    REWARD_ENCHANTMENTS_ADD_LEVEL_LORE_2("&3» &bAktuelle Zahl: &3%level"),
+    REWARD_ENCHANTMENTS_ADD_LEVEL_LORE_3("&7Dies öffnet ein Textfenster zum eingeben."),
+
+    REWARD_ITEM_ADD_ENCHANTMENTS("&eKlicke hier um ein &6Enchantment &ehinzuzufügen!"),
+    REWARD_ITEM_ADD_ENCHANTMENTS_LORE_1(" "),
+    REWARD_ITEM_ADD_ENCHANTMENTS_LORE_2("&eDies öffnet ein weiteres &6Inventar &emit weiteren &6Einstellungen&e."),
+
     ;
 
     private final String text;

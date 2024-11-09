@@ -1,16 +1,13 @@
 package de.nyc.shopRotationRemake.util;
 
-import de.leonheuer.mcguiapi.utils.ItemBuilder;
 import de.nyc.shopRotationRemake.Main;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Utils {
@@ -216,5 +213,10 @@ public class Utils {
                 material == Material.SOUL_FIRE ||
                 material == Material.CAMPFIRE ||
                 material == Material.KNOWLEDGE_BOOK;
+    }
+
+    public static boolean isEnchantment(String key) {
+        NamespacedKey namespacedKey = NamespacedKey.minecraft(key);
+        return Registry.ENCHANTMENT.get(namespacedKey) != null;
     }
 }

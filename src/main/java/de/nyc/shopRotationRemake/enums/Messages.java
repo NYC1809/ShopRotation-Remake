@@ -7,14 +7,11 @@ public enum Messages {
 
     //Global messages
     NO_PERMS("&cDu hast keine Rechte für diesen Befehl."),
-    INVALID_NUMBER("&c%number ist keine gültige Zahl."),
-    INVALID_MATERIAL("&cBitte gib ein gültiges Material an."),
     NO_PLAYER("&cDieser Befehl ist nur für Spieler."),
     MESSAGE_UNKNOWN("&cUnbekannter Befehl. Siehe /srChest help"),
     NO_PERMS_ERROR("&cERROR: Du hast keine Rechte darauf zuzugreifen!"),
 
     //Global sr-messages
-    UNKNOWN_INVENTORY("&cDas angefragte Inventar existiert nicht."),
     NOT_ENOUGH_ARGUMENTS("&cZu wenige Argumente! Siehe /srChest help"),
     TOO_MUCH_ARGUMENTS("&cZu viele Argumente! Siehe /srChest help"),
     LOCATION_HAS_TO_BE_AIR("&cWARNING: Du kannst hier keine Chest erstellen! (Benötigt \"Material.AIR\")"),
@@ -22,6 +19,7 @@ public enum Messages {
     NO_CHEST_EXISTS("&cEs existiert aktuell keine srChest!"),
     CANNOT_BREAK_BLOCK("&cDu kannst diesen Block nicht zerstören! \nNutze /srChest remove <chest>"),
     IS_NOT_NUMERIC("&c\"%input\" ist keine gültige Zahl!"),
+    IS_NOT_ENCHANTMENT("&c\"%input\" ist kein gültiges Enchantment!"),
 
     //srChest messages
     CHEST_REMOVE_SUCCESS("&7Die Chest \"&a%chest&7\" wurde erfolgreich &centfernt&7."),
@@ -84,6 +82,12 @@ public enum Messages {
     REWARD_LORE_LINE_CHANGED_SUCCESS("&7Du hast &aerfolgreich &7die Zeile &6%line &7zu \"&a%text&7\" &ageändert&7!"),
     REWARD_LORE_ALREADY_EXISTS("&7Diese Zeile hat bereits den Text: \"&a%input&7\"."),
     REWARD_LORE_ADD_CANCEL("&7Du hast die &6Aktion&7: \"Beschreibung hinzufügen\" &cabgebrochen&7."),
+
+    REWARD_ENCHANTMENTS_CANCEL("&7Du hast die &6Aktion&7: \"Enchantment hinzufügen\" &cabgebrochen&7."),
+    REWARD_ENCHANTMENTS_ADD_SUCCESS("&7Du hast &aerfolgreich &7das Enchantment: \"&a%enchantment &7 -- Level: &a%level&7\" hinzugefügt."),
+    REWARD_ENCHANTMENTS_ADD_FALSE("&7Du hast noch kein &aEnchantment &7oder ein &aLevel &7vergeben!"),
+
+
 
     //srChest get messages
     GET_UUID_INFO_LINE_1(Utils.getPrefix() + "&2Anklicken zum kopieren:"),

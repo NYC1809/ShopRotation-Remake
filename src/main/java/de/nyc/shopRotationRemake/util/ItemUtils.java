@@ -163,7 +163,7 @@ public class ItemUtils {
         return enchantments;
     }
 
-    private static Enchantment getEnchantment(String key) {
+    public static Enchantment getEnchantment(String key) {
         NamespacedKey namespacedKey = NamespacedKey.minecraft(key);
         Enchantment enchantment = (Enchantment) Registry.ENCHANTMENT.get(namespacedKey);
         Preconditions.checkNotNull(enchantment, "No Enchantment found for %s. This is a bug.", namespacedKey);

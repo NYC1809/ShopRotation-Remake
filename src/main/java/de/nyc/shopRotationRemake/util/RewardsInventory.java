@@ -5,7 +5,9 @@ import de.leonheuer.mcguiapi.utils.ItemBuilder;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.ItemDescription;
 import de.nyc.shopRotationRemake.enums.Messages;
+import de.nyc.shopRotationRemake.objects.EnchantmentsMap;
 import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -169,6 +171,16 @@ public class RewardsInventory {
                     throw new RuntimeException(e);
                 }
             });
+
+            //Set the add enchantment item for the first reward:
+            gui.setItem(4, ItemBuilder.of(Material.BOOK).name(ItemDescription.REWARD_ITEM_ADD_ENCHANTMENTS.getText()).description(ItemDescription.REWARD_ITEM_ADD_ENCHANTMENTS_LORE_1.getText(), ItemDescription.REWARD_ITEM_ADD_ENCHANTMENTS_LORE_2.getText()).asItem(), event -> {
+                UUID randomUuid = UUID.randomUUID();
+                try {
+                    addItemEnchantments(player, uuid, itemUuid, firstID, randomUuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
         //Second reward:
         if(rowIDs.size() >= 2) {
@@ -213,6 +225,16 @@ public class RewardsInventory {
             gui.setItem(15, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARD_CHANGE_ITEM_LORE.getText()).description(ItemDescription.REWARD_CHANGE_ITEM_LORE_LORE_1.getText(), ItemDescription.REWARD_CHANGE_ITEM_LORE_LORE_2.getText()).asItem(), event -> {
                 try {
                     changeRewardsLoreInventory(player, uuid, itemUuid, secondID);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            //Set the add enchantment item for the second reward:
+            gui.setItem(13, ItemBuilder.of(Material.BOOK).name(ItemDescription.REWARD_ITEM_ADD_ENCHANTMENTS.getText()).description(ItemDescription.REWARD_ITEM_ADD_ENCHANTMENTS_LORE_1.getText(), ItemDescription.REWARD_ITEM_ADD_ENCHANTMENTS_LORE_2.getText()).asItem(), event -> {
+                UUID randomUuid = UUID.randomUUID();
+                try {
+                    addItemEnchantments(player, uuid, itemUuid, secondID, randomUuid);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -265,6 +287,16 @@ public class RewardsInventory {
                     throw new RuntimeException(e);
                 }
             });
+
+            //Set the add enchantment item for the third reward:
+            gui.setItem(22, ItemBuilder.of(Material.BOOK).name(ItemDescription.REWARD_ITEM_ADD_ENCHANTMENTS.getText()).description(ItemDescription.REWARD_ITEM_ADD_ENCHANTMENTS_LORE_1.getText(), ItemDescription.REWARD_ITEM_ADD_ENCHANTMENTS_LORE_2.getText()).asItem(), event -> {
+                UUID randomUuid = UUID.randomUUID();
+                try {
+                    addItemEnchantments(player, uuid, itemUuid, thirdID, randomUuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
         //Fourth reward:
         if(rowIDs.size() >= 4) {
@@ -310,6 +342,16 @@ public class RewardsInventory {
             gui.setItem(33, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.REWARD_CHANGE_ITEM_LORE.getText()).description(ItemDescription.REWARD_CHANGE_ITEM_LORE_LORE_1.getText(), ItemDescription.REWARD_CHANGE_ITEM_LORE_LORE_2.getText()).asItem(), event -> {
                 try {
                     changeRewardsLoreInventory(player, uuid, itemUuid, fourthID);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            //Set the add enchantment item for the fourth reward:
+            gui.setItem(31, ItemBuilder.of(Material.BOOK).name(ItemDescription.REWARD_ITEM_ADD_ENCHANTMENTS.getText()).description(ItemDescription.REWARD_ITEM_ADD_ENCHANTMENTS_LORE_1.getText(), ItemDescription.REWARD_ITEM_ADD_ENCHANTMENTS_LORE_2.getText()).asItem(), event -> {
+                UUID randomUuid = UUID.randomUUID();
+                try {
+                    addItemEnchantments(player, uuid, itemUuid, fourthID, randomUuid);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -930,4 +972,149 @@ public class RewardsInventory {
 
     }
 
+    private static void addItemEnchantments(Player player, UUID uuid, UUID itemUuid, Integer rowID, UUID randomUuid) throws SQLException {
+        //&TODO: permission system
+        if(!player.isOp()) {
+            player.sendMessage(Messages.NO_PERMS_ERROR.getMessage());
+            return;
+        }
+        GUI gui = main.getGuiFactory().createGUI(1, Utils.setColorInMessage("&6Enchantment hinzufügen"));
+
+        //Set black glass border
+        for(int i=0; i<9; i++) {
+            gui.setItem(i, ItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE).name(" ").asItem());
+        }
+
+        //Set netherstar item:
+        gui.setItem(4, ItemBuilder.of(Material.NETHER_STAR).name(ItemDescription.REWARD_ENCHANTMENTS_NETHER_STAR.getText()).description(ItemDescription.REWARD_ENCHANTMENTS_NETHER_STAR_LORE_1.getText(), ItemDescription.REWARD_ENCHANTMENTS_NETHER_STAR_LORE_2.getText()).asItem());
+
+
+        String enchantmentName = "NONE";
+        Integer level = 0;
+
+        Map<UUID, EnchantmentsMap> enchantmentsMap = main.getAddEnchantmentsMap();
+        enchantmentsMap.put(randomUuid, new EnchantmentsMap(enchantmentName, level));
+
+        for(Map.Entry<UUID, EnchantmentsMap> entry : enchantmentsMap.entrySet()) {
+            UUID thisUuid = entry.getKey();
+            EnchantmentsMap values = entry.getValue();
+            if(randomUuid.equals(thisUuid)) {
+                if(values.getEnchantment() != null ||!values.getEnchantment().equals("NONE")) {
+                    enchantmentName = values.getEnchantment();
+                }
+                if(values.getLevel() != null || !values.getLevel().equals(0)) {
+                    level = values.getLevel();
+                }
+            }
+        }
+
+        gui.setItem(2, ItemBuilder.of(Material.BOOK).name(ItemDescription.REWARD_ENCHANTMENTS_ADD.getText()).description(ItemDescription.REWARD_ENCHANTMENTS_ADD_LORE_1.getText(), ItemDescription.REWARD_ENCHANTMENTS_ADD_LORE_2.getText().replace("%name", enchantmentName), ItemDescription.REWARD_ENCHANTMENTS_ADD_LORE_3.getText()).asItem(), event -> {
+            try {
+                setEnchantment(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier das &6Enchantment ein..."), Utils.setColorInMessage("&f"), rowID, randomUuid);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        gui.setItem(6, ItemBuilder.of(Material.OAK_SIGN).name(ItemDescription.REWARD_ENCHANTMENTS_ADD_LEVEL.getText()).description(ItemDescription.REWARD_ENCHANTMENTS_ADD_LEVEL_LORE_1.getText(), ItemDescription.REWARD_ENCHANTMENTS_ADD_LEVEL_LORE_2.getText().replace("%level", String.valueOf(level)), ItemDescription.REWARD_ENCHANTMENTS_ADD_LEVEL_LORE_3.getText()).asItem(), event -> {
+            //TODO: Create action
+        });
+
+        //Set confirmation Item:
+        gui.setItem(8, ItemBuilder.of(Material.LIME_STAINED_GLASS_PANE).name(ItemDescription.REWARD_ENCHANTMENTS_CONFIRMATION.getText()).description(ItemDescription.REWARD_ENCHANTMENTS_CONFIRMATION_LORE_1.getText(), ItemDescription.REWARD_ENCHANTMENTS_CONFIRMATION_LORE_2.getText(), ItemDescription.REWARD_ENCHANTMENTS_CONFIRMATION_LORE_3.getText()).asItem(), event -> {
+            if(event.getClick().equals(ClickType.SHIFT_LEFT)) {
+                try {
+                    openRewardsInventory(player, uuid, itemUuid);
+                    player.sendMessage(Messages.REWARD_ENCHANTMENTS_CANCEL.getMessage());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            for(Map.Entry<UUID, EnchantmentsMap> entry : enchantmentsMap.entrySet()) {
+                UUID thisUuid = entry.getKey();
+                EnchantmentsMap values = entry.getValue();
+                if(randomUuid.equals(thisUuid)) {
+                    if(!values.getEnchantment().equals("NONE") && !values.getLevel().equals(0)) {
+                        try {
+                            String itemString = main.getSrDatabase().getRewardsItemStringByRowID(rowID);
+                            String itemName = ItemUtils.getItemName(itemString);
+                            Material itemMaterial = ItemUtils.getItemMaterial(itemString);
+                            Map<Enchantment, Integer> itemEnchantments = ItemUtils.getItemEnchantments(itemString);
+                            List<String> description = ItemUtils.getItemDescription(itemString);
+
+                            itemEnchantments.put(ItemUtils.getEnchantment(values.getEnchantment()), values.getLevel());
+
+                            String newItemString = ItemUtils.createItemString(itemName, itemMaterial, itemEnchantments, description);
+                            main.getSrDatabase().setNewRewardsItemStringByRowID(rowID, newItemString);
+
+                            player.sendMessage(Messages.REWARD_ENCHANTMENTS_ADD_SUCCESS.getMessage().replace("%enchantment", values.getEnchantment()).replace("%level", values.getLevel().toString()));
+                            openRewardsInventory(player, uuid, itemUuid);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        player.sendMessage(Messages.REWARD_ENCHANTMENTS_ADD_FALSE.getMessage());
+                    }
+                }
+            }
+
+
+        });
+
+        gui.setDefaultClickAction(event -> {
+            event.setCancelled(true);
+        });
+        gui.show(player);
+    }
+
+    private static void setEnchantment(Player player, UUID uuid, UUID itemUuid, String title, String itemName, Integer rowID, UUID randomUuid) throws SQLException {
+        ItemStack exampleInput = ItemBuilder.of(Material.PAPER).name("example: \"protection\"").description("           \"frost_walker\"", "           \"power\"", "           \"feather_falling\"").asItem();
+
+        new AnvilGUI.Builder()
+                .onClose(stateSnapshot -> {
+                    try {
+                        addItemEnchantments(player, uuid, itemUuid, rowID, randomUuid);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .onClick((slot, statesnapshot) -> {
+                    if(slot != AnvilGUI.Slot.OUTPUT) {
+                        return Collections.emptyList();
+                    }
+                    String input = statesnapshot.getText().toLowerCase();
+                    if(input.equals(itemName)) {
+                        player.sendMessage(Messages.REWARD_ENCHANTMENTS_CANCEL.getMessage());
+                        return Arrays.asList(AnvilGUI.ResponseAction.close());
+                    }
+                    if(!Utils.isEnchantment(input)) {
+                        player.sendMessage(Messages.IS_NOT_ENCHANTMENT.getMessage().replace("%input", input.toLowerCase()));
+                        return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(itemName));
+                    }
+
+                    Enchantment enchantment = ItemUtils.getEnchantment(input.toLowerCase());
+                    Bukkit.getLogger().severe("[65:21:01] Enchantment: " + enchantment.toString());
+
+                    Map<UUID, EnchantmentsMap> addEnchantmentsMap = main.getAddEnchantmentsMap();
+                    EnchantmentsMap value =  addEnchantmentsMap.get(randomUuid);
+                    Integer level = 0;
+                    if(value.getLevel() != null) {
+                        level = value.getLevel();
+                    }
+
+                    EnchantmentsMap newEnchantment = new EnchantmentsMap(enchantment.toString(), level);
+
+                    Bukkit.getLogger().severe("[23:21:01] newEnchantment: " + newEnchantment.toString());
+                    main.getAddEnchantmentsMap().replace(randomUuid, newEnchantment);
+                    Bukkit.getLogger().severe("[23:21:01--02] newEnchantment: " + newEnchantment.toString());
+                    return Arrays.asList(AnvilGUI.ResponseAction.close());
+                })
+                .preventClose()
+                .text(itemName)
+                .title(title)
+                .plugin(main)
+                .itemLeft(exampleInput)
+                .open(player);
+    }
 }

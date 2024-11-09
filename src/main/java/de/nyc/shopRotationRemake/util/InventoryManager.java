@@ -23,7 +23,7 @@ import java.util.*;
 
 public class InventoryManager {
 
-    //EASTER EGG: I've had the main class registered with a Listener implementation - I am so horrible
+    //EASTER EGG: I've had the main class registered with a Listener implementation - I am horrible at coding
     private static final Main main = Main.getInstance();
 
     public static void createDefaultInventory(Player player, UUID uuid) throws SQLException {

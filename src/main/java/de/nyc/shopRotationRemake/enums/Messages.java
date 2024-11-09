@@ -85,8 +85,7 @@ public enum Messages {
 
     REWARD_ENCHANTMENTS_CANCEL("&7Du hast die &6Aktion&7: \"Enchantment hinzufügen\" &cabgebrochen&7."),
     REWARD_ENCHANTMENTS_ADD_SUCCESS("&7Du hast &aerfolgreich &7das Enchantment: \"&a%enchantment &7 -- Level: &a%level&7\" hinzugefügt."),
-    REWARD_ENCHANTMENTS_ADD_FALSE("&7Du hast noch kein &aEnchantment &7oder ein &aLevel &7vergeben!"),
-
+    REWARD_ENCHANTMENTS_ADD_WRONG_FORMAT("&7\"&a%input&7\" ist das falsche String-Format."),
 
 
     //srChest get messages

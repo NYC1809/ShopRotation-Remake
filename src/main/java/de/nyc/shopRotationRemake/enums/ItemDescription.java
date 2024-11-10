@@ -201,6 +201,18 @@ public enum ItemDescription {
     REWARD_ITEM_ADD_ENCHANTMENTS_LORE_1(" "),
     REWARD_ITEM_ADD_ENCHANTMENTS_LORE_2("&eDies öffnet ein weiteres &6Inventar &emit weiteren &6Einstellungen&e."),
 
+    ITEM_HELP("&eDieser Hilfe-Text befindet sich aktuell noch in Arbeit!"),
+    ITEM_HELP_LORE_1(" "),
+    ITEM_HELP_LORE_2("&c&lCOMING SOON"),
+
+    ITEM_HOPPER("&eKlicke hier um zu diesem &6Ziel &edeine Items &6abzugeben&e!"),
+    ITEM_HOPPER_LORE_1(" "),
+    ITEM_HOPPER_LORE_2("&7Diese Aktion entfernt alle deine Items aus deinem Inventar"),
+    ITEM_HOPPER_LORE_3("&7und fügt sie dem Item-Ziel hinzu!"),
+
+    CHEST_HAS_NO_ACTIVE_ITEMS("&cDiese srChest hat aktuell kein aktives Items!"),
+    CHEST_HAS_NO_ACTIVE_ITEMS_LORE_1(" "),
+    CHEST_HAS_NO_ACTIVE_ITEMS_LORE_2("&cBitte komme zu einem späteren Zeitpunkt zurück!"),
     ;
 
     private final String text;

@@ -9,13 +9,11 @@ import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import javax.swing.plaf.metal.MetalBorders;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -47,7 +45,7 @@ public class RewardsInventory {
         gui.setItem(29, ItemBuilder.of(Material.PINK_STAINED_GLASS_PANE).name(" ").asItem());
         //END OF CREATING GLASS BORDER
 
-        String itemString = main.getSrDatabase().getItemString(itemUuid);
+        String itemString = main.getSrDatabase().getItemStringByItemUuid(itemUuid);
         Material itemMaterial = ItemUtils.getItemMaterial(itemString);
         if(itemMaterial == null) {
             itemMaterial = Material.BARRIER;

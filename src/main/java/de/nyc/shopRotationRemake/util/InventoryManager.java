@@ -48,6 +48,17 @@ public class InventoryManager {
             gui.setItem(i, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem());
         }
 
+        //TODO: xxx
+        calculateActiveItems(player, uuid, gui);
+
+        //Set the netherstar - help item:
+        gui.setItem(49, ItemBuilder.of(Material.NETHER_STAR).name(ItemDescription.ITEM_HELP.getText()).description(ItemDescription.ITEM_HELP_LORE_1.getText(), ItemDescription.ITEM_HELP_LORE_2.getText()).asItem());
+
+        //Set the hopper item to give items to the goal:
+        gui.setItem(15, ItemBuilder.of(Material.HOPPER).name(ItemDescription.ITEM_HOPPER.getText()).description(ItemDescription.ITEM_HOPPER_LORE_1.getText(), ItemDescription.ITEM_HOPPER_LORE_2.getText(), ItemDescription.ITEM_HOPPER_LORE_3.getText()).asItem(), event -> {
+            //TODO: Click-Event here
+        });
+
         String item = getCurrentItemFromDB(uuid);
         if(item == null) {
             gui.setItem(13, ItemBuilder.of(Material.BARRIER).name(ItemDescription.CHEST_HAS_NO_ACTIVE_ITEM.getText()).description(ItemDescription.CHEST_HAS_NO_ACTIVE_ITEM_LORE_1.getText(), ItemDescription.CHEST_HAS_NO_ACTIVE_ITEM_LORE_2.getText()).asItem());
@@ -86,6 +97,10 @@ public class InventoryManager {
                 }
             });
         }
+
+        gui.setDefaultClickAction(event -> {
+            event.setCancelled(true);
+        });
 
         gui.show(player);
     }
@@ -381,7 +396,6 @@ public class InventoryManager {
         });
         gui.show(player);
     }
-
 
     public static void modifyItemInventory(Player player, UUID uuid, UUID itemUuid) throws SQLException {
         //&TODO: permission system
@@ -722,7 +736,7 @@ public class InventoryManager {
     }
 
     private static ItemStack getItemStackFromItemUuid(String itemUuid) throws SQLException {
-        String itemString = main.getSrDatabase().getItemString(UUID.fromString(itemUuid));
+        String itemString = main.getSrDatabase().getItemStringByItemUuid(UUID.fromString(itemUuid));
         Material itemMaterial = ItemUtils.getItemMaterial(itemString);
         String itemName = ItemUtils.getItemName(itemString);
         List<String> itemDescription = ItemUtils.getItemDescription(itemString);
@@ -917,5 +931,94 @@ public class InventoryManager {
             event.setCancelled(true);
         });
         gui.show(player);
+    }
+
+    private static void calculateActiveItems(Player player, UUID uuid, GUI gui) throws SQLException {
+        int amountOfItemsInChest = main.getSrDatabase().getAmountOfItemsOfChest(uuid);
+        List<String> listOfItems = main.getSrDatabase().getListOfItems(uuid);
+
+        List<String> listOfEnabledItems = new ArrayList<>();
+
+        for(String itemUuid : listOfItems) {
+            if(main.getSrDatabase().getEnabledOfItem(UUID.fromString(itemUuid))) {
+                listOfEnabledItems.add(itemUuid);
+            }
+        }
+
+        if(listOfEnabledItems.isEmpty()) {
+            for(int i=28; i<35; i++) {
+                gui.setItem(i, ItemBuilder.of(Material.RED_STAINED_GLASS_PANE).name(ItemDescription.CHEST_HAS_NO_ACTIVE_ITEMS.getText()).description(ItemDescription.CHEST_HAS_NO_ACTIVE_ITEMS_LORE_1.getText(), ItemDescription.CHEST_HAS_NO_ACTIVE_ITEMS_LORE_2.getText()).asItem());
+            }
+            return;
+        }
+
+        List<String> listOfAlreadyCompletedItems = new ArrayList<>();
+
+        for(String itemUuid : listOfEnabledItems) {
+            int requiredAmount = main.getSrDatabase().getrequiredItemAmountByItemUuid(UUID.fromString(itemUuid));
+            int holdingAmount = main.getSrDatabase().getholdingItemAmountByItemUuid(UUID.fromString(itemUuid));
+
+            if(holdingAmount >= requiredAmount) {
+                listOfAlreadyCompletedItems.add(itemUuid);
+            }
+        }
+
+        if(!listOfAlreadyCompletedItems.isEmpty()) {
+            if(listOfAlreadyCompletedItems.size() > 3) {
+                gui.setItem(28, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.get(listOfAlreadyCompletedItems.size() - 3))));
+                gui.setItem(29, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.get(listOfAlreadyCompletedItems.size() - 2))));
+                gui.setItem(30, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.getLast())));
+            } else if(listOfAlreadyCompletedItems.size() == 3) {
+                gui.setItem(28, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.getFirst())));
+                gui.setItem(29, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.get(1))));
+                gui.setItem(30, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.getLast())));
+            } else if(listOfAlreadyCompletedItems.size() == 2) {
+                gui.setItem(28, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.getFirst())));
+                gui.setItem(29, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.getLast())));
+            } else {
+                gui.setItem(28, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.getFirst())));
+            }
+        } else {
+            //TODO set the first active goal because there are no current finished goals -> ItemSlot 28
+        }
+    }
+
+    private static ItemStack generateCompletedItemDescription(UUID itemUuid) throws SQLException {
+        int requiredAmount = main.getSrDatabase().getrequiredItemAmountByItemUuid(itemUuid);
+        int holdingAmount = main.getSrDatabase().getholdingItemAmountByItemUuid(itemUuid);
+        String itemString = main.getSrDatabase().getItemStringByItemUuid(itemUuid);
+
+        String itemName = ItemUtils.getItemName(itemString);
+
+        ItemStack item = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.setDisplayName(Utils.setColorInMessage("&a✔ 100&6% &6[&a||||||||||||||||||||||||||||||||||||||||||||||||||&6]"));
+
+        List<String> lore = new ArrayList<>();
+        lore.add("&e" + holdingAmount + "&6/&e" + requiredAmount + " &7 Items abgegeben!");
+        lore.add(" ");
+        lore.add("&9» [&3Item&9] &e" + itemName);
+        lore.add(" ");
+        lore.add("&9» [&3Belohnung&9] &d");
+
+        List<Integer> rowIDsRewards = main.getSrDatabase().getIdsFromItemUuidRewards(itemUuid);
+        if(rowIDsRewards.isEmpty()) {
+            lore.add("      &d▻ &7Keine");
+        } else {
+            for(Integer rowID : rowIDsRewards) {
+                int amount = main.getSrDatabase().getAmountOfRewardByID(rowID);
+                String rowIDItemString = main.getSrDatabase().getRewardsItemStringByRowID(rowID);
+                String rewardName = ItemUtils.getItemName(rowIDItemString);
+                String rewardMaterial = String.valueOf(ItemUtils.getItemMaterial(rowIDItemString));
+                if(rewardMaterial.equals(rewardName)) {
+                    lore.add("      &d▻&7 " + amount + "x &6" + rewardName);
+                } else {
+                    lore.add("      &d▻&7 " + amount + "x &6" +rewardName + "&b (&9" + rewardMaterial + "&b)");
+                }
+            }
+        }
+        itemMeta.setLore(Utils.setColorInList(lore));
+        item.setItemMeta(itemMeta);
+        return item;
     }
 }

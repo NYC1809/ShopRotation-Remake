@@ -553,19 +553,6 @@ public class SrDatabase {
         }
     }
 
-    public String getItemString(UUID itemUuid) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT item FROM items WHERE itemuuid = ?")) {
-            preparedStatement.setString(1, itemUuid.toString());
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if(resultSet.next()) {
-                return resultSet.getString("item");
-            } else {
-                return null;
-            }
-        }
-    }
-
     public void deleteAllRewardsOfItem(UUID uuid, UUID itemUuid, Player player) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM rewards WHERE itemuuid = ?")) {
             preparedStatement.setString(1, itemUuid.toString());

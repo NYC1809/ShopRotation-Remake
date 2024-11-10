@@ -21,6 +21,7 @@ public class Hologram {
     private String title;
     private ItemStack item;
     private Main main;
+    private HologramStyle hologramStyle;
 
     private ArmorStand hologramArmorStand;
     private ArmorStand itemArmorStand;
@@ -35,6 +36,7 @@ public class Hologram {
         this.title = Utils.setColorInMessage(title);
         this.item = item;
         this.main = main;
+        this.hologramStyle = hologramStyle;
 
         checkLivingTask = new BukkitRunnable() {
             public void run() {
@@ -54,32 +56,52 @@ public class Hologram {
 
         //TODO: Set the correct style of the hologram
 
-        Location hologramLocation = location.clone().add(0.5, -0.65, 0.5);
-        hologramArmorStand = (ArmorStand) hologramLocation.getWorld().spawnEntity(hologramLocation, EntityType.ARMOR_STAND);
-        hologramArmorStand.setVisible(false);
-        hologramArmorStand.setCustomNameVisible(true);
-        hologramArmorStand.setGravity(false);
-        hologramArmorStand.setCustomName(title);
-        hologramArmorStand.setInvulnerable(true);
-        hologramArmorStand.setCanPickupItems(false);
+        switch (hologramStyle.getName()) {
+            case "hologram_item" -> {
+                //TODO: Implement this
+            }
+            case "hologram_item_name" -> {
+                Location hologramLocation = location.clone().add(0.5, -0.65, 0.5);
+                hologramArmorStand = (ArmorStand) hologramLocation.getWorld().spawnEntity(hologramLocation, EntityType.ARMOR_STAND);
+                hologramArmorStand.setVisible(false);
+                hologramArmorStand.setCustomNameVisible(true);
+                hologramArmorStand.setGravity(false);
+                hologramArmorStand.setCustomName(title);
+                hologramArmorStand.setInvulnerable(true);
+                hologramArmorStand.setCanPickupItems(false);
 
-        Location itemLocationArmorStand = location.clone().add(0.5, -1.2, 0.5);
-        itemArmorStand = (ArmorStand) itemLocationArmorStand.getWorld().spawnEntity(itemLocationArmorStand, EntityType.ARMOR_STAND);
-        itemArmorStand.setVisible(false);
-        itemArmorStand.setGravity(false);
-        itemArmorStand.setCustomNameVisible(false);
-        itemArmorStand.setInvulnerable(true);
-        itemArmorStand.setCanPickupItems(false);
+                Location itemLocationArmorStand = location.clone().add(0.5, -1.2, 0.5);
+                itemArmorStand = (ArmorStand) itemLocationArmorStand.getWorld().spawnEntity(itemLocationArmorStand, EntityType.ARMOR_STAND);
+                itemArmorStand.setVisible(false);
+                itemArmorStand.setGravity(false);
+                itemArmorStand.setCustomNameVisible(false);
+                itemArmorStand.setInvulnerable(true);
+                itemArmorStand.setCanPickupItems(false);
 
-        Location itemLocation = location.clone().add(0.5, -1.2, 0.5);
-        displayItem = (Item) itemLocation.getWorld().spawnEntity(itemLocation, EntityType.ITEM);
-        displayItem.setItemStack(item);
-        displayItem.setGravity(false);
-        displayItem.setPickupDelay(Integer.MAX_VALUE);
-        displayItem.setTicksLived(Integer.MAX_VALUE);
-        itemArmorStand.addPassenger(displayItem);
+                Location itemLocation = location.clone().add(0.5, -1.2, 0.5);
+                displayItem = (Item) itemLocation.getWorld().spawnEntity(itemLocation, EntityType.ITEM);
+                displayItem.setItemStack(item);
+                displayItem.setGravity(false);
+                displayItem.setPickupDelay(Integer.MAX_VALUE);
+                displayItem.setTicksLived(Integer.MAX_VALUE);
+                itemArmorStand.addPassenger(displayItem);
+            }
+            case "hologram_item_name_progress" -> {
+                //TODO: Implement this.
+            }
+            case "hologram_name_progress" -> {
+                //TODO: Implement this..
+            }
+            case "hologram_item_progress" -> {
+                //TODO: Implement this...
+            }
+        }
 
         isShown = true;
+    }
+
+    public void updateHolgram() {
+
     }
 
     public void kill() {

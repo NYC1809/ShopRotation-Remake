@@ -192,6 +192,7 @@ public class InventoryManager {
                     } else {
                         main.getSrDatabase().setHologramEnabled(uuid, true, player);
                         player.sendMessage(Messages.HOLOGRAM_ENABLED_SUCCESS.getMessage());
+                        main.updateHolograms();
                     }
                 }
                 if(event.getClick().equals(ClickType.RIGHT)) {
@@ -200,6 +201,7 @@ public class InventoryManager {
                     } else {
                         main.getSrDatabase().setHologramEnabled(uuid, false, player);
                         player.sendMessage(Messages.HOLOGRAM_DISABLED_SUCCESS.getMessage());
+                        main.updateHolograms();
                     }
                 }
             } catch (SQLException e) {
@@ -812,6 +814,7 @@ public class InventoryManager {
                     main.getSrDatabase().setHologramStyle(uuid, HologramStyle.HOLOGRAM_ITEM.getName(), player);
                     player.sendMessage(Messages.HOLOGRAM_CHANGE_STYLE_SUCCES.getMessage().replace("%style", HologramStyle.HOLOGRAM_ITEM.getUpperCaseName()));
                     changeHologramStyleInventory(player, uuid);
+                    main.updateHolograms();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -834,6 +837,7 @@ public class InventoryManager {
                     main.getSrDatabase().setHologramStyle(uuid, HologramStyle.HOLOGRAM_ITEM_NAME.getName(), player);
                     player.sendMessage(Messages.HOLOGRAM_CHANGE_STYLE_SUCCES.getMessage().replace("%style", HologramStyle.HOLOGRAM_ITEM_NAME.getUpperCaseName()));
                     changeHologramStyleInventory(player, uuid);
+                    main.updateHolograms();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -856,6 +860,7 @@ public class InventoryManager {
                     main.getSrDatabase().setHologramStyle(uuid, HologramStyle.HOLOGRAM_ITEM_NAME_PROGRESS.getName(), player);
                     player.sendMessage(Messages.HOLOGRAM_CHANGE_STYLE_SUCCES.getMessage().replace("%style", HologramStyle.HOLOGRAM_ITEM_NAME_PROGRESS.getUpperCaseName()));
                     changeHologramStyleInventory(player, uuid);
+                    main.updateHolograms();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -878,6 +883,7 @@ public class InventoryManager {
                     main.getSrDatabase().setHologramStyle(uuid, HologramStyle.HOLOGRAM_NAME_PROGRESS.getName(), player);
                     player.sendMessage(Messages.HOLOGRAM_CHANGE_STYLE_SUCCES.getMessage().replace("%style", HologramStyle.HOLOGRAM_NAME_PROGRESS.getUpperCaseName()));
                     changeHologramStyleInventory(player, uuid);
+                    main.updateHolograms();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -900,6 +906,7 @@ public class InventoryManager {
                     main.getSrDatabase().setHologramStyle(uuid, HologramStyle.HOLOGRAM_ITEM_PROGRESS.getName(), player);
                     player.sendMessage(Messages.HOLOGRAM_CHANGE_STYLE_SUCCES.getMessage().replace("%style", HologramStyle.HOLOGRAM_ITEM_PROGRESS.getUpperCaseName()));
                     changeHologramStyleInventory(player, uuid);
+                    main.updateHolograms();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }

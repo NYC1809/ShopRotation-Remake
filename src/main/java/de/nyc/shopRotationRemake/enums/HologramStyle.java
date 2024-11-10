@@ -26,7 +26,7 @@ public enum HologramStyle {
 
     public static HologramStyle fromKey(String key) {
         for(HologramStyle style : HologramStyle.values()) {
-            if(style.name().equals(key)) {
+            if(style.key.equals(key)) {
                 return style;
             }
         }

@@ -4,6 +4,7 @@ import de.leonheuer.mcguiapi.utils.ItemBuilder;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.objects.Hologram;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -26,6 +27,11 @@ public class HologramUtils {
                 Location location = main.getSrDatabase().getLocationOfChest(uuid);
                 String name = main.getSrDatabase().getNameOfChest(UUID.fromString(uuid));
                 HologramStyle hologramStyle = HologramStyle.fromKey(main.getSrDatabase().getHologramStyle(UUID.fromString(uuid)));
+                boolean holgramEnabled = main.getSrDatabase().getHologramEnabled(UUID.fromString(uuid));
+
+                if(!holgramEnabled) {
+                    return;
+                }
 
                 //TODO: Replace Barrier with currentitem when implemented
 
@@ -48,7 +54,4 @@ public class HologramUtils {
         }
     }
 
-    private void getHologramStyle(UUID uuid) {
-
-    }
 }

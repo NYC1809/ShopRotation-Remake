@@ -30,7 +30,7 @@ public class HologramUtils {
                 boolean holgramEnabled = main.getSrDatabase().getHologramEnabled(UUID.fromString(uuid));
 
                 if(!holgramEnabled) {
-                    return;
+                    continue;
                 }
 
                 //TODO: Replace Barrier with currentitem when implemented

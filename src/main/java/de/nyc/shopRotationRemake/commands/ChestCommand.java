@@ -4,6 +4,7 @@ import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.util.HologramUtils;
+import de.nyc.shopRotationRemake.util.InventoryManager;
 import de.nyc.shopRotationRemake.util.ItemUtils;
 import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.*;
@@ -168,7 +169,20 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 }
                 break;
             case "adminsettings":
-                //TODO: ADMINSETTINGS OPEN HERE
+                if(args.length != 2) {
+                    player.sendMessage(Messages.NOT_ENOUGH_ARGUMENTS.getMessage());
+                    return true;
+                }
+                String uuidOfChest = args[1];
+                if(!checkIfChestExists(uuidOfChest)) {
+                    player.sendMessage(Messages.CHEST_DOES_NOT_EXISITS.getMessage().replace("%name", uuidOfChest));
+                    return true;
+                }
+                try {
+                    InventoryManager.createAdminSettingsInventory(player, UUID.fromString(uuidOfChest));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             case "add":
                 // /srChest add <uuid> <material> <amountRequired>

@@ -19,4 +19,26 @@ public enum HologramStyle {
     public String getName() {
         return key;
     }
+
+    public String getUpperCaseName() {
+        return key.toUpperCase();
+    }
+
+    public static HologramStyle fromKey(String key) {
+        for(HologramStyle style : HologramStyle.values()) {
+            if(style.name().equals(key)) {
+                return style;
+            }
+        }
+        return null;
+    }
+
+    public static boolean contains(String key) {
+        for(HologramStyle style : HologramStyle.values()) {
+            if(style.name().equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

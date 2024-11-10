@@ -87,6 +87,7 @@ public enum Messages {
     REWARD_ENCHANTMENTS_ADD_SUCCESS("&7Du hast &aerfolgreich &7das Enchantment: \"&a%enchantment &7 -- Level: &a%level&7\" hinzugefügt."),
     REWARD_ENCHANTMENTS_ADD_WRONG_FORMAT("&7\"&a%input&7\" ist das falsche String-Format."),
 
+    HOLOGRAM_CHANGE_STYLE_SUCCES("&7Du hast &aerfolgreich &7den Hologram-Stil zu: \"&a%style&7\" &ageändert&7!"),
 
     //srChest get messages
     GET_UUID_INFO_LINE_1(Utils.getPrefix() + "&2Anklicken zum kopieren:"),

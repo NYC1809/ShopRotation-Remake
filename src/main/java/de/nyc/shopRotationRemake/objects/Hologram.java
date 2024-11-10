@@ -1,6 +1,7 @@
 package de.nyc.shopRotationRemake.objects;
 
 import de.nyc.shopRotationRemake.Main;
+import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.exceptions.HologramAlreadyDestroyedException;
 import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.Bukkit;
@@ -29,7 +30,7 @@ public class Hologram {
     private boolean isShown = false;
     private boolean isDestroyed = false;
 
-    public Hologram(Location location, String title, ItemStack item, Main main) {
+    public Hologram(Location location, String title, ItemStack item, Main main, HologramStyle hologramStyle) {
         this.location = location;
         this.title = Utils.setColorInMessage(title);
         this.item = item;

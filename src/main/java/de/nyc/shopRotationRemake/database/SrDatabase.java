@@ -430,13 +430,13 @@ public class SrDatabase {
         }
     }
 
-    public HologramStyle getHologramStyle(UUID uuid) throws SQLException {
+    public String getHologramStyle(UUID uuid) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT hologramstyle FROM chest WHERE uuid = ?")) {
             preparedStatement.setString(1, uuid.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if(resultSet.next()) {
-                return HologramStyle.valueOf(resultSet.getString("hologramstyle"));
+                return resultSet.getString("hologramstyle");
             } else {
                 return null;
             }
@@ -666,6 +666,18 @@ public class SrDatabase {
             preparedStatement.setString(1, item);
             preparedStatement.setInt(2, rowID);
             preparedStatement.executeUpdate();
+        }
+    }
+
+    public void setHologramStyle(UUID uuid, String hologramStyle, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE chest SET hologramstyle = ? WHERE uuid = ?")) {
+            preparedStatement.setString(1, hologramStyle);
+            preparedStatement.setString(2, uuid.toString());
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if(rowsAffected > 0) {
+                this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_HOLOGRAM_STYLE_CHANGED, uuid);
+            }
         }
     }
 }

@@ -35,6 +35,42 @@ public enum ItemDescription {
     ITEM_CHANGE_CHEST_TYPE_LORE_2("&7Aktueller BlockType: \"&6Material.%type&7\""),
     ITEM_CHANGE_CHEST_TYPE_LORE_3("&cAchtung&7: Die &6BlockDirektion &7wird in die Richtung des &6Spielers &7gesetzt."),
 
+    ITEM_CHANGE_HOLOGRAM_STYLE("&eKlicke hier um den &6Stil &edes &6Holograms &ezu ändern!"),
+    ITEM_CHANGE_HOLOGRAM_STYLE_LORE_1(" "),
+    ITEM_CHANGE_HOLOGRAM_STYLE_LORE_2("&7Dies öffnet ein weiteres Inventar mit weiteren Einstellungen."),
+
+    HOLOGRAM_STYLE_1_ACTIVE("&dDieser &6Stil &dist gerade &aaktiv&d!"),
+    HOLOGRAM_STYLE_1_ACTIVE_LORE("  &9» &e\"&bHOLOGRAM_ITEM&e\""),
+
+    HOLOGRAM_STYLE_2_ACTIVE("&dDieser &6Stil &dist gerade &aaktiv&d!"),
+    HOLOGRAM_STYLE_2_ACTIVE_LORE("  &9» &e\"&bHOLOGRAM_ITEM_NAME&e\""),
+
+    HOLOGRAM_STYLE_3_ACTIVE("&dDieser &6Stil &dist gerade &aaktiv&d!"),
+    HOLOGRAM_STYLE_3_ACTIVE_LORE("  &9» &e\"&bHOLOGRAM_ITEM_NAME_PROGRESS&e\""),
+
+    HOLOGRAM_STYLE_4_ACTIVE("&dDieser &6Stil &dist gerade &aaktiv&d!"),
+    HOLOGRAM_STYLE_4_ACTIVE_LORE("  &9» &e\"&bHOLOGRAM_NAME_PROGRESS&e\""),
+
+    HOLOGRAM_STYLE_5_ACTIVE("&dDieser &6Stil &dist gerade &aaktiv&d!"),
+    HOLOGRAM_STYLE_5_ACTIVE_LORE("  &9» &e\"&bHOLOGRAM_ITEM_PROGRESS&e\""),
+
+    HOLOGRAM_STYLE_SPACE_HOLDER(" "),
+
+    HOLOGRAM_STYLE_1("&eKlicke hier um diesen &6Holgram-Stil &eauszuwählen!"),
+    HOLOGRAM_STYLE_1_LORE("&eKlicke hier um den Stil: &9» &e\"&bHOLOGRAM_ITEM&e\" auszuwählen."),
+
+    HOLOGRAM_STYLE_2("&eKlicke hier um diesen &6Holgram-Stil &eauszuwählen!"),
+    HOLOGRAM_STYLE_2_LORE("&eKlicke hier um den Stil: &9» &e\"&bHOLOGRAM_ITEM_NAME&e\" auszuwählen."),
+
+    HOLOGRAM_STYLE_3("&eKlicke hier um diesen &6Holgram-Stil &eauszuwählen!"),
+    HOLOGRAM_STYLE_3_LORE("&eKlicke hier um den Stil: &9» &e\"&bHOLOGRAM_ITEM_NAME_PROGRESS&e\" auszuwählen."),
+
+    HOLOGRAM_STYLE_4("&eKlicke hier um diesen &6Holgram-Stil &eauszuwählen!"),
+    HOLOGRAM_STYLE_4_LORE("&eKlicke hier um den Stil: &9» &e\"&bHOLOGRAM_NAME_PROGRESS&e\" auszuwählen."),
+
+    HOLOGRAM_STYLE_5("&eKlicke hier um diesen &6Holgram-Stil &eauszuwählen!"),
+    HOLOGRAM_STYLE_5_LORE("&eKlicke hier um den Stil: &9» &e\"&bHOLOGRAM_ITEM_PROGRESS&e\" auszuwählen."),
+
     ITEM_COMING_SOON("&c&lCOMING SOON"),
 
     ITEM_MODIFY_ITEMS("&eKlicke hier um die Items dieser &6Chest &eanzupassen:"),

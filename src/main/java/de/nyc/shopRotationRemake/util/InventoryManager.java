@@ -3,6 +3,7 @@ package de.nyc.shopRotationRemake.util;
 import de.leonheuer.mcguiapi.gui.GUI;
 import de.leonheuer.mcguiapi.utils.ItemBuilder;
 import de.nyc.shopRotationRemake.Main;
+import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.enums.ItemDescription;
 import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.objects.Quadruple;
@@ -15,6 +16,7 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -180,6 +182,15 @@ public class InventoryManager {
                 .description(recentActionsList.toArray(new String[0])).asItem());
 
         //TODO: Create player Item history here
+
+
+        gui.setItem(22, ItemBuilder.of(Material.ARMOR_STAND).name(ItemDescription.ITEM_CHANGE_HOLOGRAM_STYLE.getText()).description(ItemDescription.ITEM_CHANGE_HOLOGRAM_STYLE_LORE_1.getText(), ItemDescription.ITEM_CHANGE_HOLOGRAM_STYLE_LORE_2.getText()).asItem(), event -> {
+            try {
+                changeHologramStyleInventory(player, uuid);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         gui.setItem(23, ItemBuilder.of(Material.NAME_TAG).name(ItemDescription.ITEM_CHANGE_TITLE.getText()).asItem(), event -> {
             try {
@@ -744,5 +755,135 @@ public class InventoryManager {
         return item;
     }
 
+    private static void changeHologramStyleInventory(Player player, UUID uuid) throws SQLException {
+        //&TODO: permission system
+        if(!player.isOp()) {
+            player.sendMessage(Messages.NO_PERMS_ERROR.getMessage());
+            return;
+        }
 
+        GUI gui = main.getGuiFactory().createGUI(1, Utils.setColorInMessage("&eKlicke auf den neuen &6Hologram-Stil&e!"));
+
+        //Create glass border:
+        for(int i=0; i<9; i++) {
+            gui.setItem(i, ItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE).name(" ").asItem());
+        }
+
+        String hologramStyle = main.getSrDatabase().getHologramStyle(uuid);
+
+        if(hologramStyle.equals(HologramStyle.HOLOGRAM_ITEM.getName())) {
+            gui.setItem(0, ItemBuilder.of(Material.ARMOR_STAND)
+                    .name(ItemDescription.HOLOGRAM_STYLE_1_ACTIVE.getText())
+                    .description(ItemDescription.HOLOGRAM_STYLE_SPACE_HOLDER.getText(), ItemDescription.HOLOGRAM_STYLE_1_ACTIVE_LORE.getText())
+                    .enchant(Enchantment.MENDING, 1)
+                    .addFlags(ItemFlag.HIDE_ENCHANTS)
+                    .asItem());
+        } else {
+            gui.setItem(0, ItemBuilder.of(Material.ARMOR_STAND)
+                    .name(ItemDescription.HOLOGRAM_STYLE_1.getText())
+                    .description(ItemDescription.HOLOGRAM_STYLE_SPACE_HOLDER.getText(), ItemDescription.HOLOGRAM_STYLE_1_LORE.getText())
+                    .asItem(), event -> {
+                try {
+                    main.getSrDatabase().setHologramStyle(uuid, HologramStyle.HOLOGRAM_ITEM.getName(), player);
+                    player.sendMessage(Messages.HOLOGRAM_CHANGE_STYLE_SUCCES.getMessage().replace("%style", HologramStyle.HOLOGRAM_ITEM.getUpperCaseName()));
+                    changeHologramStyleInventory(player, uuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
+        if(hologramStyle.equals(HologramStyle.HOLOGRAM_ITEM_NAME.getName())) {
+            gui.setItem(2, ItemBuilder.of(Material.ARMOR_STAND)
+                    .name(ItemDescription.HOLOGRAM_STYLE_2_ACTIVE.getText())
+                    .description(ItemDescription.HOLOGRAM_STYLE_SPACE_HOLDER.getText(), ItemDescription.HOLOGRAM_STYLE_2_ACTIVE_LORE.getText())
+                    .enchant(Enchantment.MENDING, 1)
+                    .addFlags(ItemFlag.HIDE_ENCHANTS)
+                    .asItem());
+        } else {
+            gui.setItem(2, ItemBuilder.of(Material.ARMOR_STAND)
+                    .name(ItemDescription.HOLOGRAM_STYLE_2.getText())
+                    .description(ItemDescription.HOLOGRAM_STYLE_SPACE_HOLDER.getText(), ItemDescription.HOLOGRAM_STYLE_2_LORE.getText())
+                    .asItem(), event -> {
+                try {
+                    main.getSrDatabase().setHologramStyle(uuid, HologramStyle.HOLOGRAM_ITEM_NAME.getName(), player);
+                    player.sendMessage(Messages.HOLOGRAM_CHANGE_STYLE_SUCCES.getMessage().replace("%style", HologramStyle.HOLOGRAM_ITEM_NAME.getUpperCaseName()));
+                    changeHologramStyleInventory(player, uuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
+        if(hologramStyle.equals(HologramStyle.HOLOGRAM_ITEM_NAME_PROGRESS.getName())) {
+            gui.setItem(4, ItemBuilder.of(Material.ARMOR_STAND)
+                    .name(ItemDescription.HOLOGRAM_STYLE_3_ACTIVE.getText())
+                    .description(ItemDescription.HOLOGRAM_STYLE_SPACE_HOLDER.getText(), ItemDescription.HOLOGRAM_STYLE_3_ACTIVE_LORE.getText())
+                    .enchant(Enchantment.MENDING, 1)
+                    .addFlags(ItemFlag.HIDE_ENCHANTS)
+                    .asItem());
+        } else {
+            gui.setItem(4, ItemBuilder.of(Material.ARMOR_STAND)
+                    .name(ItemDescription.HOLOGRAM_STYLE_3.getText())
+                    .description(ItemDescription.HOLOGRAM_STYLE_SPACE_HOLDER.getText(), ItemDescription.HOLOGRAM_STYLE_3_LORE.getText())
+                    .asItem(), event -> {
+                try {
+                    main.getSrDatabase().setHologramStyle(uuid, HologramStyle.HOLOGRAM_ITEM_NAME_PROGRESS.getName(), player);
+                    player.sendMessage(Messages.HOLOGRAM_CHANGE_STYLE_SUCCES.getMessage().replace("%style", HologramStyle.HOLOGRAM_ITEM_NAME_PROGRESS.getUpperCaseName()));
+                    changeHologramStyleInventory(player, uuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
+        if(hologramStyle.equals(HologramStyle.HOLOGRAM_NAME_PROGRESS.getName())) {
+            gui.setItem(6, ItemBuilder.of(Material.ARMOR_STAND)
+                    .name(ItemDescription.HOLOGRAM_STYLE_4_ACTIVE.getText())
+                    .description(ItemDescription.HOLOGRAM_STYLE_SPACE_HOLDER.getText(), ItemDescription.HOLOGRAM_STYLE_4_ACTIVE_LORE.getText())
+                    .enchant(Enchantment.MENDING, 1)
+                    .addFlags(ItemFlag.HIDE_ENCHANTS)
+                    .asItem());
+        } else {
+            gui.setItem(6, ItemBuilder.of(Material.ARMOR_STAND)
+                    .name(ItemDescription.HOLOGRAM_STYLE_4.getText())
+                    .description(ItemDescription.HOLOGRAM_STYLE_SPACE_HOLDER.getText(), ItemDescription.HOLOGRAM_STYLE_4_LORE.getText())
+                    .asItem(), event -> {
+                try {
+                    main.getSrDatabase().setHologramStyle(uuid, HologramStyle.HOLOGRAM_NAME_PROGRESS.getName(), player);
+                    player.sendMessage(Messages.HOLOGRAM_CHANGE_STYLE_SUCCES.getMessage().replace("%style", HologramStyle.HOLOGRAM_NAME_PROGRESS.getUpperCaseName()));
+                    changeHologramStyleInventory(player, uuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
+        if(hologramStyle.equals(HologramStyle.HOLOGRAM_ITEM_PROGRESS.getName())) {
+            gui.setItem(8, ItemBuilder.of(Material.ARMOR_STAND)
+                    .name(ItemDescription.HOLOGRAM_STYLE_5_ACTIVE.getText())
+                    .description(ItemDescription.HOLOGRAM_STYLE_SPACE_HOLDER.getText(), ItemDescription.HOLOGRAM_STYLE_5_ACTIVE_LORE.getText())
+                    .enchant(Enchantment.MENDING, 1)
+                    .addFlags(ItemFlag.HIDE_ENCHANTS)
+                    .asItem());
+        } else {
+            gui.setItem(8, ItemBuilder.of(Material.ARMOR_STAND)
+                    .name(ItemDescription.HOLOGRAM_STYLE_5.getText())
+                    .description(ItemDescription.HOLOGRAM_STYLE_SPACE_HOLDER.getText(), ItemDescription.HOLOGRAM_STYLE_5_LORE.getText())
+                    .asItem(), event -> {
+                try {
+                    main.getSrDatabase().setHologramStyle(uuid, HologramStyle.HOLOGRAM_ITEM_PROGRESS.getName(), player);
+                    player.sendMessage(Messages.HOLOGRAM_CHANGE_STYLE_SUCCES.getMessage().replace("%style", HologramStyle.HOLOGRAM_ITEM_PROGRESS.getUpperCaseName()));
+                    changeHologramStyleInventory(player, uuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
+        gui.setDefaultClickAction(event -> {
+            event.setCancelled(true);
+        });
+        gui.show(player);
+    }
 }

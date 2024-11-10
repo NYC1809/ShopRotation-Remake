@@ -71,6 +71,11 @@ public enum ItemDescription {
     HOLOGRAM_STYLE_5("&eKlicke hier um diesen &6Holgram-Stil &eauszuwählen!"),
     HOLOGRAM_STYLE_5_LORE("&eKlicke hier um den Stil: &9» &e\"&bHOLOGRAM_ITEM_PROGRESS&e\" auszuwählen."),
 
+    HOLOGRAM_ENABLE_TEXT("&eKlicke hier um das &6Hologram &ezu &aaktivieren&7/&cdeaktivieren&e!"),
+    HOLOGRAM_ENABLE_TEXT_LORE_1(" "),
+    HOLOGRAM_ENABLE_TEXT_LORE_2("&6Links-Klick &7um das Hologram zu &a&laktivieren&r&7!"),
+    HOLOGRAM_ENABLE_TEXT_LORE_3("&6Rechts-Klick &7um das Hologram zu &4&ldeaktivieren&r&7!"),
+
     ITEM_COMING_SOON("&c&lCOMING SOON"),
 
     ITEM_MODIFY_ITEMS("&eKlicke hier um die Items dieser &6Chest &eanzupassen:"),

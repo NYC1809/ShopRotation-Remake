@@ -680,4 +680,32 @@ public class SrDatabase {
             }
         }
     }
+
+    public void setHologramEnabled(UUID uuid, Boolean enabled, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE chest SET hologram = ? WHERE uuid = ?")) {
+            preparedStatement.setString(1, enabled.toString());
+            preparedStatement.setString(2, uuid.toString());
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if(rowsAffected > 0) {
+                if(enabled) {
+                    this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_HOLOGRAM_ENABLED, uuid);
+                } else {
+                    this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_HOLOGRAM_DISABLED, uuid);
+                }
+            }
+        }
+    }
+
+    public boolean getHologramEnabled(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT hologram FROM chest WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getString("hologram").equals("true");
+            }
+            return false;
+        }
+    }
 }

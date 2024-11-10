@@ -183,6 +183,29 @@ public class InventoryManager {
 
         //TODO: Create player Item history here
 
+        gui.setItem(21, ItemBuilder.of(Material.WIND_CHARGE).name(ItemDescription.HOLOGRAM_ENABLE_TEXT.getText()).description(ItemDescription.HOLOGRAM_ENABLE_TEXT_LORE_1.getText(), ItemDescription.HOLOGRAM_ENABLE_TEXT_LORE_2.getText(), ItemDescription.HOLOGRAM_ENABLE_TEXT_LORE_3.getText()).asItem(), event -> {
+            try {
+                boolean hologramEnabled = main.getSrDatabase().getHologramEnabled(uuid);
+                if(event.getClick().equals(ClickType.LEFT)) {
+                    if(hologramEnabled) {
+                        player.sendMessage(Messages.HOLOGRAM_ALREADY_ENABLED.getMessage());
+                    } else {
+                        main.getSrDatabase().setHologramEnabled(uuid, true, player);
+                        player.sendMessage(Messages.HOLOGRAM_ENABLED_SUCCESS.getMessage());
+                    }
+                }
+                if(event.getClick().equals(ClickType.RIGHT)) {
+                    if(!hologramEnabled) {
+                        player.sendMessage(Messages.HOLOGRAM_ALREADY_DISABLED.getMessage());
+                    } else {
+                        main.getSrDatabase().setHologramEnabled(uuid, false, player);
+                        player.sendMessage(Messages.HOLOGRAM_DISABLED_SUCCESS.getMessage());
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         gui.setItem(22, ItemBuilder.of(Material.ARMOR_STAND).name(ItemDescription.ITEM_CHANGE_HOLOGRAM_STYLE.getText()).description(ItemDescription.ITEM_CHANGE_HOLOGRAM_STYLE_LORE_1.getText(), ItemDescription.ITEM_CHANGE_HOLOGRAM_STYLE_LORE_2.getText()).asItem(), event -> {
             try {
@@ -219,6 +242,8 @@ public class InventoryManager {
                 throw new RuntimeException(e);
             }
         });
+        gui.setItem(33, ItemBuilder.of(Material.GRAY_DYE).name(ItemDescription.ITEM_COMING_SOON.getText()).asItem());
+        gui.setItem(34, ItemBuilder.of(Material.GRAY_DYE).name(ItemDescription.ITEM_COMING_SOON.getText()).asItem());
 
         gui.setDefaultClickAction(event -> {
             event.setCancelled(true);

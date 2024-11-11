@@ -3,6 +3,7 @@ package de.nyc.shopRotationRemake.database;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.enums.SrAction;
+import de.nyc.shopRotationRemake.objects.CurrentItem;
 import de.nyc.shopRotationRemake.objects.Quadruple;
 import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.Bukkit;
@@ -310,10 +311,12 @@ public class SrDatabase {
                 Bukkit.getLogger().severe("[90:09:12] Removed all items from \"" + uuid + "\".");
                 this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.ALL_ITEMS_REMOVED, uuid);
                 this.main.getSrDatabase().deleteAllRewardsByAllItemsDeletion(uuid);
+                CurrentItem.deleteCurrentItemAll(uuid);
                 return;
             }
             Bukkit.getLogger().warning("[90:66:55] \"" + uuid + "\" had no items!");
         }
+
     }
 
     public void deleteItemByItemUuid(UUID uuid, UUID itemuuid, Player player) throws SQLException {
@@ -324,10 +327,12 @@ public class SrDatabase {
                 Bukkit.getLogger().severe("[76:58:29] Removed item with the itemuuid: \"" + itemuuid + "\".");
                 this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.ITEM_REMOVED, uuid);
                 this.main.getSrDatabase().deleteAllRewardsByItemDeletion(itemuuid);
+                CurrentItem.deleteCurrentItem(uuid, itemuuid);
                 return;
             }
             Bukkit.getLogger().warning("[76:89:16] \"" + itemuuid + "\" was not found in the table!");
         }
+
     }
 
     public boolean getChestEnabled(UUID uuid) throws SQLException {
@@ -362,8 +367,10 @@ public class SrDatabase {
         }
         if(enabled) {
             this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.ITEM_ENABLED, uuid);
+            CurrentItem.updateCurrentItem(itemuuid);
         } else {
             this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.ITEM_DISABLED, uuid);
+            CurrentItem.updateCurrentItem(itemuuid);
         }
     }
 
@@ -502,6 +509,7 @@ public class SrDatabase {
             preparedStatement.setString(2, itemUuid.toString());
             preparedStatement.executeUpdate();
         }
+        CurrentItem.updateCurrentItem(itemUuid);
     }
 
     public void setholdingAmountByItemUuid(UUID itemUuid, Integer amount) throws SQLException {
@@ -510,6 +518,7 @@ public class SrDatabase {
             preparedStatement.setString(2, itemUuid.toString());
             preparedStatement.executeUpdate();
         }
+        CurrentItem.updateCurrentItem(itemUuid);
     }
 
     public Integer getAmountOfItemsOfChest(UUID uuid) throws SQLException {
@@ -722,19 +731,6 @@ public class SrDatabase {
         }
     }
 
-    public UUID getNextEnabledItem(UUID uuid) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT itemuuid FROM items WHERE uuid = ? AND enabled = ? ORDER BY id ASC")) {
-            preparedStatement.setString(1, uuid.toString());
-            preparedStatement.setString(2, "true");
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if(resultSet.next()) {
-                return UUID.fromString(resultSet.getString("itemuuid"));
-            }
-            return null;
-        }
-    }
-
     public void addItemToCurrentItems(UUID uuid, UUID itemUuid, String item, Integer amount, Integer holdingAmount, Boolean completed) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO currentitem (uuid, itemuuid, item, amount, holdingamount, completed) VALUES (?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());
@@ -764,6 +760,38 @@ public class SrDatabase {
                 return UUID.fromString(resultSet.getString("itemuuid"));
             }
             return null;
+        }
+    }
+
+    public UUID getChestUuidFromItemUuid(UUID itemUuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT uuid FROM items WHERE itemuuid = ?")) {
+            preparedStatement.setString(1, itemUuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return UUID.fromString(resultSet.getString("uuid"));
+            }
+            return null;
+        }
+    }
+
+    public UUID getItemUuidFromCurrentItemUuid(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT itemuuid FROM currentitem WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return UUID.fromString(resultSet.getString("itemuuid"));
+            }
+            return null;
+        }
+    }
+
+    public boolean hasCurrentItemUuid(UUID itemUuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM currentitem WHERE itemuuid = ?")) {
+            preparedStatement.setString(1, itemUuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
         }
     }
 }

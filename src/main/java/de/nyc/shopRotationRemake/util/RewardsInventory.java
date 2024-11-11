@@ -1008,7 +1008,7 @@ public class RewardsInventory {
                         player.sendMessage(Messages.IS_NOT_ENCHANTMENT.getMessage().replace("%input", enchantmentPart));
                         return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(itemText));
                     }
-                    if(!Utils.isNumeric(parts[1]) || (Integer.parseInt(parts[1]) > 0)) {
+                    if(!Utils.isNumeric(parts[1]) || !(Integer.parseInt(parts[1]) > 0)) {
                         player.sendMessage(Messages.IS_NOT_NUMERIC.getMessage().replace("%input", parts[1]));
                         return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(itemText));
                     }

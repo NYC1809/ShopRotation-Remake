@@ -64,6 +64,49 @@ public class CurrentItem {
         return true;
     }
 
+    public static void updateCurrentItem(UUID itemUuid) throws SQLException {
+        UUID uuid = main.getSrDatabase().getChestUuidFromItemUuid(itemUuid);
+
+        if(main.getSrDatabase().hasCurrentItem(uuid)) {
+            //Item with itemUuid got changed -> writing new currentitem:
+            boolean enabled = main.getSrDatabase().getEnabledOfItem(itemUuid);
+            if(!enabled) {
+                main.getSrDatabase().removeCurrentItem(uuid);
+                Bukkit.getLogger().warning("[28:62:01] item with itemuuid \"" + itemUuid + "\" got disabled -> removing currentitem");
+                return;
+            }
+            Bukkit.getLogger().warning("[32:16:19] Item with itemUuid got changed -> writing new currentitem:");
+            main.getSrDatabase().removeCurrentItem(uuid);
+            int requiredAmount = main.getSrDatabase().getrequiredItemAmountByItemUuid(itemUuid);
+            int holdingAmount = main.getSrDatabase().getholdingItemAmountByItemUuid(itemUuid);
+            if(holdingAmount >= requiredAmount) {
+                createNewCurrentItem(uuid);
+            } else {
+                String itemString = main.getSrDatabase().getItemStringByItemUuid(itemUuid);
+                main.getSrDatabase().addItemToCurrentItems(uuid, itemUuid, itemString, requiredAmount, holdingAmount, false);
+            }
+        }
+    }
+
+    public static void deleteCurrentItem(UUID uuid, UUID itemUuid) throws SQLException {
+        if(!main.getSrDatabase().hasCurrentItemUuid(itemUuid)) {
+            Bukkit.getLogger().warning("[89:29:19] an item got deleted but its not matching with the currentitem!");
+            return;
+        }
+
+        if(main.getSrDatabase().hasCurrentItem(uuid)) {
+            main.getSrDatabase().removeCurrentItem(uuid);
+            Bukkit.getLogger().warning("[22:33:02] itemUuid got deleted -> deleting currentItem aswell!");
+        }
+    }
+
+    public static void deleteCurrentItemAll(UUID uuid) throws SQLException {
+        if(main.getSrDatabase().hasCurrentItem(uuid)) {
+            main.getSrDatabase().removeCurrentItem(uuid);
+            Bukkit.getLogger().info("[11:99:01] All items deleted from \"" + uuid + "\"! deleted currentitem aswell!");
+        }
+    }
+
     public static String getItemString(UUID uuid) throws SQLException{
         if(!main.getSrDatabase().hasCurrentItem(uuid)) {
             createNewCurrentItem(uuid);
@@ -77,7 +120,7 @@ public class CurrentItem {
         }
         UUID itemUuid = main.getSrDatabase().getItemUuidFromCurrentItems(uuid);
         if(itemUuid == null) {
-            Bukkit.getLogger().severe("[45:12:15 adf6] nextItemUuid is null!");
+            Bukkit.getLogger().severe("[45:12:11] nextItemUuid is null!");
             return null;
         }
         return itemUuid;

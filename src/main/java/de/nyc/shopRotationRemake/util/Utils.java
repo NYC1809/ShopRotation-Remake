@@ -219,4 +219,32 @@ public class Utils {
         NamespacedKey namespacedKey = NamespacedKey.minecraft(key);
         return Registry.ENCHANTMENT.get(namespacedKey) != null;
     }
+
+    public static Integer calculatePercentage(Integer a, Integer b) {
+        if(b == 0) {
+            throw new IllegalArgumentException("The value of b cannot be zero.");
+        }
+        int percentage = (int) ((a / (double) b) * 100);
+        return Math.min(percentage, 100);
+    }
+
+    public static String createProgressBar(int percentage, int totalBars) {
+        int coloredBars = (int) Math.round((percentage / 100.0) * totalBars);
+
+        StringBuilder progressBar = new StringBuilder("&6[");
+
+        progressBar.append("&a");
+        for (int i = 0; i < coloredBars; i++) {
+            progressBar.append("|");
+        }
+
+        progressBar.append("&7");
+        for (int i = coloredBars; i < totalBars; i++) {
+            progressBar.append("|");
+        }
+
+        progressBar.append("&6").append("]");
+
+        return progressBar.toString();
+    }
 }

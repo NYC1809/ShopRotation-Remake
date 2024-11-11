@@ -6,9 +6,11 @@ import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.enums.ItemDescription;
 import de.nyc.shopRotationRemake.enums.Messages;
+import de.nyc.shopRotationRemake.objects.CurrentItem;
 import de.nyc.shopRotationRemake.objects.Quadruple;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -963,23 +965,41 @@ public class InventoryManager {
             }
         }
 
+        boolean currentItemExists = CurrentItem.calculateCurrentItem(uuid);
+        if(!currentItemExists) {
+            Bukkit.getLogger().warning("[23:56:17] No possible current item!!");
+        }
+        int currentItemSlot;
+
         if(!listOfAlreadyCompletedItems.isEmpty()) {
             if(listOfAlreadyCompletedItems.size() > 3) {
                 gui.setItem(28, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.get(listOfAlreadyCompletedItems.size() - 3))));
                 gui.setItem(29, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.get(listOfAlreadyCompletedItems.size() - 2))));
                 gui.setItem(30, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.getLast())));
+                currentItemSlot = 31;
             } else if(listOfAlreadyCompletedItems.size() == 3) {
                 gui.setItem(28, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.getFirst())));
                 gui.setItem(29, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.get(1))));
                 gui.setItem(30, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.getLast())));
+                currentItemSlot = 31;
             } else if(listOfAlreadyCompletedItems.size() == 2) {
                 gui.setItem(28, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.getFirst())));
                 gui.setItem(29, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.getLast())));
+                currentItemSlot = 30;
             } else {
                 gui.setItem(28, generateCompletedItemDescription(UUID.fromString(listOfAlreadyCompletedItems.getFirst())));
+                currentItemSlot = 29;
             }
         } else {
-            //TODO set the first active goal because there are no current finished goals -> ItemSlot 28
+            //TODO set the first active item-goal because there are no current finished goals -> ItemSlot 28
+            currentItemSlot = 28;
+        }
+
+        //Set currentitem:
+        if(!currentItemExists) {
+            gui.setItem(currentItemSlot, ItemBuilder.of(Material.BARRIER).name("&cAktuell gibt es kein mögliches Item Ziel!").asItem());
+        } else {
+            gui.setItem(currentItemSlot, generateCurrentItemDescription(uuid));
         }
     }
 
@@ -1001,6 +1021,76 @@ public class InventoryManager {
         lore.add(" ");
         lore.add("&9» [&3Belohnung&9] &d");
 
+        List<Integer> rowIDsRewards = main.getSrDatabase().getIdsFromItemUuidRewards(itemUuid);
+        if(rowIDsRewards.isEmpty()) {
+            lore.add("      &d▻ &7Keine");
+        } else {
+            for(Integer rowID : rowIDsRewards) {
+                int amount = main.getSrDatabase().getAmountOfRewardByID(rowID);
+                String rowIDItemString = main.getSrDatabase().getRewardsItemStringByRowID(rowID);
+                String rewardName = ItemUtils.getItemName(rowIDItemString);
+                String rewardMaterial = String.valueOf(ItemUtils.getItemMaterial(rowIDItemString));
+                if(rewardMaterial.equals(rewardName)) {
+                    lore.add("      &d▻&7 " + amount + "x &6" + rewardName);
+                } else {
+                    lore.add("      &d▻&7 " + amount + "x &6" +rewardName + "&b (&9" + rewardMaterial + "&b)");
+                }
+            }
+        }
+        itemMeta.setLore(Utils.setColorInList(lore));
+        item.setItemMeta(itemMeta);
+        return item;
+    }
+
+    private static ItemStack generateCurrentItemDescription(UUID uuid) throws SQLException {
+        int requiredAmount = CurrentItem.getRequiredAmount(uuid);
+        int holdingAmount = CurrentItem.getHoldingAmount(uuid);
+        String itemString = CurrentItem.getItemString(uuid);
+
+        String itemName = ItemUtils.getItemName(itemString);
+        Material itemMaterial = ItemUtils.getItemMaterial(itemString);
+        List<String> itemDescription = ItemUtils.getItemDescription(itemString);
+        Map<Enchantment, Integer> itemEnchantments = ItemUtils.getItemEnchantments(itemString);
+
+        UUID itemUuid = CurrentItem.getCurrentItemUuid(uuid);
+
+        Integer percentage = Utils.calculatePercentage(holdingAmount, requiredAmount);
+        String progressBar = Utils.createProgressBar(percentage, 50);
+
+        assert itemMaterial != null;
+        ItemStack item = new ItemStack(itemMaterial);
+        ItemMeta itemMeta = item.getItemMeta();
+
+        itemMeta.setDisplayName(Utils.setColorInMessage("&c✖ &a" + percentage + "&6% " + progressBar));
+
+        List<String> lore = new ArrayList<>();
+        lore.add("&e" + holdingAmount + "&6/&e" + requiredAmount + " &7 Items abgegeben!");
+        lore.add(" ");
+        lore.add("&eFolgendes &6Item &ewird benötigt:");
+        lore.add(" ");
+        lore.add("&9» [&3Item&9] &e" + itemName);
+        if(itemDescription == null) {
+            lore.add("&9» [&3Beschreibung&9] &e" + "[ Keine ]");
+        } else {
+            lore.add("&9» [&3Beschreibung&9] &e");
+            for(String line : itemDescription) {
+                lore.add("         &9» &f" + line + "&r");
+            }
+        }
+        if(itemEnchantments.isEmpty()) {
+            lore.add("&9» [&3Enchantments&9] &e" + "[ Keine ]");
+        } else {
+            lore.add("&9» [&3Enchantments&9] &e");
+            for(Map.Entry<Enchantment, Integer> entry : itemEnchantments.entrySet()) {
+                Enchantment enchantment = entry.getKey();
+                Integer level = entry.getValue();
+                lore.add("         &9» &b" + enchantment.toString() + " &dLevel: &3" + level);
+            }
+        }
+        lore.add(" ");
+        lore.add("&6Du kannst nur Items mit genau diesen Eigenschaften abgeben!");
+        lore.add(" ");
+        lore.add("&9» [&3Belohnung&9] &d");
         List<Integer> rowIDsRewards = main.getSrDatabase().getIdsFromItemUuidRewards(itemUuid);
         if(rowIDsRewards.isEmpty()) {
             lore.add("      &d▻ &7Keine");

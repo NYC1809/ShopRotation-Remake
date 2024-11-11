@@ -210,7 +210,7 @@ public enum ItemDescription {
     ITEM_HOPPER_LORE_2("&7Diese Aktion entfernt alle deine Items aus deinem Inventar"),
     ITEM_HOPPER_LORE_3("&7und fügt sie dem Item-Ziel hinzu!"),
 
-    CHEST_HAS_NO_ACTIVE_ITEMS("&cDiese srChest hat aktuell kein aktives Items!"),
+    CHEST_HAS_NO_ACTIVE_ITEMS("&cDiese srChest hat aktuell keine aktiven Items!"),
     CHEST_HAS_NO_ACTIVE_ITEMS_LORE_1(" "),
     CHEST_HAS_NO_ACTIVE_ITEMS_LORE_2("&cBitte komme zu einem späteren Zeitpunkt zurück!"),
     ;

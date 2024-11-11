@@ -289,19 +289,6 @@ public class SrDatabase {
         }
     }
 
-    public void addItemToCurrentItem(UUID uuid, UUID itemuuid, String item, Integer amount, Boolean completed, Player player) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO currentitem (uuid, itemuuid, item, amount, completed, holdingamount) VALUES (?, ?, ?, ?, ?, ?)")) {
-            preparedStatement.setString(1, uuid.toString());
-            preparedStatement.setString(2, itemuuid.toString());
-            preparedStatement.setString(3, item);
-            preparedStatement.setInt(4, amount);
-            preparedStatement.setString(5, completed.toString());
-            preparedStatement.setInt(6, 0);
-            preparedStatement.executeUpdate();
-        }
-        addItemToItemsDB(uuid, itemuuid, item, amount, player);
-    }
-
     public void addItemToItemsDB(UUID uuid,UUID itemuuid, String item, Integer amount, Player player) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO items (uuid, itemuuid, item, requiredamount, holdingamount, enabled) VALUES (?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());
@@ -693,6 +680,90 @@ public class SrDatabase {
                 return resultSet.getString("hologram").equals("true");
             }
             return false;
+        }
+    }
+
+    public boolean hasCurrentItem(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM currentitem WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+        }
+    }
+
+    public boolean currentItemIsCompleted(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT completed FROM currentitem WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getString("completed").equals("true");
+            }
+            return false;
+        }
+    }
+
+    public void removeCurrentItem(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM currentitem WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public String getCurrentItemString(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT item FROM currentitem WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getString("item");
+            }
+            return null;
+        }
+    }
+
+    public UUID getNextEnabledItem(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT itemuuid FROM items WHERE uuid = ? AND enabled = ? ORDER BY id ASC")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setString(2, "true");
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return UUID.fromString(resultSet.getString("itemuuid"));
+            }
+            return null;
+        }
+    }
+
+    public void addItemToCurrentItems(UUID uuid, UUID itemUuid, String item, Integer amount, Integer holdingAmount, Boolean completed) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO currentitem (uuid, itemuuid, item, amount, holdingamount, completed) VALUES (?, ?, ?, ?, ?, ?)")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setString(2, itemUuid.toString());
+            preparedStatement.setString(3, item);
+            preparedStatement.setInt(4, amount);
+            preparedStatement.setInt(5, holdingAmount);
+            preparedStatement.setString(6, completed.toString());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public void setCurrentItemCompleted(UUID uuid, Boolean completed) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE currentitem SET completed = ? WHERE uuid = ?")) {
+            preparedStatement.setString(1, completed.toString());
+            preparedStatement.setString(2, uuid.toString());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public UUID getItemUuidFromCurrentItems(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT itemuuid FROM currentitem WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return UUID.fromString(resultSet.getString("itemuuid"));
+            }
+            return null;
         }
     }
 }

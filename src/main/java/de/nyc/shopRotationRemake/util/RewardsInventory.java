@@ -947,13 +947,24 @@ public class RewardsInventory {
                         Material itemMaterial = ItemUtils.getItemMaterial(itemString);
                         Map<Enchantment, Integer> itemEnchantments = ItemUtils.getItemEnchantments(itemString);
 
-                        description.add(Utils.setColorInMessage(input));
+                        if(description == null) {
+                            List<String> newDescription = new ArrayList<>();
+                            newDescription.add(Utils.setColorInMessage(input));
 
-                        String newItemString = ItemUtils.createItemString(itemName, itemMaterial, itemEnchantments, description);
-                        main.getSrDatabase().setNewRewardsItemStringByRowID(rowID, newItemString);
+                            String newItemString = ItemUtils.createItemString(itemName, itemMaterial, itemEnchantments, newDescription);
+                            main.getSrDatabase().setNewRewardsItemStringByRowID(rowID, newItemString);
 
-                        String lineNumber = String.valueOf(description.size());
-                        player.sendMessage(Messages.REWARD_LORE_LINE_CHANGED_SUCCESS.getMessage().replace("%text", Utils.setColorInMessage(input)).replace("%line", lineNumber));
+                            String lineNumber = String.valueOf(newDescription.size());
+                            player.sendMessage(Messages.REWARD_LORE_LINE_CHANGED_SUCCESS.getMessage().replace("%text", Utils.setColorInMessage(input)).replace("%line", lineNumber));
+                        } else {
+                            description.add(Utils.setColorInMessage(input));
+
+                            String newItemString = ItemUtils.createItemString(itemName, itemMaterial, itemEnchantments, description);
+                            main.getSrDatabase().setNewRewardsItemStringByRowID(rowID, newItemString);
+
+                            String lineNumber = String.valueOf(description.size());
+                            player.sendMessage(Messages.REWARD_LORE_LINE_CHANGED_SUCCESS.getMessage().replace("%text", Utils.setColorInMessage(input)).replace("%line", lineNumber));
+                        }
                         return Arrays.asList(AnvilGUI.ResponseAction.close());
                     } catch (SQLException e) {
                         throw new RuntimeException(e);

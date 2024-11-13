@@ -49,7 +49,6 @@ public class InventoryManager {
             gui.setItem(i, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem());
         }
 
-        //TODO: xxx
         calculateActiveItems(player, uuid, gui);
 
         //Set the netherstar - help item:
@@ -60,12 +59,6 @@ public class InventoryManager {
             //TODO: Click-Event here
         });
 
-        String item = getCurrentItemFromDB(uuid);
-        if(item == null) {
-            gui.setItem(13, ItemBuilder.of(Material.BARRIER).name(ItemDescription.CHEST_HAS_NO_ACTIVE_ITEM.getText()).description(ItemDescription.CHEST_HAS_NO_ACTIVE_ITEM_LORE_1.getText(), ItemDescription.CHEST_HAS_NO_ACTIVE_ITEM_LORE_2.getText()).asItem());
-        } else {
-            //TODO: HERE
-        }
         //TODO: Permission System
         if(player.isOp()) {
             boolean isEnabled = main.getSrDatabase().getChestEnabled(uuid);
@@ -523,13 +516,6 @@ public class InventoryManager {
         return stringBuilder;
     }
 
-    private static String getCurrentItemFromDB(UUID uuid) throws SQLException {
-        //TODO: Move to CurrentItem Class
-        String item = main.getSrDatabase().getCurrentItem(uuid);
-        //TODO: generate the current Item
-        return item;
-    }
-
     private static void changeTitleGUI(Player player, String chestName, String title, UUID uuid) throws SQLException {
         final String[] newTitle = {chestName};
         new AnvilGUI.Builder()
@@ -935,7 +921,6 @@ public class InventoryManager {
     }
 
     private static void calculateActiveItems(Player player, UUID uuid, GUI gui) throws SQLException {
-        int amountOfItemsInChest = main.getSrDatabase().getAmountOfItemsOfChest(uuid);
         List<String> listOfItems = main.getSrDatabase().getListOfItems(uuid);
 
         List<String> listOfEnabledItems = new ArrayList<>();
@@ -1100,9 +1085,11 @@ public class InventoryManager {
 
         //Set currentitem:
         if(!currentItemExists) {
-            gui.setItem(currentItemSlot, ItemBuilder.of(Material.BARRIER).name("&cAktuell gibt es kein mögliches Item Ziel!").asItem());
+            gui.setItem(13, ItemBuilder.of(Material.BARRIER).name(ItemDescription.CHEST_HAS_NO_ACTIVE_ITEM.getText()).description(ItemDescription.CHEST_HAS_NO_ACTIVE_ITEM_LORE_1.getText(), ItemDescription.CHEST_HAS_NO_ACTIVE_ITEM_LORE_2.getText()).asItem());
+            gui.setItem(currentItemSlot, ItemBuilder.of(Material.BARRIER).name(ItemDescription.CHEST_HAS_NO_ACTIVE_ITEM.getText()).description(ItemDescription.CHEST_HAS_NO_ACTIVE_ITEM_LORE_1.getText(), ItemDescription.CHEST_HAS_NO_ACTIVE_ITEM_LORE_2.getText()).asItem());
         } else {
             gui.setItem(currentItemSlot, generateCurrentItemDescription(uuid));
+            gui.setItem(13, generateCurrentItemDescription(uuid));
         }
     }
 

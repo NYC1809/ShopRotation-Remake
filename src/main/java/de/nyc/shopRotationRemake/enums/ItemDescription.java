@@ -13,10 +13,6 @@ public enum ItemDescription {
     ITEM_DISABLED_LORE_1(" "),
     ITEM_DISABLED_LORE_2("&7Klicke hier um diese zu &aaktivieren&7!"),
 
-    CHEST_HAS_NO_ACTIVE_ITEM("&cDiese srChest hat aktuell kein aktives Item!"),
-    CHEST_HAS_NO_ACTIVE_ITEM_LORE_1(" "),
-    CHEST_HAS_NO_ACTIVE_ITEM_LORE_2("&7Bitte komme zu einem späteren Zeitpunkt zurück"),
-
     ITEM_ENABLE_DISABLE_ALL("&aEnable all&6 / &4Disable all"),
     ITEM_ENABLE_DISABLE_ALL_LORE_1(" "),
     ITEM_ENABLE_DISABLE_ALL_LORE_2("&6Links-Klick &7um alle srChests zu &a&laktivieren&r&7!"),
@@ -213,6 +209,10 @@ public enum ItemDescription {
     CHEST_HAS_NO_MORE_ACTIVE_ITEMS("&eAktuell gibt es &ckeine &eweiteren &6Item-Ziele&e!"),
     CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_1(" "),
     CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_2("&7Bitte komme zu einem späteren Zeitpunkt zurück!"),
+
+    CHEST_HAS_NO_ACTIVE_ITEM("&eAktuell gibt es &ckein &aaktives &6Item-Ziel&e!"),
+    CHEST_HAS_NO_ACTIVE_ITEM_LORE_1(" "),
+    CHEST_HAS_NO_ACTIVE_ITEM_LORE_2("&7Bitte komme zu einem späteren Zeitpunkt zurück!"),
 
     ;
 

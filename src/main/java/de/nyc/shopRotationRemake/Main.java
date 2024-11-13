@@ -8,6 +8,7 @@ import de.nyc.shopRotationRemake.listener.ChatListener;
 import de.nyc.shopRotationRemake.listener.PlayerInteractListener;
 import de.nyc.shopRotationRemake.objects.Hologram;
 import de.nyc.shopRotationRemake.util.HologramUtils;
+import de.nyc.shopRotationRemake.util.InventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;

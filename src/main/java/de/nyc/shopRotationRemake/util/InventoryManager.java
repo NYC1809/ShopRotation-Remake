@@ -10,7 +10,6 @@ import de.nyc.shopRotationRemake.objects.CurrentItem;
 import de.nyc.shopRotationRemake.objects.Quadruple;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -949,7 +948,7 @@ public class InventoryManager {
 
         if(listOfEnabledItems.isEmpty()) {
             for(int i=28; i<35; i++) {
-                gui.setItem(i, ItemBuilder.of(Material.RED_STAINED_GLASS_PANE).name(ItemDescription.CHEST_HAS_NO_ACTIVE_ITEMS.getText()).description(ItemDescription.CHEST_HAS_NO_ACTIVE_ITEMS_LORE_1.getText(), ItemDescription.CHEST_HAS_NO_ACTIVE_ITEMS_LORE_2.getText()).asItem());
+                gui.setItem(i, ItemBuilder.of(Material.RED_STAINED_GLASS_PANE).name(ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS.getText()).description(ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_1.getText(), ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_2.getText()).asItem());
             }
             return;
         }
@@ -966,8 +965,10 @@ public class InventoryManager {
         }
 
         boolean currentItemExists = CurrentItem.calculateCurrentItem(uuid);
+        boolean morePossibleItems = true;
         if(!currentItemExists) {
             Bukkit.getLogger().warning("[23:56:17] No possible current item!!");
+            morePossibleItems = false;
         }
         int currentItemSlot;
 
@@ -993,6 +994,109 @@ public class InventoryManager {
         } else {
             //TODO set the first active item-goal because there are no current finished goals -> ItemSlot 28
             currentItemSlot = 28;
+        }
+
+        if(!morePossibleItems) {
+            //If there are no more (enabled) possible items:
+            int piID = 28;
+            if(currentItemSlot == 28) {
+                piID = 29;
+            } else if(currentItemSlot == 29) {
+                piID = 30;
+            } else if(currentItemSlot == 30) {
+                piID = 31;
+            } else {
+                piID = 32;
+            }
+            for(int i=piID; i<35; i++) {
+                gui.setItem(i, ItemBuilder.of(Material.RED_STAINED_GLASS_PANE).name(ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS.getText()).description(ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_1.getText(), ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_2.getText()).asItem());
+            }
+        } else {
+            String currentItemUuid = CurrentItem.getCurrentItemUuid(uuid).toString();
+            List<String> nextItems = new ArrayList<>();
+
+            for(String itemUuid : listOfEnabledItems) {
+                if(itemUuid.equals(currentItemUuid)) {
+                    continue;
+                }
+                if(listOfAlreadyCompletedItems.contains(itemUuid)) {
+                    continue;
+                }
+                nextItems.add(itemUuid);
+            }
+
+            if(currentItemSlot == 28 && nextItems.size() >= 6) {
+                int counter = 0;
+                for(int i=29; i<35; i++) {
+                    gui.setItem(i, generateNextItemDescription(UUID.fromString(nextItems.get(counter))));
+                    counter++;
+                }
+            } else if (currentItemSlot == 29 && nextItems.size() >= 5) {
+                int counter = 0;
+                for(int i=30; i<35; i++) {
+                    gui.setItem(i, generateNextItemDescription(UUID.fromString(nextItems.get(counter))));
+                    counter++;
+                }
+            } else if(currentItemSlot == 30 && nextItems.size() >= 4) {
+                int counter = 0;
+                for(int i=31; i<35; i++) {
+                    gui.setItem(i, generateNextItemDescription(UUID.fromString(nextItems.get(counter))));
+                    counter++;
+                }
+            } else if(currentItemSlot == 31 && nextItems.size() >= 3) {
+                int counter = 0;
+                for(int i=32; i<35; i++) {
+                    gui.setItem(i, generateNextItemDescription(UUID.fromString(nextItems.get(counter))));
+                    counter++;
+                }
+            } else {
+                int amountOfNextItems = nextItems.size();
+                if(currentItemSlot == 28) {
+                    int slot = 29;
+                    for(int i=29; i<amountOfNextItems+29; i++) {
+                        gui.setItem(i, generateNextItemDescription(UUID.fromString(nextItems.get(i - 29))));
+                        slot++;
+                    }
+                    if(slot < 34) {
+                        for(int i=slot; i<35; i++) {
+                            gui.setItem(i, ItemBuilder.of(Material.RED_STAINED_GLASS_PANE).name(ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS.getText()).description(ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_1.getText(), ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_2.getText()).asItem());
+                        }
+                    }
+                } else if(currentItemSlot == 29) {
+                    int slot = 30;
+                    for(int i=30; i<amountOfNextItems+30; i++) {
+                        gui.setItem(i, generateNextItemDescription(UUID.fromString(nextItems.get(i - 30))));
+                        slot++;
+                    }
+                    if(slot < 34) {
+                        for(int i=slot; i<35; i++) {
+                            gui.setItem(i, ItemBuilder.of(Material.RED_STAINED_GLASS_PANE).name(ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS.getText()).description(ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_1.getText(), ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_2.getText()).asItem());
+                        }
+                    }
+                } else if(currentItemSlot == 30) {
+                    int slot = 31;
+                    for(int i=31; i<amountOfNextItems+31; i++) {
+                        gui.setItem(i, generateNextItemDescription(UUID.fromString(nextItems.get(i - 31))));
+                        slot++;
+                    }
+                    if(slot < 34) {
+                        for(int i=slot; i<35; i++) {
+                            gui.setItem(i, ItemBuilder.of(Material.RED_STAINED_GLASS_PANE).name(ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS.getText()).description(ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_1.getText(), ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_2.getText()).asItem());
+                        }
+                    }
+                } else {
+                    int slot = 32;
+                    for(int i=32; i<amountOfNextItems+32; i++) {
+                        gui.setItem(i, generateNextItemDescription(UUID.fromString(nextItems.get(i - 32))));
+                        slot++;
+                    }
+                    if(slot < 34) {
+                        for(int i=slot; i<35; i++) {
+                            gui.setItem(i, ItemBuilder.of(Material.RED_STAINED_GLASS_PANE).name(ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS.getText()).description(ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_1.getText(), ItemDescription.CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_2.getText()).asItem());
+                        }
+                    }
+                }
+            }
         }
 
         //Set currentitem:
@@ -1108,6 +1212,21 @@ public class InventoryManager {
             }
         }
         itemMeta.setLore(Utils.setColorInList(lore));
+        item.setItemMeta(itemMeta);
+        return item;
+    }
+
+    private static ItemStack generateNextItemDescription(UUID itemUuid) throws SQLException {
+        int requiredAmount = main.getSrDatabase().getrequiredItemAmountByItemUuid(itemUuid);
+        int holdingAmount = main.getSrDatabase().getholdingItemAmountByItemUuid(itemUuid);
+        String itemString = main.getSrDatabase().getItemStringByItemUuid(itemUuid);
+
+        String itemName = ItemUtils.getItemName(itemString);
+
+        ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.setDisplayName("ItemUuid - " + itemUuid);
+
         item.setItemMeta(itemMeta);
         return item;
     }

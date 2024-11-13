@@ -28,6 +28,7 @@ public enum SrAction {
     CHEST_HOLOGRAM_DISABLED("Action.Chest.Settings.Hologram.&cDISABLED"),
     CHEST_TYPE_CHANGED("Action.Chest.Settings.&dBLOCK_TYPE_CHANGED"),
     CHEST_HOLOGRAM_STYLE_CHANGED("Action.Chest.Settings.Hologram.&dCHANGED"),
+    CHEST_ITEM_LIMIT_CHANGED("Action.Chest.Settings.PlayerItemLimit.&dCHANGED"),
 
     //srChest player history:
     ITEM_GIVEN("Action.Chest.&6Item&d.&5ITEM_GIVEN"),

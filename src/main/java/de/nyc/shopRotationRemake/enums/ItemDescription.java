@@ -214,6 +214,10 @@ public enum ItemDescription {
     CHEST_HAS_NO_ACTIVE_ITEM_LORE_1(" "),
     CHEST_HAS_NO_ACTIVE_ITEM_LORE_2("&7Bitte komme zu einem späteren Zeitpunkt zurück!"),
 
+    CHANGE_LIMIT_PER_PERSON("&eKlicke hier um das &6Limit Pro Person &eeinzustellen!"),
+    CHANGE_LIMIT_PER_PERSON_LORE_1(" "),
+    CHANGE_LIMIT_PER_PERSON_LORE_2("&7Dies ändert die Anzahl der Items, die jeder Spieler maximal abgeben kann!"),
+
     ;
 
     private final String text;

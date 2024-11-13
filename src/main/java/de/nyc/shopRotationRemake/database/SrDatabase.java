@@ -48,7 +48,8 @@ public class SrDatabase {
                     "enabled TEXT NOT NULL, " +
                     "type TEXT NOT NULL, " +
                     "hologram TEXT NOT NULL, " +
-                    "hologramstyle TEXT NOT NULL)");
+                    "hologramstyle TEXT NOT NULL, " +
+                    "itemlimit INTEGER NOT NULL)");
         }
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS currentitem (" +
@@ -102,8 +103,8 @@ public class SrDatabase {
         }
     }
 
-    public void createChest(UUID uuid, String name, Location location, Boolean enabled, Material type, Boolean hologram, Player player, HologramStyle style) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO chest (uuid, name, location, enabled, type, hologram, hologramstyle) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+    public void createChest(UUID uuid, String name, Location location, Boolean enabled, Material type, Boolean hologram, Player player, HologramStyle style, Integer itemLimit) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO chest (uuid, name, location, enabled, type, hologram, hologramstyle, itemlimit) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());
             preparedStatement.setString(2, name);
             preparedStatement.setString(3, location.toString());
@@ -111,6 +112,7 @@ public class SrDatabase {
             preparedStatement.setString(5, type.toString());
             preparedStatement.setString(6, hologram.toString());
             preparedStatement.setString(7, style.getName());
+            preparedStatement.setInt(8, itemLimit);
             preparedStatement.executeUpdate();
         }
         this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_CREATED, uuid);
@@ -274,17 +276,6 @@ public class SrDatabase {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return UUID.fromString(resultSet.getString("uuid"));
-            }
-            return null;
-        }
-    }
-
-    public String getCurrentItem(UUID uuid) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT item FROM currentitem WHERE uuid = ?")) {
-            preparedStatement.setString(1, uuid.toString());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) {
-                return resultSet.getString("item");
             }
             return null;
         }
@@ -792,6 +783,30 @@ public class SrDatabase {
             preparedStatement.setString(1, itemUuid.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next();
+        }
+    }
+
+    public Integer getItemLimit(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT itemlimit FROM chest WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getInt("itemlimit");
+            }
+            return 0;
+        }
+    }
+
+    public void setItemLimit(UUID uuid, Integer itemLimit, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE chest SET itemlimit = ? WHERE uuid = ?")) {
+            preparedStatement.setInt(1, itemLimit);
+            preparedStatement.setString(2, uuid.toString());
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if(rowsAffected > 0) {
+                this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_ITEM_LIMIT_CHANGED, uuid);
+            }
         }
     }
 }

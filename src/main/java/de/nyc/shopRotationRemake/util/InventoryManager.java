@@ -242,8 +242,18 @@ public class InventoryManager {
                 throw new RuntimeException(e);
             }
         });
-        for(int i=25; i<32; i++) {
-            if(i == 26 || i == 27) { continue; }
+
+        //Set item: Set playerLimitPerItem:
+        gui.setItem(25, ItemBuilder.of(Material.BIRCH_SIGN).name(ItemDescription.CHANGE_LIMIT_PER_PERSON.getText()).description(ItemDescription.CHANGE_LIMIT_PER_PERSON_LORE_1.getText(), ItemDescription.CHANGE_LIMIT_PER_PERSON_LORE_2.getText()).asItem(), event -> {
+            try {
+                int currentLimit = main.getSrDatabase().getItemLimit(uuid);
+                changeLimitPerPerson(player, uuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert &eein..."), currentLimit);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        for(int i=28; i<32; i++) {
             gui.setItem(i, ItemBuilder.of(Material.GRAY_DYE).name(ItemDescription.ITEM_COMING_SOON.getText()).asItem());
         }
         gui.setItem(32, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.ITEM_MODIFY_ITEMS.getText()).description(ItemDescription.ITEM_MODIFY_ITEMS_LORE_1.getText(), ItemDescription.ITEM_MODIFY_ITEMS_LORE_2.getText()).asItem(), event -> {
@@ -689,7 +699,7 @@ public class InventoryManager {
                 .open(player);
     }
 
-    private static void changeHoldingAmount(Player player, UUID uuid, UUID itemUuid,  String title, Integer currentAmount) throws SQLException {
+    private static void changeHoldingAmount(Player player, UUID uuid, UUID itemUuid, String title, Integer currentAmount) throws SQLException {
         new AnvilGUI.Builder()
                 .onClose(stateSnapshot -> {
                     try {
@@ -717,6 +727,43 @@ public class InventoryManager {
                 })
                 .preventClose()
                 .text(currentAmount.toString())
+                .title(title)
+                .plugin(main)
+                .open(player);
+    }
+
+    private static void changeLimitPerPerson(Player player, UUID uuid, String title, Integer currentLimit) throws SQLException {
+        new AnvilGUI.Builder()
+                .onClose(stateSnapshot -> {
+                    try {
+                        createAdminSettingsInventory(player, uuid);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .onClick((slot, stateSnapshot) -> {
+                    if(slot != AnvilGUI.Slot.OUTPUT) {
+                        return Collections.emptyList();
+                    }
+                    String input = stateSnapshot.getText();
+                    if(!Utils.isNumeric(input) || !(Integer.parseInt(input) > 0)) {
+                        player.sendMessage(Messages.IS_NOT_NUMERIC.getMessage().replace("%input", input));
+                        return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(currentLimit.toString()));
+                    }
+                    if(input.equals(currentLimit.toString())) {
+                        player.sendMessage(Messages.CHEST_CHANGED_ITEM_LIMIT_CANCEL.getMessage().replace("%number", input));
+                        return Arrays.asList(AnvilGUI.ResponseAction.close());
+                    }
+                    try {
+                        main.getSrDatabase().setItemLimit(uuid, Integer.parseInt(input), player);
+                        player.sendMessage(Messages.CHEST_CHANGED_ITEM_LIMIT_SUCCESS.getMessage().replace("%number", input));
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return Arrays.asList(AnvilGUI.ResponseAction.close());
+                })
+                .preventClose()
+                .text(currentLimit.toString())
                 .title(title)
                 .plugin(main)
                 .open(player);
@@ -1142,6 +1189,8 @@ public class InventoryManager {
         List<String> itemDescription = ItemUtils.getItemDescription(itemString);
         Map<Enchantment, Integer> itemEnchantments = ItemUtils.getItemEnchantments(itemString);
 
+        int limitPerPerson = main.getSrDatabase().getItemLimit(uuid);
+
         UUID itemUuid = CurrentItem.getCurrentItemUuid(uuid);
 
         Integer percentage = Utils.calculatePercentage(holdingAmount, requiredAmount);
@@ -1173,6 +1222,8 @@ public class InventoryManager {
                 lore.add("         &9» &b" + enchantment.toString() + " &dLevel: &3" + level);
             }
         }
+        lore.add(" ");
+        lore.add("&9» [&3Itemlimit Pro Person&9] &7" + limitPerPerson);
         lore.add(" ");
         lore.add("&6Du kannst nur Items mit genau diesen Eigenschaften abgeben!");
         lore.add(" ");
@@ -1208,6 +1259,9 @@ public class InventoryManager {
         List<String> itemDescription = ItemUtils.getItemDescription(itemString);
         Map<Enchantment, Integer> itemEnchantments = ItemUtils.getItemEnchantments(itemString);
 
+        UUID uuid = main.getSrDatabase().getChestUuidFromItemUuid(itemUuid);
+        int limitPerPerson = main.getSrDatabase().getItemLimit(uuid);
+
         ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta itemMeta = item.getItemMeta();
         Integer percentage = Utils.calculatePercentage(holdingAmount, requiredAmount);
@@ -1231,6 +1285,8 @@ public class InventoryManager {
                 lore.add("         &9» &b" + enchantment.toString() + " &dLevel: &3" + level);
             }
         }
+        lore.add(" ");
+        lore.add("&9» [&3Itemlimit Pro Person&9] &7" + limitPerPerson);
         lore.add(" ");
         lore.add("&9» [&3Belohnung&9] &d");
         List<Integer> rowIDsRewards = main.getSrDatabase().getIdsFromItemUuidRewards(itemUuid);

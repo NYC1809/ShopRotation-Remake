@@ -99,7 +99,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 //set Hologram of Chest by default to true
                 //set Hologram - style by default to "hologram_item_name"
                 try {
-                    this.main.getSrDatabase().createChest(chestUUID, name, location, false, materialChest, true, player, HologramStyle.HOLOGRAM_ITEM_NAME);
+                    this.main.getSrDatabase().createChest(chestUUID, name, location, false, materialChest, true, player, HologramStyle.HOLOGRAM_ITEM_NAME, 1);
                     Bukkit.getLogger().severe("[ShopRotation] srChest \"" + chestUUID + " / " + name + "\" has been written to the SQL DB!");
 
                     player.sendMessage(Messages.CHEST_CREATE_SUCCESS.getMessage().replace("%uuid", chestUUID.toString()));

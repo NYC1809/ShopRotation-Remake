@@ -67,7 +67,7 @@ public class CurrentItem {
     public static void updateCurrentItem(UUID itemUuid) throws SQLException {
         UUID uuid = main.getSrDatabase().getChestUuidFromItemUuid(itemUuid);
 
-        if(main.getSrDatabase().hasCurrentItem(uuid)) {
+        if(main.getSrDatabase().hasCurrentItemUuid(itemUuid)) {
             //Item with itemUuid got changed -> writing new currentitem:
             boolean enabled = main.getSrDatabase().getEnabledOfItem(itemUuid);
             if(!enabled) {

@@ -992,7 +992,6 @@ public class InventoryManager {
                 currentItemSlot = 29;
             }
         } else {
-            //TODO set the first active item-goal because there are no current finished goals -> ItemSlot 28
             currentItemSlot = 28;
         }
 
@@ -1173,17 +1172,13 @@ public class InventoryManager {
         lore.add("&eFolgendes &6Item &ewird benötigt:");
         lore.add(" ");
         lore.add("&9» [&3Item&9] &e" + itemName);
-        if(itemDescription == null) {
-            lore.add("&9» [&3Beschreibung&9] &e" + "[ Keine ]");
-        } else {
+        if(itemDescription != null) {
             lore.add("&9» [&3Beschreibung&9] &e");
             for(String line : itemDescription) {
                 lore.add("         &9» &f" + line + "&r");
             }
         }
-        if(itemEnchantments.isEmpty()) {
-            lore.add("&9» [&3Enchantments&9] &e" + "[ Keine ]");
-        } else {
+        if(!itemEnchantments.isEmpty()) {
             lore.add("&9» [&3Enchantments&9] &e");
             for(Map.Entry<Enchantment, Integer> entry : itemEnchantments.entrySet()) {
                 Enchantment enchantment = entry.getKey();
@@ -1222,11 +1217,52 @@ public class InventoryManager {
         String itemString = main.getSrDatabase().getItemStringByItemUuid(itemUuid);
 
         String itemName = ItemUtils.getItemName(itemString);
+        Material itemMaterial = ItemUtils.getItemMaterial(itemString);
+        List<String> itemDescription = ItemUtils.getItemDescription(itemString);
+        Map<Enchantment, Integer> itemEnchantments = ItemUtils.getItemEnchantments(itemString);
 
         ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setDisplayName("ItemUuid - " + itemUuid);
+        Integer percentage = Utils.calculatePercentage(holdingAmount, requiredAmount);
+        itemMeta.setDisplayName(Utils.setColorInMessage("&c✖ &a" + percentage + "&6% " + "&cnoch nicht begonnen!"));
 
+        List<String> lore = new ArrayList<>();
+        lore.add("&e" + holdingAmount + "&6/&e" + requiredAmount + " &7 Items benötigt!");
+        lore.add(" ");
+        lore.add("&9» [&3Item&9] &e" + itemName);
+        if(itemDescription != null) {
+            lore.add("&9» [&3Beschreibung&9] &e");
+            for(String line : itemDescription) {
+                lore.add("         &9» &f" + line + "&r");
+            }
+        }
+        if(!itemEnchantments.isEmpty()) {
+            lore.add("&9» [&3Enchantments&9] &e");
+            for(Map.Entry<Enchantment, Integer> entry : itemEnchantments.entrySet()) {
+                Enchantment enchantment = entry.getKey();
+                Integer level = entry.getValue();
+                lore.add("         &9» &b" + enchantment.toString() + " &dLevel: &3" + level);
+            }
+        }
+        lore.add(" ");
+        lore.add("&9» [&3Belohnung&9] &d");
+        List<Integer> rowIDsRewards = main.getSrDatabase().getIdsFromItemUuidRewards(itemUuid);
+        if(rowIDsRewards.isEmpty()) {
+            lore.add("      &d▻ &7Keine");
+        } else {
+            for(Integer rowID : rowIDsRewards) {
+                int amount = main.getSrDatabase().getAmountOfRewardByID(rowID);
+                String rowIDItemString = main.getSrDatabase().getRewardsItemStringByRowID(rowID);
+                String rewardName = ItemUtils.getItemName(rowIDItemString);
+                String rewardMaterial = String.valueOf(ItemUtils.getItemMaterial(rowIDItemString));
+                if(rewardMaterial.equals(rewardName)) {
+                    lore.add("      &d▻&7 " + amount + "x &6" + rewardName);
+                } else {
+                    lore.add("      &d▻&7 " + amount + "x &6" +rewardName + "&b (&9" + rewardMaterial + "&b)");
+                }
+            }
+        }
+        itemMeta.setLore(Utils.setColorInList(lore));
         item.setItemMeta(itemMeta);
         return item;
     }

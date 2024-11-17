@@ -229,7 +229,14 @@ public class Utils {
     }
 
     public static Integer calculatePercentageAmount(Integer value, Integer percentage) {
-        return (int) ((value * percentage) / 100.0);
+        double output = ((value * percentage) / 100.0);
+        return parseDoubleToInt(output);
+    }
+
+    private static int parseDoubleToInt(double number) {
+        return (int) Math.ceil(number);
+        //Used to round up and casted to int
+        //To fix the problem having 0 items as limit when input too less itemLimit %
     }
 
     public static String createProgressBar(int percentage, int totalBars) {

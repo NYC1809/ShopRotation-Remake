@@ -244,7 +244,7 @@ public class InventoryManager {
         });
 
         //Set item: Set playerLimitPerItem:
-        gui.setItem(25, ItemBuilder.of(Material.BIRCH_SIGN).name(ItemDescription.CHANGE_LIMIT_PER_PERSON.getText()).description(ItemDescription.CHANGE_LIMIT_PER_PERSON_LORE_1.getText(), ItemDescription.CHANGE_LIMIT_PER_PERSON_LORE_2.getText()).asItem(), event -> {
+        gui.setItem(25, ItemBuilder.of(Material.BIRCH_SIGN).name(ItemDescription.CHANGE_LIMIT_PER_PERSON.getText()).description(ItemDescription.CHANGE_LIMIT_PER_PERSON_LORE_1.getText(), ItemDescription.CHANGE_LIMIT_PER_PERSON_LORE_2.getText(), ItemDescription.CHANGE_LIMIT_PER_PERSON_LORE_3.getText(), ItemDescription.CHANGE_LIMIT_PER_PERSON_LORE_4.getText(), ItemDescription.CHANGE_LIMIT_PER_PERSON_LORE_5.getText()).asItem(), event -> {
             try {
                 int currentLimit = main.getSrDatabase().getItemLimit(uuid);
                 changeLimitPerPerson(player, uuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert &eein..."), currentLimit);
@@ -476,7 +476,7 @@ public class InventoryManager {
         int amountRequred = main.getSrDatabase().getrequiredItemAmountByItemUuid(itemUuid);
         gui.setItem(14, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.ITEM_CHANGE_REQUIRED_AMOUNT.getText()).description(ItemDescription.ITEM_CHANGE_REQUIRED_AMOUNT_LORE_1.getText(), ItemDescription.ITEM_CHANGE_REQUIRED_AMOUNT_LORE_2.getText().replace("%amount", String.valueOf(amountRequred))).asItem(), event -> {
             try {
-                changeRequiredAmount(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert ein..."), amountRequred);
+                changeRequiredAmount(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert &eein..."), amountRequred);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -486,14 +486,13 @@ public class InventoryManager {
         int amountHolding = main.getSrDatabase().getholdingItemAmountByItemUuid(itemUuid);
         gui.setItem(15, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.ITEM_CHANGE_HOLDING_AMOUNT.getText()).description(ItemDescription.ITEM_CHANGE_HOLDING_AMOUNT_LORE_1.getText(), ItemDescription.ITEM_CHANGE_HOLDING_AMOUNT_LORE_2.getText().replace("%amount", String.valueOf(amountHolding))).asItem(), event -> {
             try {
-                changeHoldingAmount(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert ein..."), amountHolding);
+                changeHoldingAmount(player, uuid, itemUuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert &eein..."), amountHolding);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         });
 
         //Set Rewards Settings:
-
         gui.setItem(16, ItemBuilder.of(Material.DIAMOND).name(ItemDescription.ITEM_OPEN_REWARD_GUI.getText()).description(ItemDescription.ITEM_OPEN_REWARD_GUI_LORE_1.getText(), ItemDescription.ITEM_OPEN_REWARD_GUI_LORE_2.getText()).asItem(), event -> {
             try {
                 RewardsInventory.openRewardsInventory(player, uuid, itemUuid);

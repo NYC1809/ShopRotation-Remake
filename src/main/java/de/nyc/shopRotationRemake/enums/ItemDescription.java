@@ -216,7 +216,10 @@ public enum ItemDescription {
 
     CHANGE_LIMIT_PER_PERSON("&eKlicke hier um das &6Limit Pro Person &eeinzustellen!"),
     CHANGE_LIMIT_PER_PERSON_LORE_1(" "),
-    CHANGE_LIMIT_PER_PERSON_LORE_2("&7Dies ändert die Anzahl der Items, die jeder Spieler maximal abgeben kann!"),
+    CHANGE_LIMIT_PER_PERSON_LORE_2("&e\"<zahl>\" &7ändert die Anzahl der Items, die jeder Spieler maximal abgeben kann!"),
+    CHANGE_LIMIT_PER_PERSON_LORE_3(" "),
+    CHANGE_LIMIT_PER_PERSON_LORE_4("&7Bei der &6Eingabe &7von &e\"<zahl> %\" &7wird das Item-Limit pro Spieler"),
+    CHANGE_LIMIT_PER_PERSON_LORE_5("&7von der Anzahl der benötigten Items &eprozentuell abhängig &7gemacht!"),
 
     ;
 

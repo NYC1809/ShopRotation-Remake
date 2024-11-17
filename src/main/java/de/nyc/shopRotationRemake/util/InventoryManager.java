@@ -1274,6 +1274,8 @@ public class InventoryManager {
             }
         }
         lore.add(" ");
+        lore.add("&6Du kannst nur Items mit genau diesen Eigenschaften abgeben!");
+        lore.add(" ");
 
         boolean isItemLimitPercentageinUse = main.getSrDatabase().getItemLimitPercentage(uuid);
 
@@ -1283,8 +1285,6 @@ public class InventoryManager {
         } else {
             lore.add("&9» [&3Itemlimit Pro Person&9] &6" + limitPerPerson + " &7item(s)");
         }
-        lore.add(" ");
-        lore.add("&6Du kannst nur Items mit genau diesen Eigenschaften abgeben!");
         lore.add(" ");
         lore.add("&9» [&3Belohnung&9] &d");
         List<Integer> rowIDsRewards = main.getSrDatabase().getIdsFromItemUuidRewards(itemUuid);

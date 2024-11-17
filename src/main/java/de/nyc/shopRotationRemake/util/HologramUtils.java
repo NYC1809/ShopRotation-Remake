@@ -4,7 +4,6 @@ import de.leonheuer.mcguiapi.utils.ItemBuilder;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.objects.Hologram;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 

@@ -228,6 +228,10 @@ public class Utils {
         return Math.min(percentage, 100);
     }
 
+    public static Integer calculatePercentageAmount(Integer value, Integer percentage) {
+        return (int) ((value * percentage) / 100.0);
+    }
+
     public static String createProgressBar(int percentage, int totalBars) {
         int coloredBars = (int) Math.round((percentage / 100.0) * totalBars);
 

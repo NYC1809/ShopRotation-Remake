@@ -733,6 +733,23 @@ public class InventoryManager {
     }
 
     private static void changeLimitPerPerson(Player player, UUID uuid, String title, Integer currentLimit) throws SQLException {
+        player.sendMessage(Messages.CHEST_CHANGED_ITEM_LIMIT_NOTIFICATION_1.getMessage());
+        player.sendMessage(Messages.CHEST_CHANGED_ITEM_LIMIT_NOTIFICATION_2.getMessage());
+        player.sendMessage(Messages.CHEST_CHANGED_ITEM_LIMIT_NOTIFICATION_3.getMessage());
+
+        boolean isPercentageAlready;
+        try {
+            isPercentageAlready = main.getSrDatabase().getItemLimitPercentage(uuid);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        String itemLimitString;
+        if(isPercentageAlready) {
+            itemLimitString = currentLimit + " %";
+        } else {
+            itemLimitString = currentLimit.toString();
+        }
+
         new AnvilGUI.Builder()
                 .onClose(stateSnapshot -> {
                     try {
@@ -746,24 +763,59 @@ public class InventoryManager {
                         return Collections.emptyList();
                     }
                     String input = stateSnapshot.getText();
-                    if(!Utils.isNumeric(input) || !(Integer.parseInt(input) > 0)) {
-                        player.sendMessage(Messages.IS_NOT_NUMERIC.getMessage().replace("%input", input));
+
+                    String trimmedInput = input.trim();
+                    String[] words = trimmedInput.split("\\s+");
+
+                    if(!Utils.isNumeric(words[0]) || !(Integer.parseInt(words[0]) > 0)) {
+                        player.sendMessage(Messages.IS_NOT_NUMERIC.getMessage().replace("%input", words[0]));
+                        return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(itemLimitString));
+                    }
+
+                    if(words.length == 1) {
+                        if(words[0].equals(currentLimit.toString()) && !isPercentageAlready) {
+                            player.sendMessage(Messages.CHEST_CHANGED_ITEM_LIMIT_CANCEL.getMessage().replace("%number", words[0]));
+                            return Arrays.asList(AnvilGUI.ResponseAction.close());
+                        }
+                        try {
+                            main.getSrDatabase().setItemLimit(uuid, Integer.parseInt(words[0]), player);
+                            main.getSrDatabase().setItemLimitPercentage(uuid, false, player);
+                            Bukkit.getLogger().info("[82:52:07] itemLimit for \"" + uuid + "\" set successfully to " + words[0] + " (no percentage tho)");
+                            player.sendMessage(Messages.CHEST_CHANGED_ITEM_LIMIT_SUCCESS.getMessage().replace("%number", input));
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                        return Arrays.asList(AnvilGUI.ResponseAction.close());
+                    } else if(words.length == 2) {
+                        if(words[0].equals(currentLimit.toString()) && isPercentageAlready) {
+                            player.sendMessage(Messages.CHEST_CHANGED_ITEM_LIMIT_CANCEL.getMessage().replace("%number", words[0] + " %"));
+                            return Arrays.asList(AnvilGUI.ResponseAction.close());
+                        }
+                        if(words[1].equals("%")) {
+                            if(Integer.parseInt(words[0]) > 100) {
+                                player.sendMessage(Messages.CHEST_CHANGED_ITEM_LIMIT_PERCENTAGE_CANNOT_BE_OVER_100.getMessage().replace("%input", words[0]));
+                                return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(itemLimitString));
+                            }
+                            try {
+                                main.getSrDatabase().setItemLimit(uuid, Integer.parseInt(words[0]), player);
+                                main.getSrDatabase().setItemLimitPercentage(uuid, true, player);
+                                Bukkit.getLogger().info("[82:52:07] itemLimit for \"" + uuid + "\" set successfully to " + words[0] + " %!");
+                                player.sendMessage(Messages.CHEST_CHANGED_ITEM_LIMIT_SUCCESS_PERCENTAGE.getMessage().replace("%number", words[0]));
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                            return Arrays.asList(AnvilGUI.ResponseAction.close());
+                        } else {
+                            player.sendMessage(Messages.CHEST_CHANGED_ITEM_LIMIT_WRONG_INPUT.getMessage().replace("%input", input));
+                            return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(currentLimit.toString()));
+                        }
+                    } else {
+                        player.sendMessage(Messages.CHEST_CHANGED_ITEM_LIMIT_WRONG_INPUT.getMessage().replace("%input", input));
                         return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(currentLimit.toString()));
                     }
-                    if(input.equals(currentLimit.toString())) {
-                        player.sendMessage(Messages.CHEST_CHANGED_ITEM_LIMIT_CANCEL.getMessage().replace("%number", input));
-                        return Arrays.asList(AnvilGUI.ResponseAction.close());
-                    }
-                    try {
-                        main.getSrDatabase().setItemLimit(uuid, Integer.parseInt(input), player);
-                        player.sendMessage(Messages.CHEST_CHANGED_ITEM_LIMIT_SUCCESS.getMessage().replace("%number", input));
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                    return Arrays.asList(AnvilGUI.ResponseAction.close());
                 })
                 .preventClose()
-                .text(currentLimit.toString())
+                .text(itemLimitString)
                 .title(title)
                 .plugin(main)
                 .open(player);
@@ -1223,7 +1275,15 @@ public class InventoryManager {
             }
         }
         lore.add(" ");
-        lore.add("&9» [&3Itemlimit Pro Person&9] &7" + limitPerPerson);
+
+        boolean isItemLimitPercentageinUse = main.getSrDatabase().getItemLimitPercentage(uuid);
+
+        if(isItemLimitPercentageinUse) {
+            Integer finalpercentageAmount = Utils.calculatePercentageAmount(requiredAmount, limitPerPerson);
+            lore.add("&9» [&3Itemlimit Pro Person&9] &6" + finalpercentageAmount + " &7(" + limitPerPerson + " %)");
+        } else {
+            lore.add("&9» [&3Itemlimit Pro Person&9] &6" + limitPerPerson + " &7item(s)");
+        }
         lore.add(" ");
         lore.add("&6Du kannst nur Items mit genau diesen Eigenschaften abgeben!");
         lore.add(" ");

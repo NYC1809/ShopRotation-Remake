@@ -35,7 +35,7 @@ public enum HologramStyle {
 
     public static boolean contains(String key) {
         for(HologramStyle style : HologramStyle.values()) {
-            if(style.name().equals(key)) {
+            if(style.key.equals(key)) {
                 return true;
             }
         }

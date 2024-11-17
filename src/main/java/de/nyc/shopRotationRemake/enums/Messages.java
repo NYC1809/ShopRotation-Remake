@@ -35,7 +35,13 @@ public enum Messages {
     CHEST_CHANGED_TYPE_SUCCESS("&7Du hast &aerfolgreich &7den &6BlockType&7 der srChest zu \"&a%type&7\" geändert."),
     CHEST_CHANGED_TYPE_CANCEL("&7Die srChest hat bereits den &6BlockType&7: \"&aMaterial.%type&7\""),
     CHEST_CHANGED_ITEM_LIMIT_SUCCESS("&7Du hast &aerfolgreich &7das &6Item-Limit pro Person &7 auf \"&a%number&7\" geändert."),
+    CHEST_CHANGED_ITEM_LIMIT_SUCCESS_PERCENTAGE("&7Du hast &aerfolgreich &7das &6Item-Limit pro Person &7 auf \"&a%number %\" geändert."),
     CHEST_CHANGED_ITEM_LIMIT_CANCEL("&7Das Limit ist bereits auf \"&a%number&7\" festgelegt."),
+    CHEST_CHANGED_ITEM_LIMIT_NOTIFICATION_1("&7Du kannst entwerder &e\"&a<zahl>&e\" &7um das Item-Limit pro Person "),
+    CHEST_CHANGED_ITEM_LIMIT_NOTIFICATION_2("&7auf eine Zahl festzulegen oder &e\"&a<zahl> %&e\" &7um das Limit pro"),
+    CHEST_CHANGED_ITEM_LIMIT_NOTIFICATION_3("&7Person prozentuell abhängig von dem benötigten Wert eingeben."),
+    CHEST_CHANGED_ITEM_LIMIT_WRONG_INPUT("&7\"&a%input&7\" ist das falsche String-Format."),
+    CHEST_CHANGED_ITEM_LIMIT_PERCENTAGE_CANNOT_BE_OVER_100("&7\"&a%input&7\" kann nicht größer als &a100 Prozent &7sein!"),
 
     ITEM_ADD_CANCELED("&7Du hast die &6Aktion&7: \"Item hinzufügen\" &cabgebrochen&7."),
     ITEM_ADDED_SUCCESS("&7Du hast &aerfolgreich &7das Item \"&a%item&7\" hinzugefügt."),

@@ -16,10 +16,6 @@ public class CurrentItem {
             Bukkit.getLogger().severe("[45:12243:16] Chest has no currentitem yet - generating one!");
             return createNewCurrentItem(uuid);
         }
-        if(main.getSrDatabase().currentItemIsCompleted(uuid)) {
-            main.getSrDatabase().removeCurrentItem(uuid);
-            return createNewCurrentItem(uuid);
-        }
         UUID itemUuid = getCurrentItemUuid(uuid);
         if(itemUuid == null) {
             Bukkit.getLogger().severe("[45:12:16123] nextItemUuid is null!");
@@ -60,7 +56,7 @@ public class CurrentItem {
         int holdingAmount = main.getSrDatabase().getholdingItemAmountByItemUuid(nextItemUuid);
         int requiredAmount = main.getSrDatabase().getrequiredItemAmountByItemUuid(nextItemUuid);
         String itemString = main.getSrDatabase().getItemStringByItemUuid(nextItemUuid);
-        main.getSrDatabase().addItemToCurrentItems(uuid, nextItemUuid, itemString, requiredAmount, holdingAmount, false);
+        main.getSrDatabase().addItemToCurrentItems(uuid, nextItemUuid, itemString, requiredAmount, holdingAmount);
         return true;
     }
 
@@ -83,7 +79,7 @@ public class CurrentItem {
                 createNewCurrentItem(uuid);
             } else {
                 String itemString = main.getSrDatabase().getItemStringByItemUuid(itemUuid);
-                main.getSrDatabase().addItemToCurrentItems(uuid, itemUuid, itemString, requiredAmount, holdingAmount, false);
+                main.getSrDatabase().addItemToCurrentItems(uuid, itemUuid, itemString, requiredAmount, holdingAmount);
             }
         }
     }

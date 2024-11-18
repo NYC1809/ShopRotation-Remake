@@ -39,7 +39,7 @@ public enum Messages {
     CHEST_CHANGED_ITEM_LIMIT_CANCEL("&7Das Limit ist bereits auf \"&a%number&7\" festgelegt."),
     CHEST_CHANGED_ITEM_LIMIT_NOTIFICATION_1("&7Du kannst entwerder &e\"&a<zahl>&e\" &7um das Item-Limit pro Person "),
     CHEST_CHANGED_ITEM_LIMIT_NOTIFICATION_2("&7auf eine Zahl festzulegen oder &e\"&a<zahl> %&e\" &7um das Limit pro"),
-    CHEST_CHANGED_ITEM_LIMIT_NOTIFICATION_3("&7Person prozentuell abhängig von dem benötigten Wert eingeben."),
+    CHEST_CHANGED_ITEM_LIMIT_NOTIFICATION_3("&7Person prozentuell abhängig von dem benötigten Wert einzustellen."),
     CHEST_CHANGED_ITEM_LIMIT_WRONG_INPUT("&7\"&a%input&7\" ist das falsche String-Format."),
     CHEST_CHANGED_ITEM_LIMIT_PERCENTAGE_CANNOT_BE_OVER_100("&7\"&a%input&7\" kann nicht größer als &a100 Prozent &7sein!"),
 

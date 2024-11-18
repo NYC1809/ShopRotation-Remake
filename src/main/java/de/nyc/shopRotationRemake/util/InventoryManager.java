@@ -1345,7 +1345,15 @@ public class InventoryManager {
             }
         }
         lore.add(" ");
-        lore.add("&9» [&3Itemlimit Pro Person&9] &7" + limitPerPerson);
+
+        boolean isItemLimitPercentageinUse = main.getSrDatabase().getItemLimitPercentage(uuid);
+        if(isItemLimitPercentageinUse) {
+            Integer finalpercentageAmount = Utils.calculatePercentageAmount(requiredAmount, limitPerPerson);
+            lore.add("&9» [&3Itemlimit Pro Person&9] &6" + finalpercentageAmount + " &7(" + limitPerPerson + " %)");
+        } else {
+            lore.add("&9» [&3Itemlimit Pro Person&9] &6" + limitPerPerson + " &7item(s)");
+        }
+
         lore.add(" ");
         lore.add("&9» [&3Belohnung&9] &d");
         List<Integer> rowIDsRewards = main.getSrDatabase().getIdsFromItemUuidRewards(itemUuid);

@@ -56,7 +56,17 @@ public class InventoryManager {
 
         //Set the hopper item to give items to the goal:
         gui.setItem(15, ItemBuilder.of(Material.HOPPER).name(ItemDescription.ITEM_HOPPER.getText()).description(ItemDescription.ITEM_HOPPER_LORE_1.getText(), ItemDescription.ITEM_HOPPER_LORE_2.getText(), ItemDescription.ITEM_HOPPER_LORE_3.getText()).asItem(), event -> {
-            //TODO: Click-Event here
+            //TODO: Generate the correct item Description of the hopper^^
+            try {
+                boolean currentItemExists = CurrentItem.calculateCurrentItem(uuid);
+                if(!currentItemExists) {
+                    return;
+                }
+                CurrentItem.giveItemsToChest(uuid, player);
+                createDefaultInventory(player, uuid);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         //TODO: Permission System

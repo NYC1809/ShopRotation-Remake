@@ -21,7 +21,7 @@ public class ItemUtils {
     private static final Main main = Main.getInstance();
 
     public static String createItemString(String name, Material material, Map<Enchantment, Integer> enchantmentMap, List<String> description) {
-        if(enchantmentMap == null) {
+        if(enchantmentMap == null || enchantmentMap.isEmpty()) {
             if(description == null) {
                 return "{Material." +
                         material.toString() +
@@ -176,11 +176,11 @@ public class ItemUtils {
         if (itemMeta != null) {
             if (enchantmentMap == null) {
                 if (description == null) {
-                    itemMeta.setDisplayName(name);
+                    itemMeta.setItemName(name);
                     item.setItemMeta(itemMeta);
                     return item;
                 } else {
-                    itemMeta.setDisplayName(name);
+                    itemMeta.setItemName(name);
                     itemMeta.setLore(description);
                     item.setItemMeta(itemMeta);
                     return item;
@@ -191,7 +191,7 @@ public class ItemUtils {
                     Integer level = entry.getValue();
                     itemMeta.addEnchant(enchantment, level, true);
                 }
-                itemMeta.setDisplayName(name);
+                itemMeta.setItemName(name);
                 item.setItemMeta(itemMeta);
                 return item;
             }
@@ -201,7 +201,7 @@ public class ItemUtils {
                 itemMeta.addEnchant(enchantment, level, true);
             }
             itemMeta.setLore(description);
-            itemMeta.setDisplayName(name);
+            itemMeta.setItemName(name);
             item.setItemMeta(itemMeta);
             return item;
         }

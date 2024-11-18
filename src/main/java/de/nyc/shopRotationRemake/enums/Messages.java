@@ -101,6 +101,9 @@ public enum Messages {
     HOLOGRAM_ENABLED_SUCCESS("&7Du hast &aerfolgreich &7das Hologram &aaktiviert&7!"),
     HOLOGRAM_DISABLED_SUCCESS("&7Du hast &aerfolgreich &7das Hologram &cdeaktiviert&7!"),
 
+    PLAYER_GIVE_ITEM_MAX_VALUE_REACHED("&cDu kannst keine weiteren Items zu diesem Ziel mehr abgeben!"),
+    PLAYER_GIVE_ITEM_SUCCES("&7Du hast &aerfolgreich &7\"&a%number&7\" Items zu dem aktuellen Item-Ziel beigetragen!"),
+
     //srChest get messages
     GET_UUID_INFO_LINE_1(Utils.getPrefix() + "&2Anklicken zum kopieren:"),
 

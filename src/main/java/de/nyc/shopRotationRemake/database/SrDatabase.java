@@ -81,10 +81,8 @@ public class SrDatabase {
             statement.execute("CREATE TABLE IF NOT EXISTS player (" +
                     "uuid TEXT PRIMARY KEY, " +
                     "itemuuid TEXT NOT NULL, " +
-                    "item TEXT NOT NULL, " +
                     "player TEXT NOT NULL, " +
-                    "givenamount INTEGER, " +
-                    "maxamount INTEGER NOT NULL)");
+                    "givenamount INTEGER)");
         }
          //TODO: New Table: pending rewards for player who have been offline
     }
@@ -799,6 +797,54 @@ public class SrDatabase {
                 return resultSet.getString("itemlimitpercentage").equals("true");
             }
             return false;
+        }
+    }
+
+    public boolean playerHasAlreadyGivenItemsToItemUuid(UUID uuid, UUID itemUuid, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM player WHERE uuid = ? AND itemuuid = ? AND player = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setString(2, itemUuid.toString());
+            preparedStatement.setString(3, player.getName());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+        }
+    }
+
+    public void updateGivenAmount(UUID uuid, UUID itemUuid, Player player, Integer givenAmount) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE player SET givenamount = ? WHERE uuid = ? AND itemuuid = ? AND player = ?")) {
+            preparedStatement.setInt(1, givenAmount);
+            preparedStatement.setString(2, uuid.toString());
+            preparedStatement.setString(3, itemUuid.toString());
+            preparedStatement.setString(4, player.getName());
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if(rowsAffected > 0) {
+                Bukkit.getLogger().warning("[88:72:91] updated givenamount for player \"" + player.getName() + "\" ---> new value: " + givenAmount);
+            }
+        }
+    }
+
+    public void addGivenAmount(UUID uuid, UUID itemUuid, Player player, Integer givenAmount) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO player (uuid, itemuuid, player, givenamount) VALUES (?, ?, ?, ?)")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setString(2, itemUuid.toString());
+            preparedStatement.setString(3, player.getName());
+            preparedStatement.setInt(4, givenAmount);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public Integer getGivenAmountFromPlayer(UUID uuid, UUID itemUuid, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT givenamount FROM player WHERE uuid = ? AND itemuuid = ? AND player = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setString(2, itemUuid.toString());
+            preparedStatement.setString(3, player.getName());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getInt("givenamount");
+            }
+            return 0;
         }
     }
 }

@@ -4,6 +4,8 @@ import de.nyc.shopRotationRemake.Main;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -257,5 +259,44 @@ public class Utils {
         progressBar.append("&6").append("]");
 
         return progressBar.toString();
+    }
+
+    public static void removeItemsFromInventory(Player player, String targetItemString, int amountToRemove) {
+        ItemStack[] contents = player.getInventory().getContents();
+        int remainingToRemove = amountToRemove;
+
+        for (int i = 0; i < contents.length; i++) {
+            ItemStack item = contents[i];
+
+            if (item == null) {
+                continue;
+            }
+
+            ItemMeta itemMeta = item.getItemMeta();
+            String displayName;
+
+            if(itemMeta.getDisplayName().isEmpty()) {
+                displayName = item.getType().name();
+            } else {
+                displayName = itemMeta.getDisplayName();
+            }
+            String createItemString = ItemUtils.createItemString(displayName, item.getType(), item.getItemMeta().getEnchants(), item.getItemMeta().getLore());
+
+            if(!createItemString.equals(targetItemString)) {
+                continue;
+            }
+
+            int stackAmount = item.getAmount();
+
+            if (stackAmount > remainingToRemove) {
+                item.setAmount(stackAmount - remainingToRemove);
+                break;
+            } else {
+                remainingToRemove -= stackAmount;
+                contents[i] = null;
+            }
+        }
+
+        player.getInventory().setContents(contents);
     }
 }

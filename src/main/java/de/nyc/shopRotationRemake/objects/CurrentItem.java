@@ -1,5 +1,6 @@
 package de.nyc.shopRotationRemake.objects;
 
+import de.leonheuer.mcguiapi.gui.GUI;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.util.ItemUtils;
@@ -9,8 +10,8 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.swing.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -143,7 +144,7 @@ public class CurrentItem {
         return main.getSrDatabase().getholdingItemAmountByItemUuid(itemUuid);
     }
 
-    public static void giveItemsToChest(UUID uuid, Player player) throws SQLException {
+    public static void giveItemsToChest(UUID uuid, Player player, GUI gui) throws SQLException {
         UUID itemUuid = getCurrentItemUuid(uuid);
         if(itemUuid == null) {
             return;
@@ -179,26 +180,11 @@ public class CurrentItem {
 
         int amountOfItemsInPlayersInventory = 0;
         for(ItemStack item : player.getInventory().getContents()) {
-            //Create a new ItemStack from every item in players inventory:
-            //When creating an itemStack by itemString its kinda buggy -> Thats why I do it so complicated...
-            if(item == null) {
-                continue;
-            }
-            ItemMeta itemMeta = item.getItemMeta();
-            String displayName;
-
-            if(itemMeta.getDisplayName().isEmpty()) {
-                displayName = item.getType().name();
-            } else {
-                displayName = itemMeta.getDisplayName();
-            }
-            String createItemString = ItemUtils.createItemString(displayName, item.getType(), item.getItemMeta().getEnchants(), item.getItemMeta().getLore());
-
-            if(createItemString.equals(targetItemString)) {
+            boolean isItemEqual = ItemUtils.compareItemStacks(item, requiredItemStack);
+            if(isItemEqual) {
                 amountOfItemsInPlayersInventory += item.getAmount();
             }
         }
-
         if(amountOfItemsInPlayersInventory == 0) {
             return;
         }
@@ -231,13 +217,15 @@ public class CurrentItem {
             amountOfRemovedItems = amountOfNeededItems;
         }
 
-        int newAmount = main.getSrDatabase().getGivenAmountFromPlayer(uuid, itemUuid, player) + amountOfRemovedItems;
+        int newAmount = alreadyGivenAmount + amountOfRemovedItems;
 
-        if(main.getSrDatabase().playerHasAlreadyGivenItemsToItemUuid(uuid, itemUuid, player)) {
-            main.getSrDatabase().updateGivenAmount(uuid, itemUuid, player, newAmount);
-        } else {
-            main.getSrDatabase().addGivenAmount(uuid, itemUuid, player, newAmount);
-        }
+        main.getSrDatabase().addGivenAmount(uuid, itemUuid, player, newAmount);
+        Bukkit.getLogger().severe("[12:96:26] Added new addGivenAmount for player: " + newAmount);
         Bukkit.getLogger().severe("[28:59:19] Removed " + amountOfRemovedItems + " items from " + player.getName());
+
+        for(Player viewingPlayers : gui.getViewersList()) {
+            viewingPlayers.updateInventory();
+            Bukkit.getLogger().info("[28:63:97] Updated Inventory for " + viewingPlayers.getName());
+        }
     }
 }

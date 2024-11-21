@@ -9,10 +9,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -206,5 +203,38 @@ public class ItemUtils {
             return item;
         }
         return item;
+    }
+
+    public static boolean compareItemStacks(ItemStack itemStackA, ItemStack itemStackB) {
+        if (itemStackA == null || itemStackB == null) {
+            return false;
+        }
+        if (itemStackA == itemStackB) {
+            return true;
+        }
+
+        if (itemStackA.getType() != itemStackB.getType()) {
+            return false;
+        }
+
+        ItemMeta metaA = itemStackA.getItemMeta();
+        ItemMeta metaB = itemStackB.getItemMeta();
+        if (metaA == null || metaB == null) {
+            return metaA == metaB;
+        }
+
+        if (!Objects.equals(metaA.getDisplayName(), metaB.getDisplayName())) {
+            return false;
+        }
+
+        List<String> loreA = metaA.getLore();
+        List<String> loreB = metaB.getLore();
+        if (!Objects.equals(loreA, loreB)) {
+            return false;
+        }
+
+        Map<org.bukkit.enchantments.Enchantment, Integer> enchantsA = itemStackA.getEnchantments();
+        Map<org.bukkit.enchantments.Enchantment, Integer> enchantsB = itemStackB.getEnchantments();
+        return Objects.equals(enchantsA, enchantsB);
     }
 }

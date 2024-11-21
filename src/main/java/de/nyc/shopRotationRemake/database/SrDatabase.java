@@ -800,32 +800,8 @@ public class SrDatabase {
         }
     }
 
-    public boolean playerHasAlreadyGivenItemsToItemUuid(UUID uuid, UUID itemUuid, Player player) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM player WHERE uuid = ? AND itemuuid = ? AND player = ?")) {
-            preparedStatement.setString(1, uuid.toString());
-            preparedStatement.setString(2, itemUuid.toString());
-            preparedStatement.setString(3, player.getName());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next();
-        }
-    }
-
-    public void updateGivenAmount(UUID uuid, UUID itemUuid, Player player, Integer givenAmount) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE player SET givenamount = ? WHERE uuid = ? AND itemuuid = ? AND player = ?")) {
-            preparedStatement.setInt(1, givenAmount);
-            preparedStatement.setString(2, uuid.toString());
-            preparedStatement.setString(3, itemUuid.toString());
-            preparedStatement.setString(4, player.getName());
-            int rowsAffected = preparedStatement.executeUpdate();
-
-            if(rowsAffected > 0) {
-                Bukkit.getLogger().warning("[88:72:91] updated givenamount for player \"" + player.getName() + "\" ---> new value: " + givenAmount);
-            }
-        }
-    }
-
     public void addGivenAmount(UUID uuid, UUID itemUuid, Player player, Integer givenAmount) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO player (uuid, itemuuid, player, givenamount) VALUES (?, ?, ?, ?)")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT OR REPLACE INTO player (uuid, itemuuid, player, givenamount) VALUES (?, ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());
             preparedStatement.setString(2, itemUuid.toString());
             preparedStatement.setString(3, player.getName());

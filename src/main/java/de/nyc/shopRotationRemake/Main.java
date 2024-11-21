@@ -8,16 +8,17 @@ import de.nyc.shopRotationRemake.listener.ChatListener;
 import de.nyc.shopRotationRemake.listener.PlayerInteractListener;
 import de.nyc.shopRotationRemake.objects.Hologram;
 import de.nyc.shopRotationRemake.util.HologramUtils;
-import de.nyc.shopRotationRemake.util.InventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class Main extends JavaPlugin {
 

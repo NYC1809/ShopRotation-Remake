@@ -1,5 +1,6 @@
 package de.nyc.shopRotationRemake.util;
 
+import de.leonheuer.mcguiapi.gui.GUI;
 import de.nyc.shopRotationRemake.Main;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
@@ -296,7 +297,6 @@ public class Utils {
                 contents[i] = null;
             }
         }
-
         player.getInventory().setContents(contents);
     }
 }

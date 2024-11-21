@@ -62,7 +62,7 @@ public class InventoryManager {
                 if(!currentItemExists) {
                     return;
                 }
-                CurrentItem.giveItemsToChest(uuid, player);
+                CurrentItem.giveItemsToChest(uuid, player, gui);
                 createDefaultInventory(player, uuid);
             } catch (SQLException e) {
                 throw new RuntimeException(e);

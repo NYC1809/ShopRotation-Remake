@@ -661,7 +661,7 @@ public class InventoryManager {
                     String item = ItemUtils.createItemString(material.name(), material, null, null);
                     UUID randomItemUuid = UUID.randomUUID();
                     try {
-                        main.getSrDatabase().addItemToItemsDB(uuid, randomItemUuid, item, 0, player);
+                        main.getSrDatabase().addItemToItemsDB(uuid, randomItemUuid, item, 1, player);
                         player.sendMessage(Messages.ITEM_ADDED_SUCCESS.getMessage().replace("%item", input));
                     } catch (SQLException e) {
                         throw new RuntimeException(e);

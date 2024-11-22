@@ -293,6 +293,7 @@ public class SrDatabase {
                 Bukkit.getLogger().severe("[90:09:12] Removed all items from \"" + uuid + "\".");
                 this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.ALL_ITEMS_REMOVED, uuid);
                 this.main.getSrDatabase().deleteAllRewardsByAllItemsDeletion(uuid);
+                this.main.getSrDatabase().removeDBPlayerEntryAfterAllItemsDeletion(uuid);
                 CurrentItem.deleteCurrentItemAll(uuid);
                 return;
             }
@@ -309,6 +310,8 @@ public class SrDatabase {
                 Bukkit.getLogger().severe("[76:58:29] Removed item with the itemuuid: \"" + itemuuid + "\".");
                 this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.ITEM_REMOVED, uuid);
                 this.main.getSrDatabase().deleteAllRewardsByItemDeletion(itemuuid);
+                this.main.getSrDatabase().removeDBPlayerEntryAfterItemDeletion(itemuuid);
+
                 CurrentItem.deleteCurrentItem(uuid, itemuuid);
                 return;
             }
@@ -821,6 +824,20 @@ public class SrDatabase {
                 return resultSet.getInt("givenamount");
             }
             return 0;
+        }
+    }
+
+    public void removeDBPlayerEntryAfterItemDeletion(UUID itemUuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM player WHERE itemuuid = ?")) {
+            preparedStatement.setString(1, itemUuid.toString());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public void removeDBPlayerEntryAfterAllItemsDeletion(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM player WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.executeUpdate();
         }
     }
 }

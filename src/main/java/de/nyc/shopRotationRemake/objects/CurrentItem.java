@@ -11,7 +11,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import javax.swing.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -209,6 +208,7 @@ public class CurrentItem {
 
             amountOfRemovedItems = remainingItemsPlayerCanGive;
         } else {
+            //ItemGoal is finished:
             Utils.removeItemsFromInventory(player, targetItemString, amountOfNeededItems);
             player.sendMessage(Messages.PLAYER_GIVE_ITEM_SUCCES.getMessage().replace("%number", String.valueOf(amountOfNeededItems)));
 

@@ -1,6 +1,5 @@
 package de.nyc.shopRotationRemake.util;
 
-import de.leonheuer.mcguiapi.gui.GUI;
 import de.nyc.shopRotationRemake.Main;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
@@ -12,6 +11,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Utils {
 
@@ -128,9 +128,7 @@ public class Utils {
 
         for (Material material : Material.values()) {
             if (material == Material.getMaterial(value)) {
-                if(!isNonObtainable(material)) {
-                    return true;
-                }
+                return !isNonObtainable(material);
             }
         }
         return false;

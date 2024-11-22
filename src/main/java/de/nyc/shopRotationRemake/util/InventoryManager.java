@@ -654,7 +654,7 @@ public class InventoryManager {
                         return Arrays.asList(AnvilGUI.ResponseAction.close());
                     }
                     if(!Utils.isMaterial(input)) {
-                        player.sendMessage(Messages.MATERIAL_WRONG.getMessage().replace("%input", "Material." + input));
+                        player.sendMessage(Messages.MATERIAL_WRONG.getMessage().replace("%input", input));
                         return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText("Material."));
                     }
                     Material material = Utils.getMaterialType(input);
@@ -662,7 +662,7 @@ public class InventoryManager {
                     UUID randomItemUuid = UUID.randomUUID();
                     try {
                         main.getSrDatabase().addItemToItemsDB(uuid, randomItemUuid, item, 0, player);
-                        player.sendMessage(Messages.ITEM_ADDED_SUCCESS.getMessage().replace("%item", "Material." + input));
+                        player.sendMessage(Messages.ITEM_ADDED_SUCCESS.getMessage().replace("%item", input));
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }

@@ -179,7 +179,11 @@ public class CurrentItem {
 
         int amountOfItemsInPlayersInventory = 0;
         for(ItemStack item : player.getInventory().getContents()) {
+            if(item == null) {
+                continue;
+            }
             boolean isItemEqual = ItemUtils.compareItemStacks(item, requiredItemStack);
+
             if(isItemEqual) {
                 amountOfItemsInPlayersInventory += item.getAmount();
             }

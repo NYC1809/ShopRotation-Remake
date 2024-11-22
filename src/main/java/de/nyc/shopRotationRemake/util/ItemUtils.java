@@ -2,6 +2,7 @@ package de.nyc.shopRotationRemake.util;
 
 import com.google.common.base.Preconditions;
 import de.nyc.shopRotationRemake.Main;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -173,11 +174,11 @@ public class ItemUtils {
         if (itemMeta != null) {
             if (enchantmentMap == null) {
                 if (description == null) {
-                    itemMeta.setItemName(name);
+                    itemMeta.setDisplayName(name);
                     item.setItemMeta(itemMeta);
                     return item;
                 } else {
-                    itemMeta.setItemName(name);
+                    itemMeta.setDisplayName(name);
                     itemMeta.setLore(description);
                     item.setItemMeta(itemMeta);
                     return item;
@@ -188,7 +189,7 @@ public class ItemUtils {
                     Integer level = entry.getValue();
                     itemMeta.addEnchant(enchantment, level, true);
                 }
-                itemMeta.setItemName(name);
+                itemMeta.setDisplayName(name);
                 item.setItemMeta(itemMeta);
                 return item;
             }
@@ -198,7 +199,7 @@ public class ItemUtils {
                 itemMeta.addEnchant(enchantment, level, true);
             }
             itemMeta.setLore(description);
-            itemMeta.setItemName(name);
+            itemMeta.setDisplayName(name);
             item.setItemMeta(itemMeta);
             return item;
         }
@@ -223,13 +224,15 @@ public class ItemUtils {
             return metaA == metaB;
         }
 
-        if (!Objects.equals(metaA.getDisplayName(), metaB.getDisplayName())) {
+        String displayNameA = metaA.getDisplayName() != null ? ChatColor.stripColor(metaA.getDisplayName()) : null;
+        String displayNameB = metaB.getDisplayName() != null ? ChatColor.stripColor(metaB.getDisplayName()) : null;
+        if (!Objects.equals(displayNameA, displayNameB)) {
             return false;
         }
 
-        List<String> loreA = metaA.getLore();
-        List<String> loreB = metaB.getLore();
-        if (!Objects.equals(loreA, loreB)) {
+        List<String> normalizedLoreA = normalizeLore(metaA);
+        List<String> normalizedLoreB = normalizeLore(metaB);
+        if (!Objects.equals(normalizedLoreA, normalizedLoreB)) {
             return false;
         }
 
@@ -237,4 +240,15 @@ public class ItemUtils {
         Map<org.bukkit.enchantments.Enchantment, Integer> enchantsB = itemStackB.getEnchantments();
         return Objects.equals(enchantsA, enchantsB);
     }
+
+    private static List<String> normalizeLore(ItemMeta meta) {
+        List<String> lore = meta.getLore();
+        if (lore == null) {
+            return Collections.emptyList();
+        }
+        return lore.stream()
+                .map(line -> ChatColor.stripColor(line).stripTrailing())
+                .toList();
+    }
+
 }

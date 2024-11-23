@@ -7,7 +7,6 @@ import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.enums.ItemDescription;
 import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.objects.CurrentItem;
-import de.nyc.shopRotationRemake.objects.Hologram;
 import de.nyc.shopRotationRemake.objects.Quadruple;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
@@ -367,6 +366,18 @@ public class InventoryManager {
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
+                        }
+                    } else {
+                        UUID randomItemUuid = UUID.randomUUID();
+                        String itemString = ItemUtils.createItemString(itemOnCursor.getType().name(), itemOnCursor.getType(), null, null);
+                        try {
+                            main.getSrDatabase().addItemToItemsDB(uuid, randomItemUuid, itemString, 1, player);
+                            HologramUtils.updateSpecificHologram(uuid);
+                            player.sendMessage(Messages.ITEM_ADDED_SUCCESS.getMessage().replace("%item", itemOnCursor.getType().name()));
+                            player.sendMessage(Messages.ITEM_MODIFICATE_FOR_CHANGES.getMessage());
+                            createItemsInventory(player, uuid);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
                         }
                     }
                 }

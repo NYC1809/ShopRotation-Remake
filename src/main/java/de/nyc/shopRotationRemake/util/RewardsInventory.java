@@ -116,6 +116,17 @@ public class RewardsInventory {
                             }
 
                         }
+                    } else {
+                        String itemOnCursorString = ItemUtils.createItemString(itemOnCursor.getType().name(), itemOnCursor.getType(), null, null);
+                        try {
+                            main.getSrDatabase().addReward(uuid, itemUuid, itemOnCursorString, 1, player);
+                            player.sendMessage(Messages.REWARD_ADDED_SUCCESS.getMessage().replace("%item", itemOnCursor.getType().name()));
+                            player.sendMessage(Messages.REWARD_MODIFICATE_FOR_CHANGES.getMessage());
+                            openRewardsInventory(player, uuid, itemUuid);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+
                     }
                 }
             }

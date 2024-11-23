@@ -20,7 +20,7 @@ public class ItemUtils {
 
     public static String createItemString(String name, Material material, Map<Enchantment, Integer> enchantmentMap, List<String> description) {
         if(enchantmentMap == null || enchantmentMap.isEmpty()) {
-            if(description == null) {
+            if(description == null || description.isEmpty()) {
                 return "{Material." +
                         material.toString() +
                         "," +
@@ -42,7 +42,7 @@ public class ItemUtils {
                         "NONE" +
                         "}";
             }
-        } else if(description == null) {
+        } else if(description == null || description.isEmpty()) {
             String enchantments = enchantmentsToString(enchantmentMap);
             return "{Material." +
                     material.toString() +

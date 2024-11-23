@@ -114,10 +114,14 @@ public enum ItemDescription {
     ITEM_CHANGE_HOLDING_AMOUNT_LORE_1(" "),
     ITEM_CHANGE_HOLDING_AMOUNT_LORE_2("&b» Aktueller Wert: &3%amount"),
 
+    ITEM_RESET_ALL_PLAYERS_ITEM_LIMIT("&eKlicke hier um das &6Item-Limit &efür jeden &6Spieler &ezu &6resetten&e!"),
+    ITEM_RESET_ALL_PLAYERS_ITEM_LIMIT_LORE_1(" "),
+    ITEM_RESET_ALL_PLAYERS_ITEM_LIMIT_LORE_2("&6&lDouble-Klick &7um diese Aktion auszuführen!"),
+    ITEM_RESET_ALL_PLAYERS_ITEM_LIMIT_LORE_3("&7Diese Aktion setzt den &6Counter &7des &6Item-Limits &7für alle Spieler &6zurück&7!"),
+    ITEM_RESET_ALL_PLAYERS_ITEM_LIMIT_LORE_4("&7Dies löscht aber &cNICHT &7die Items des Item-Ziels!"),
+
+
     ITEM_OPEN_REWARD_GUI("&eKlicke hier um diesem &6Item Belohnungen &ebei &6Abschluss &ehinzuzufügen."),
-    ITEM_OPEN_REWARD_GUI_LORE_1(" "),
-    //TODO: Show current rewards in Item Lore:
-    ITEM_OPEN_REWARD_GUI_LORE_2("&b» Aktuelle Belohnungen: &3%rewards"),
 
     ITEM_EXIT_REWARDS_ITEM("&eKlicke hier um zurück zu dem &6Item &ezu gehen!"),
     ITEM_EXIT_REWARDS_ITEM_LORE_1(" "),
@@ -210,7 +214,7 @@ public enum ItemDescription {
     CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_1(" "),
     CHEST_HAS_NO_MORE_ACTIVE_ITEMS_LORE_2("&7Bitte komme zu einem späteren Zeitpunkt zurück!"),
 
-    CHEST_HAS_NO_ACTIVE_ITEM("&eAktuell gibt es &ckein &aaktives &6Item-Ziel&e!"),
+    CHEST_HAS_NO_ACTIVE_ITEM("&eAktuell gibt es &ckein &eaktives &6Item-Ziel&e!"),
     CHEST_HAS_NO_ACTIVE_ITEM_LORE_1(" "),
     CHEST_HAS_NO_ACTIVE_ITEM_LORE_2("&7Bitte komme zu einem späteren Zeitpunkt zurück!"),
 

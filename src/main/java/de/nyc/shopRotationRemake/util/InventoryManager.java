@@ -49,7 +49,7 @@ public class InventoryManager {
             gui.setItem(i, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").asItem());
         }
 
-        calculateActiveItems(player, uuid, gui);
+        calculateActiveItems(uuid, gui);
 
         //Set the netherstar - help item:
         gui.setItem(49, ItemBuilder.of(Material.NETHER_STAR).name(ItemDescription.ITEM_HELP.getText()).description(ItemDescription.ITEM_HELP_LORE_1.getText(), ItemDescription.ITEM_HELP_LORE_2.getText()).asItem());
@@ -502,8 +502,25 @@ public class InventoryManager {
             }
         });
 
+        //Set the resetItemLimit for player Setting:
+        gui.setItem(32, ItemBuilder.of(Material.HONEY_BOTTLE).name(ItemDescription.ITEM_RESET_ALL_PLAYERS_ITEM_LIMIT.getText()).description(ItemDescription.ITEM_RESET_ALL_PLAYERS_ITEM_LIMIT_LORE_1.getText(), ItemDescription.ITEM_RESET_ALL_PLAYERS_ITEM_LIMIT_LORE_2.getText(), ItemDescription.ITEM_RESET_ALL_PLAYERS_ITEM_LIMIT_LORE_3.getText(), ItemDescription.ITEM_RESET_ALL_PLAYERS_ITEM_LIMIT_LORE_4.getText()).asItem(), event -> {
+            if(event.getClick().equals(ClickType.DOUBLE_CLICK)) {
+                try {
+                    int playerResetCounter = main.getSrDatabase().removeAllPlayersItemLimitCounterForItem(itemUuid);
+
+                    if (playerResetCounter == 0) {
+                        player.sendMessage(Messages.PLAYER_ITEM_LIMIT_RESET_ZERO.getMessage());
+                    } else {
+                        player.sendMessage(Messages.PLAYER_ITEM_LIMIT_RESET_SUCCESS.getMessage().replace("%number", String.valueOf(playerResetCounter)));
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         //Set Rewards Settings:
-        gui.setItem(16, ItemBuilder.of(Material.DIAMOND).name(ItemDescription.ITEM_OPEN_REWARD_GUI.getText()).description(ItemDescription.ITEM_OPEN_REWARD_GUI_LORE_1.getText(), ItemDescription.ITEM_OPEN_REWARD_GUI_LORE_2.getText()).asItem(), event -> {
+        gui.setItem(16, generateCurrentRewardsForModifyItemInventory(itemUuid), event -> {
             try {
                 RewardsInventory.openRewardsInventory(player, uuid, itemUuid);
             } catch (SQLException e) {
@@ -1028,7 +1045,7 @@ public class InventoryManager {
         gui.show(player);
     }
 
-    private static void calculateActiveItems(Player player, UUID uuid, GUI gui) throws SQLException {
+    private static void calculateActiveItems(UUID uuid, GUI gui) throws SQLException {
         List<String> listOfItems = main.getSrDatabase().getListOfItems(uuid);
 
         List<String> listOfEnabledItems = new ArrayList<>();
@@ -1060,7 +1077,6 @@ public class InventoryManager {
         boolean currentItemExists = CurrentItem.calculateCurrentItem(uuid);
         boolean morePossibleItems = true;
         if(!currentItemExists) {
-            Bukkit.getLogger().warning("[23:56:17] No possible current item!!");
             morePossibleItems = false;
         }
         int currentItemSlot;
@@ -1366,6 +1382,37 @@ public class InventoryManager {
 
         lore.add(" ");
         lore.add("&9» [&3Belohnung&9] &d");
+        List<Integer> rowIDsRewards = main.getSrDatabase().getIdsFromItemUuidRewards(itemUuid);
+        if(rowIDsRewards.isEmpty()) {
+            lore.add("      &d▻ &7Keine");
+        } else {
+            for(Integer rowID : rowIDsRewards) {
+                int amount = main.getSrDatabase().getAmountOfRewardByID(rowID);
+                String rowIDItemString = main.getSrDatabase().getRewardsItemStringByRowID(rowID);
+                String rewardName = ItemUtils.getItemName(rowIDItemString);
+                String rewardMaterial = String.valueOf(ItemUtils.getItemMaterial(rowIDItemString));
+                if(rewardMaterial.equals(rewardName)) {
+                    lore.add("      &d▻&7 " + amount + "x &6" + rewardName);
+                } else {
+                    lore.add("      &d▻&7 " + amount + "x &6" +rewardName + "&b (&9" + rewardMaterial + "&b)");
+                }
+            }
+        }
+        itemMeta.setLore(Utils.setColorInList(lore));
+        item.setItemMeta(itemMeta);
+        return item;
+    }
+
+    private static ItemStack generateCurrentRewardsForModifyItemInventory(UUID itemUuid) throws SQLException {
+        ItemStack item = new ItemStack(Material.DIAMOND);
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.setDisplayName(ItemDescription.ITEM_OPEN_REWARD_GUI.getText());
+
+        List<String> lore = new ArrayList<>();
+
+        lore.add(" ");
+        lore.add("&1» &bAktuelle Belohnungen:");
+
         List<Integer> rowIDsRewards = main.getSrDatabase().getIdsFromItemUuidRewards(itemUuid);
         if(rowIDsRewards.isEmpty()) {
             lore.add("      &d▻ &7Keine");

@@ -840,4 +840,13 @@ public class SrDatabase {
             preparedStatement.executeUpdate();
         }
     }
+
+    public Integer removeAllPlayersItemLimitCounterForItem(UUID itemUuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM player WHERE itemuuid = ?")) {
+            preparedStatement.setString(1, itemUuid.toString());
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            return Math.max(rowsAffected, 0);
+        }
+    }
 }

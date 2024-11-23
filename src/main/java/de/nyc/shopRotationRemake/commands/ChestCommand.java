@@ -148,7 +148,6 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                         Bukkit.getLogger().info("[76:63:30] chestType is equals to DB!");
                         blockLocation.getBlock().setType(Material.AIR);
                     }
-                    HologramUtils.deleteHolograms();
 
                     List<String> chestUuids = this.main.getUuidList();
                     List<String> chestNames = this.main.getChestNames();
@@ -159,11 +158,11 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                         chestNames.remove(rInput);
                     }
                     UUID uuidOfChest = this.main.getSrDatabase().getUuidByInput(rInput);
+                    HologramUtils.deleteSpecificHologram(uuidOfChest);
                     this.main.getSrDatabase().deleteItems(uuidOfChest, player);
                     this.main.getSrDatabase().deleteChestByUuid(rInput, player);
 
                     player.sendMessage(Messages.CHEST_REMOVE_SUCCESS.getMessage().replace("%chest", uuidOfChest.toString()));
-                    HologramUtils.createHologram();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -210,11 +209,13 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 UUID randomItemUuid = UUID.randomUUID();
                 try {
                     this.main.getSrDatabase().addItemToItemsDB(UUID.fromString(aUuid),randomItemUuid, aItem, amountRequired, player);
+                    HologramUtils.updateSpecificHologram(UUID.fromString(aUuid));
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
                 player.sendMessage(Messages.ITEM_ADDED_SUCCESS.getMessage().replace("%item", "Material." + aMaterial.name()));
                 player.sendMessage(Messages.ITEM_MODIFICATE_FOR_CHANGES.getMessage());
+
                 break;
             case "help":
                 player.sendMessage(ChatColor.GOLD + "»------------------ " + Utils.getPrefix() + ChatColor.GOLD + "------------------«");

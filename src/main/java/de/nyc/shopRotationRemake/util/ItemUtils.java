@@ -251,4 +251,11 @@ public class ItemUtils {
                 .toList();
     }
 
+    public static String createProgressBarString(Integer percentage, String progressBar) {
+        if(percentage == 100) {
+            return Utils.setColorInMessage("&a✔ 100&6% &6[&a||||||||||||||||||||||||||||||||||||||||||||||||||&6]");
+        } else {
+            return Utils.setColorInMessage("&c✖ &a" + percentage + "&6% " + progressBar);
+        }
+    }
 }

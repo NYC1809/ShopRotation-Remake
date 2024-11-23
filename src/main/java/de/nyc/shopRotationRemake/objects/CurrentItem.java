@@ -3,6 +3,7 @@ package de.nyc.shopRotationRemake.objects;
 import de.leonheuer.mcguiapi.gui.GUI;
 import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.Messages;
+import de.nyc.shopRotationRemake.util.HologramUtils;
 import de.nyc.shopRotationRemake.util.ItemUtils;
 import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.Bukkit;
@@ -62,6 +63,7 @@ public class CurrentItem {
         int requiredAmount = main.getSrDatabase().getrequiredItemAmountByItemUuid(nextItemUuid);
         String itemString = main.getSrDatabase().getItemStringByItemUuid(nextItemUuid);
         main.getSrDatabase().addItemToCurrentItems(uuid, nextItemUuid, itemString, requiredAmount, holdingAmount);
+        HologramUtils.updateSpecificHologram(uuid);
         return true;
     }
 
@@ -74,6 +76,8 @@ public class CurrentItem {
             if(!enabled) {
                 main.getSrDatabase().removeCurrentItem(uuid);
                 Bukkit.getLogger().warning("[28:62:01] item with itemuuid \"" + itemUuid + "\" got disabled -> removing currentitem");
+                createNewCurrentItem(uuid);
+                HologramUtils.updateSpecificHologram(uuid);
                 return;
             }
             Bukkit.getLogger().warning("[32:16:19] Item with itemUuid got changed -> writing new currentitem:");
@@ -85,6 +89,7 @@ public class CurrentItem {
             } else {
                 String itemString = main.getSrDatabase().getItemStringByItemUuid(itemUuid);
                 main.getSrDatabase().addItemToCurrentItems(uuid, itemUuid, itemString, requiredAmount, holdingAmount);
+                HologramUtils.updateSpecificHologram(uuid);
             }
         }
     }

@@ -7,6 +7,7 @@ import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.enums.ItemDescription;
 import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.objects.CurrentItem;
+import de.nyc.shopRotationRemake.objects.Hologram;
 import de.nyc.shopRotationRemake.objects.Quadruple;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
@@ -77,6 +78,7 @@ public class InventoryManager {
                     try {
                         main.getSrDatabase().changeEnabledOfChest(uuid, false, player);
                         player.sendMessage(Messages.SET_DISABLED_SUCCESS.getMessage());
+                        HologramUtils.updateSpecificHologram(uuid);
                         createDefaultInventory(player, uuid);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
@@ -87,6 +89,7 @@ public class InventoryManager {
                     try {
                         main.getSrDatabase().changeEnabledOfChest(uuid, true, player);
                         player.sendMessage(Messages.SET_ENABLED_SUCCESS.getMessage());
+                        HologramUtils.updateSpecificHologram(uuid);
                         createDefaultInventory(player, uuid);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
@@ -146,6 +149,7 @@ public class InventoryManager {
                 try {
                     main.getSrDatabase().changeEnabledOfChest(uuid, false, player);
                     player.sendMessage(Messages.SET_DISABLED_SUCCESS.getMessage());
+                    HologramUtils.updateSpecificHologram(uuid);
                     createAdminSettingsInventory(player, uuid);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -156,6 +160,7 @@ public class InventoryManager {
                 try {
                     main.getSrDatabase().changeEnabledOfChest(uuid, true, player);
                     player.sendMessage(Messages.SET_ENABLED_SUCCESS.getMessage());
+                    HologramUtils.updateSpecificHologram(uuid);
                     createAdminSettingsInventory(player, uuid);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -355,6 +360,7 @@ public class InventoryManager {
                             UUID randomItemUuid = UUID.randomUUID();
                             try {
                                 main.getSrDatabase().addItemToItemsDB(uuid, randomItemUuid, itemString, 1, player);
+                                HologramUtils.updateSpecificHologram(uuid);
                                 player.sendMessage(Messages.ITEM_ADDED_SUCCESS.getMessage().replace("%item", displayName));
                                 player.sendMessage(Messages.ITEM_MODIFICATE_FOR_CHANGES.getMessage());
                                 createItemsInventory(player, uuid);
@@ -454,6 +460,7 @@ public class InventoryManager {
                 try {
                     main.getSrDatabase().changeEnabledOfItem(uuid, itemUuid, false, player);
                     player.sendMessage(Messages.ITEM_DISABLED_SUCCESS.getMessage().replace("%itemuuid", itemUuid.toString()));
+                    HologramUtils.updateSpecificHologram(uuid);
                     modifyItemInventory(player, uuid, itemUuid);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -464,6 +471,7 @@ public class InventoryManager {
                 try {
                     main.getSrDatabase().changeEnabledOfItem(uuid, itemUuid, true, player);
                     player.sendMessage(Messages.ITEM_ENABLED_SUCCES.getMessage().replace("%itemuuid", itemUuid.toString()));
+                    HologramUtils.updateSpecificHologram(uuid);
                     modifyItemInventory(player, uuid, itemUuid);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -475,6 +483,7 @@ public class InventoryManager {
         gui.setItem(50, ItemBuilder.of(Material.REDSTONE_BLOCK).name(ItemDescription.ITEM_DELETE_ITEM.getText()).description(ItemDescription.ITEM_DELETE_ITEM_LORE_1.getText(), ItemDescription.ITEM_DELETE_ITEM_LORE_2.getText()).asItem(), event -> {
             try {
                 main.getSrDatabase().deleteItemByItemUuid(uuid, itemUuid, player);
+                HologramUtils.updateSpecificHologram(uuid);
                 player.sendMessage(Messages.ITEM_REMOVED_SUCCES.getMessage().replace("%itemuuid", String.valueOf(itemUuid)));
                 createItemsInventory(player, uuid);
             } catch (SQLException e) {
@@ -648,6 +657,7 @@ public class InventoryManager {
 
     private static void deleteAllItems(Player player, UUID uuid) throws SQLException {
         main.getSrDatabase().deleteItems(uuid, player);
+        HologramUtils.updateSpecificHologram(uuid);
         player.sendMessage(Messages.ITEMS_REMOVED_SUCCESS.getMessage().replace("%name", uuid.toString()));
         createItemsInventory(player, uuid);
     }
@@ -679,6 +689,7 @@ public class InventoryManager {
                     UUID randomItemUuid = UUID.randomUUID();
                     try {
                         main.getSrDatabase().addItemToItemsDB(uuid, randomItemUuid, item, 1, player);
+                        HologramUtils.updateSpecificHologram(uuid);
                         player.sendMessage(Messages.ITEM_ADDED_SUCCESS.getMessage().replace("%item", input));
                     } catch (SQLException e) {
                         throw new RuntimeException(e);

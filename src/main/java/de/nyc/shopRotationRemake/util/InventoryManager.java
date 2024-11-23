@@ -724,6 +724,7 @@ public class InventoryManager {
                     try {
                         main.getSrDatabase().setrequiredAmountByItemUuid(itemUuid, Integer.valueOf(input));
                         player.sendMessage(Messages.ITEM_CHANGED_AMOUNT_SUCCESS.getMessage().replace("%number", input));
+                        HologramUtils.updateSpecificHologram(uuid);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -757,6 +758,7 @@ public class InventoryManager {
                     try {
                         main.getSrDatabase().setholdingAmountByItemUuid(itemUuid, Integer.valueOf(input));
                         player.sendMessage(Messages.ITEM_CHANGED_AMOUNT_SUCCESS.getMessage().replace("%number", input));
+                        HologramUtils.updateSpecificHologram(uuid);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }

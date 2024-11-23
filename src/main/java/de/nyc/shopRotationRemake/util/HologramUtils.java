@@ -51,9 +51,9 @@ public class HologramUtils {
                 Integer holdingAmount = CurrentItem.getHoldingAmount(UUID.fromString(uuid));
 
                 Integer percentage = Utils.calculatePercentage(holdingAmount, requiredAmount);
-                String progressBar = Utils.createProgressBar(percentage, 25);
+                String progressBar = Utils.createProgressBar(percentage, 35);
 
-                String progressBarTitle = Utils.setColorInMessage("&c✖ &a" + percentage + "&6% " + progressBar);
+                String progressBarTitle = ItemUtils.createProgressBarString(percentage, progressBar);
 
                 Hologram hologram = new Hologram(location, name, item, main, hologramStyle, progressBarTitle);
                 hologram.create();
@@ -110,9 +110,9 @@ public class HologramUtils {
                 Integer holdingAmount = CurrentItem.getHoldingAmount(uuid);
 
                 Integer percentage = Utils.calculatePercentage(holdingAmount, requiredAmount);
-                String progressBar = Utils.createProgressBar(percentage, 25);
+                String progressBar = Utils.createProgressBar(percentage, 35);
 
-                String progressBarTitle = Utils.setColorInMessage("&c✖ &a" + percentage + "&6% " + progressBar);
+                String progressBarTitle = ItemUtils.createProgressBarString(percentage, progressBar);
 
                 Hologram hologram = entry.getValue();
                 hologram.updateHologram(name, item, progressBarTitle);

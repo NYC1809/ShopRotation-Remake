@@ -224,8 +224,8 @@ public class ItemUtils {
             return metaA == metaB;
         }
 
-        String displayNameA = metaA.getDisplayName() != null ? ChatColor.stripColor(metaA.getDisplayName()) : null;
-        String displayNameB = metaB.getDisplayName() != null ? ChatColor.stripColor(metaB.getDisplayName()) : null;
+        String displayNameA = metaA.hasDisplayName() ? ChatColor.stripColor(metaA.getDisplayName()) : itemStackA.getType().name();
+        String displayNameB = metaB.hasDisplayName() ? ChatColor.stripColor(metaB.getDisplayName()) : itemStackB.getType().name();
         if (!Objects.equals(displayNameA, displayNameB)) {
             return false;
         }
@@ -238,7 +238,10 @@ public class ItemUtils {
 
         Map<org.bukkit.enchantments.Enchantment, Integer> enchantsA = itemStackA.getEnchantments();
         Map<org.bukkit.enchantments.Enchantment, Integer> enchantsB = itemStackB.getEnchantments();
-        return Objects.equals(enchantsA, enchantsB);
+        if (!Objects.equals(enchantsA, enchantsB)) {
+            return false;
+        }
+        return true;
     }
 
     private static List<String> normalizeLore(ItemMeta meta) {

@@ -234,6 +234,7 @@ public class CurrentItem {
 
         for(Player viewingPlayers : gui.getViewersList()) {
             viewingPlayers.updateInventory();
+            HologramUtils.updateSpecificHologram(uuid);
             Bukkit.getLogger().info("[28:63:97] Updated Inventory for " + viewingPlayers.getName());
         }
     }

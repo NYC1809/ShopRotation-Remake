@@ -20,7 +20,7 @@ public enum SrAction {
     REWARD_ADD("Action.Chest.&9Reward&d.&2ADDED"),
     REWARD_REMOVED("Action.Chest.&9Reward&d.&4REMOVED"),
     REWARD__ALL_REMOVED("Action.Chest.&9Reward&d.&4REMOVED_ALL"),
-    ITEM_LIMIT_PER_PERSON_CHANGED("Action.Chest.&6Item&d.Limit_per_person.&dCHANGED"),
+    ITEM_LIMIT_PER_PERSON_CHANGED("Action.Chest.&6Item&d.Limit_per_person.&dCHANGED"), //TODO: IMPLEMENT THIS
 
     //srChest Settings
     CHEST_TITLE_CHANGED("Action.Chest.Settings.&dTITLE_CHANGED"),
@@ -31,8 +31,8 @@ public enum SrAction {
     CHEST_ITEM_LIMIT_CHANGED("Action.Chest.Settings.PlayerItemLimit.&dCHANGED"),
 
     //srChest player history:
-    ITEM_GIVEN("Action.Chest.&6Item&d.&5ITEM_GIVEN"),
-    PLAYER_REACHED_LIMIT("Action.Chest.&6Item&d.&5PLAYER_LIMIT_REACHED"),
+    ITEM_GIVEN("Action.Chest.&6Item&d.&5ITEM_GIVEN"), //TODO: IMPLEMENT THIS
+    PLAYER_REACHED_LIMIT("Action.Chest.&6Item&d.&5PLAYER_LIMIT_REACHED"), //TODO: IMPLEMENT THIS
 
     //TODO: Add srAction - Rewards
     ;

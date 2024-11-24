@@ -228,6 +228,8 @@ public class CurrentItem {
 
         int newAmount = alreadyGivenAmount + amountOfRemovedItems;
 
+        main.getSrDatabase().addPlayerToHistory(uuid, itemUuid, targetItemString, Utils.createTimestamp(), player, amountOfRemovedItems);
+
         main.getSrDatabase().addGivenAmount(uuid, itemUuid, player, newAmount);
         Bukkit.getLogger().severe("[12:96:26] Added new addGivenAmount for player: " + newAmount);
         Bukkit.getLogger().severe("[28:59:19] Removed " + amountOfRemovedItems + " items from " + player.getName());

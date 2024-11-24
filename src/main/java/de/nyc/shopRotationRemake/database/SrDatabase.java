@@ -5,6 +5,8 @@ import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.enums.SrAction;
 import de.nyc.shopRotationRemake.objects.CurrentItem;
 import de.nyc.shopRotationRemake.objects.Quadruple;
+import de.nyc.shopRotationRemake.objects.Quintuple;
+import de.nyc.shopRotationRemake.objects.Sextuple;
 import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -64,9 +66,10 @@ public class SrDatabase {
             statement.execute("CREATE TABLE IF NOT EXISTS history (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "uuid TEXT NOT NULL, " +
+                    "itemuuid TEXT NOT NULL, " +
+                    "item TEXT NOT NULL, " +
                     "timestamp TEXT NOT NULL, " +
                     "player TEXT NOT NULL, " +
-                    "item TEXT NOT NULL, " +
                     "amount INTEGER NOT NULL)");
         }
         try (Statement statement = connection.createStatement()) {
@@ -847,6 +850,61 @@ public class SrDatabase {
             int rowsAffected = preparedStatement.executeUpdate();
 
             return Math.max(rowsAffected, 0);
+        }
+    }
+
+    public void addPlayerToHistory(UUID uuid, UUID itemUuid, String itemString, String timestamp, Player player, Integer amount) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO history (uuid, itemuuid, item, timestamp, player, amount) VALUES (?, ?, ?, ?, ?, ?)")) {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setString(2, itemUuid.toString());
+            preparedStatement.setString(3, itemString);
+            preparedStatement.setString(4, timestamp);
+            preparedStatement.setString(5, player.getName());
+            preparedStatement.setInt(6, amount);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public Map<Integer, Sextuple> getPlayerHistoryOfItem(UUID itemUuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM history WHERE itemuuid = ? ORDER BY id DESC LIMIT 35")) {
+            preparedStatement.setString(1, itemUuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            Map<Integer, Sextuple> map = new HashMap<>();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String uuid = resultSet.getString("uuid");
+
+                String itemString = resultSet.getString("item");
+                String timestamp = resultSet.getString("timestamp");
+                String playerName = resultSet.getString("player");
+                Integer amount = resultSet.getInt("amount");
+
+                map.put(id, new Sextuple(uuid, String.valueOf(itemUuid), itemString, timestamp, playerName, String.valueOf(amount)));
+            }
+            return map;
+        }
+    }
+
+    public Map<Integer, Sextuple> getPlayerHistoryOfChest(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM history WHERE uuid = ? ORDER BY id DESC LIMIT 35")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            Map<Integer, Sextuple> map = new HashMap<>();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String itemUuid = resultSet.getString("itemuuid");
+                String itemString = resultSet.getString("item");
+                String timestamp = resultSet.getString("timestamp");
+                String playerName = resultSet.getString("player");
+                Integer amount = resultSet.getInt("amount");
+
+                map.put(id, new Sextuple(String.valueOf(uuid), itemUuid, itemString, timestamp, playerName, String.valueOf(amount)));
+            }
+            return map;
         }
     }
 }

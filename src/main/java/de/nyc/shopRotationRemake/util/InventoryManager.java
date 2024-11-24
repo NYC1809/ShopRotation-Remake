@@ -8,6 +8,8 @@ import de.nyc.shopRotationRemake.enums.ItemDescription;
 import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.objects.CurrentItem;
 import de.nyc.shopRotationRemake.objects.Quadruple;
+import de.nyc.shopRotationRemake.objects.Quintuple;
+import de.nyc.shopRotationRemake.objects.Sextuple;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -51,12 +53,25 @@ public class InventoryManager {
 
         calculateActiveItems(uuid, gui);
 
+        Map<Integer, Sextuple> recentPlayerHistory = main.getSrDatabase().getPlayerHistoryOfChest(uuid);
+        Map<Integer, Sextuple> sortedMapPlayerHistory = new TreeMap<>(recentPlayerHistory);
+
+        List<String> recentPlayerHistoryList = new ArrayList<>();
+        recentPlayerHistoryList.add("&0 ");
+        for(Map.Entry<Integer, Sextuple> entry : sortedMapPlayerHistory.entrySet()) {
+            StringBuilder stringBuilder = getStringBuilderDefaultHistory(entry);
+            recentPlayerHistoryList.add(stringBuilder.toString());
+        }
+
+        //Set the history Item
+        gui.setItem(10, ItemBuilder.of(Material.OAK_SIGN).name(ItemDescription.ITEM_PLAYER_HISTORY_NAME.getText())
+                .description(recentPlayerHistoryList.toArray(new String[0])).asItem());
+
         //Set the netherstar - help item:
         gui.setItem(49, ItemBuilder.of(Material.NETHER_STAR).name(ItemDescription.ITEM_HELP.getText()).description(ItemDescription.ITEM_HELP_LORE_1.getText(), ItemDescription.ITEM_HELP_LORE_2.getText()).asItem());
 
         //Set the hopper item to give items to the goal:
         gui.setItem(15, ItemBuilder.of(Material.HOPPER).name(ItemDescription.ITEM_HOPPER.getText()).description(ItemDescription.ITEM_HOPPER_LORE_1.getText(), ItemDescription.ITEM_HOPPER_LORE_2.getText(), ItemDescription.ITEM_HOPPER_LORE_3.getText()).asItem(), event -> {
-            //TODO: Generate the correct item Description of the hopper^^
             try {
                 boolean currentItemExists = CurrentItem.calculateCurrentItem(uuid);
                 if(!currentItemExists) {
@@ -192,19 +207,31 @@ public class InventoryManager {
         });
 
         Map<Integer, Quadruple> recentActions = main.getSrDatabase().getLastActions();
-        Map<Integer, Quadruple> sortedMap = new TreeMap<>(recentActions);
+        Map<Integer, Quadruple> sortedMapActionHistory = new TreeMap<>(recentActions);
 
         List<String> recentActionsList = new ArrayList<>();
         recentActionsList.add("&0 ");
-        for(Map.Entry<Integer, Quadruple> entry : sortedMap.entrySet()) {
-            StringBuilder stringBuilder = getStringBuilder(entry);
+        for(Map.Entry<Integer, Quadruple> entry : sortedMapActionHistory.entrySet()) {
+            StringBuilder stringBuilder = getStringBuilderActionHistory(entry);
             recentActionsList.add(stringBuilder.toString());
         }
 
         gui.setItem(19, ItemBuilder.of(Material.ANVIL).name(ItemDescription.ITEM_ACTION_HISTORY_NAME.getText())
                 .description(recentActionsList.toArray(new String[0])).asItem());
 
-        //TODO: Create player Item history here
+        Map<Integer, Sextuple> recentPlayerHistory = main.getSrDatabase().getPlayerHistoryOfChest(uuid);
+        Map<Integer, Sextuple> sortedMapPlayerHistory = new TreeMap<>(recentPlayerHistory);
+
+        List<String> recentPlayerHistoryList = new ArrayList<>();
+        recentPlayerHistoryList.add("&0 ");
+        for(Map.Entry<Integer, Sextuple> entry : sortedMapPlayerHistory.entrySet()) {
+            StringBuilder stringBuilder = getStringBuilderPlayerHistory(entry);
+            recentPlayerHistoryList.add(stringBuilder.toString());
+        }
+
+        gui.setItem(20, ItemBuilder.of(Material.OAK_SIGN).name(ItemDescription.ITEM_PLAYER_HISTORY_NAME.getText())
+                .description(recentPlayerHistoryList.toArray(new String[0])).asItem());
+
 
         gui.setItem(21, ItemBuilder.of(Material.WIND_CHARGE).name(ItemDescription.HOLOGRAM_ENABLE_TEXT.getText()).description(ItemDescription.HOLOGRAM_ENABLE_TEXT_LORE_1.getText(), ItemDescription.HOLOGRAM_ENABLE_TEXT_LORE_2.getText(), ItemDescription.HOLOGRAM_ENABLE_TEXT_LORE_3.getText()).asItem(), event -> {
             try {
@@ -554,7 +581,7 @@ public class InventoryManager {
         gui.show(player);
     }
 
-    private static StringBuilder getStringBuilder(Map.Entry<Integer, Quadruple> entry) {
+    private static StringBuilder getStringBuilderActionHistory(Map.Entry<Integer, Quadruple> entry) {
         Integer id = entry.getKey();
         Quadruple values = entry.getValue();
         StringBuilder stringBuilder = new StringBuilder();
@@ -569,6 +596,79 @@ public class InventoryManager {
         stringBuilder.append(" &7&l»» &d[ ");
         stringBuilder.append(values.getValue4());
         stringBuilder.append(" &d]");
+        return stringBuilder;
+    }
+
+    public static StringBuilder getStringBuilderPlayerHistory(Map.Entry<Integer, Sextuple> entry) {
+        Integer id = entry.getKey();
+        Sextuple values = entry.getValue();
+
+        String uuid = values.getValue1();
+        String itemUuid = values.getValue2();
+        String itemString = values.getValue3();
+        String timestamp = values.getValue4();
+        String playerName = values.getValue5();
+        String amount = values.getValue6();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("&3&l»» &a");
+        stringBuilder.append(playerName);
+        stringBuilder.append(" &7hat am &6");
+        stringBuilder.append(timestamp);
+        stringBuilder.append(" &e");
+        stringBuilder.append(amount);
+        stringBuilder.append("&7x &6");
+
+        String itemName = ItemUtils.getItemName(itemString);
+        String itemMaterial = String.valueOf(ItemUtils.getItemMaterial(itemString));
+        if(itemMaterial.equals(itemName)) {
+            stringBuilder.append(itemName);
+        } else {
+            stringBuilder.append(itemName);
+            stringBuilder.append(" &b(&9");
+            stringBuilder.append(itemMaterial);
+            stringBuilder.append("&b)");
+        }
+        stringBuilder.append(" &7beigetragen!");
+
+        return stringBuilder;
+    }
+
+    public static StringBuilder getStringBuilderDefaultHistory(Map.Entry<Integer, Sextuple> entry) {
+        Integer id = entry.getKey();
+        Sextuple values = entry.getValue();
+
+        String uuid = values.getValue1();
+        String itemUuid = values.getValue2();
+        String itemString = values.getValue3();
+        String timestamp = values.getValue4();
+        String playerName = values.getValue5();
+        String amount = values.getValue6();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("&3&l»» &a");
+        stringBuilder.append(playerName);
+        stringBuilder.append(" &7hat");
+        stringBuilder.append(" &e");
+        stringBuilder.append(amount);
+        stringBuilder.append("&7x &6");
+
+        String itemName = ItemUtils.getItemName(itemString);
+        String itemMaterial = String.valueOf(ItemUtils.getItemMaterial(itemString));
+        if(itemMaterial.equals(itemName)) {
+            stringBuilder.append(itemName);
+        } else {
+            stringBuilder.append(itemName);
+            stringBuilder.append(" &b(&9");
+            stringBuilder.append(itemMaterial);
+            stringBuilder.append("&b)");
+        }
+        stringBuilder.append(" &7beigetragen!");
+
+        String timeAgo = Utils.getTimeAgo(timestamp);
+        stringBuilder.append(" &8");
+        stringBuilder.append(timeAgo);
+
         return stringBuilder;
     }
 
@@ -1349,7 +1449,7 @@ public class InventoryManager {
                 if(rewardMaterial.equals(rewardName)) {
                     lore.add("      &d▻&7 " + amount + "x &6" + rewardName);
                 } else {
-                    lore.add("      &d▻&7 " + amount + "x &6" +rewardName + "&b (&9" + rewardMaterial + "&b)");
+                    lore.add("      &d▻&7 " + amount + "x &6" + rewardName + "&b (&9" + rewardMaterial + "&b)");
                 }
             }
         }

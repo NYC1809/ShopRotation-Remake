@@ -7,8 +7,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -164,6 +167,40 @@ public class Utils {
     public static String createTimestamp() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("[dd-MM-yyyy HH:mm]");
         return ZonedDateTime.now().format(dateTimeFormatter);
+    }
+
+    public static String getTimeAgo(String timestamp) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        try {
+            LocalDateTime parsedDateTime = LocalDateTime.parse(timestamp, formatter);
+            LocalDateTime now = LocalDateTime.now();
+
+            Duration duration = Duration.between(parsedDateTime, now);
+
+            long minutes = duration.toMinutes();
+            long hours = duration.toHours();
+
+            if (minutes < 60) {
+                if(minutes == 0) {
+                    return "(Gerade eben...)";
+                } else if(minutes == 1) {
+                    return "(Vor " + minutes + " Minute...)";
+                } else {
+                    return "(Vor " + minutes + " Minuten...)";
+                }
+            } else if (hours < 24) {
+                if(hours == 1) {
+                    return "(Vor " + hours + " Stunde...)";
+                } else {
+                    return "(Vor " + hours + " Stunden...)";
+                }
+            } else {
+                return "(" + timestamp + ")";
+            }
+        } catch (DateTimeParseException e) {
+            e.printStackTrace();
+            return "Invalid timestamp format.";
+        }
     }
 
     public static boolean isValidBlock(String input) { //example input: "Material.STONE"

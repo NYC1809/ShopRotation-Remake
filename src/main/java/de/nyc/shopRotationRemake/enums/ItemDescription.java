@@ -26,6 +26,8 @@ public enum ItemDescription {
 
     ITEM_CHANGE_TITLE("&eKlicke hier um den &6Titel &ezu ändern!"),
 
+    ITEM_PLAYER_HISTORY_NAME("&eZeigt eine &6Liste &eder letzten &635 &eabgegebenen &6Items &ean:"),
+
     ITEM_CHANGE_CHEST_TYPE("&eKlicke hier um den &6Block &eder srChest zu ändern!"),
     ITEM_CHANGE_CHEST_TYPE_LORE_1(" "),
     ITEM_CHANGE_CHEST_TYPE_LORE_2("&7Aktueller BlockType: \"&6Material.%type&7\""),

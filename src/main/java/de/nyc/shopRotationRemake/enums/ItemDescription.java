@@ -76,6 +76,13 @@ public enum ItemDescription {
 
     ITEM_COMING_SOON("&c&lCOMING SOON"),
 
+    ITEM_SET_MINIMUM_REQUIREMENT_OF_PARTICIPATION("&eKlicke hier um den &6minimalen Wert &eder Items einzustellen!"),
+    ITEM_SET_MINIMUM_REQUIREMENT_OF_PARTICIPATION_LORE_1(" "),
+    ITEM_SET_MINIMUM_REQUIREMENT_OF_PARTICIPATION_LORE_2("&7Diese Einstellung definiert den die minimale Anzahl an abgegebenen Items, welche"),
+    ITEM_SET_MINIMUM_REQUIREMENT_OF_PARTICIPATION_LORE_3("&7pro Item-Ziel abgegeben werden muss um die dazugehörige Belohnung zu bekommen."),
+    ITEM_SET_MINIMUM_REQUIREMENT_OF_PARTICIPATION_LORE_4(" "),
+    ITEM_SET_MINIMUM_REQUIREMENT_OF_PARTICIPATION_LORE_5("&eDieser Wert wird in &6\"%\" &eangegeben."),
+
     ITEM_MODIFY_ITEMS("&eKlicke hier um die Items dieser &6Chest &eanzupassen:"),
     ITEM_MODIFY_ITEMS_LORE_1(" "),
     ITEM_MODIFY_ITEMS_LORE_2("&7Hier kannst du die &bItems &7und die &bBelohnungen &7anpassen!"),

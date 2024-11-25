@@ -5,7 +5,6 @@ import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.enums.SrAction;
 import de.nyc.shopRotationRemake.objects.CurrentItem;
 import de.nyc.shopRotationRemake.objects.Quadruple;
-import de.nyc.shopRotationRemake.objects.Quintuple;
 import de.nyc.shopRotationRemake.objects.Sextuple;
 import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.Bukkit;
@@ -51,8 +50,9 @@ public class SrDatabase {
                     "type TEXT NOT NULL, " +
                     "hologram TEXT NOT NULL, " +
                     "hologramstyle TEXT NOT NULL, " +
-                    "itemlimit INTEGER NOT NULL," +
-                    "itemlimitpercentage TEXT NOT NULL)");
+                    "itemlimit INTEGER NOT NULL, " +
+                    "itemlimitpercentage TEXT NOT NULL, " +
+                    "minimumamount INTEGER NOT NULL)");
         }
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS currentitem (" +
@@ -96,8 +96,8 @@ public class SrDatabase {
         }
     }
 
-    public void createChest(UUID uuid, String name, Location location, Boolean enabled, Material type, Boolean hologram, Player player, HologramStyle style, Integer itemLimit, boolean percentage) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO chest (uuid, name, location, enabled, type, hologram, hologramstyle, itemlimit, itemlimitpercentage) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+    public void createChest(UUID uuid, String name, Location location, Boolean enabled, Material type, Boolean hologram, Player player, HologramStyle style, Integer itemLimit, boolean percentage, Integer minimumAmount) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO chest (uuid, name, location, enabled, type, hologram, hologramstyle, itemlimit, itemlimitpercentage, minimumamount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setString(1, uuid.toString());
             preparedStatement.setString(2, name);
             preparedStatement.setString(3, location.toString());
@@ -107,6 +107,7 @@ public class SrDatabase {
             preparedStatement.setString(7, style.getName());
             preparedStatement.setInt(8, itemLimit);
             preparedStatement.setString(9, String.valueOf(percentage));
+            preparedStatement.setInt(10,  minimumAmount);
             preparedStatement.executeUpdate();
         }
         this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_CREATED, uuid);
@@ -905,6 +906,30 @@ public class SrDatabase {
                 map.put(id, new Sextuple(String.valueOf(uuid), itemUuid, itemString, timestamp, playerName, String.valueOf(amount)));
             }
             return map;
+        }
+    }
+
+    public Integer getMinimumAmountOfChest(UUID uuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT minimumamount FROM chest WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getInt("minimumamount");
+            }
+        }
+        return 0;
+    }
+
+    public void setMinimumAmountOfChest(UUID uuid, Integer minimumAmount, Player player) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE chest SET minimumamount = ? WHERE uuid = ?")) {
+            preparedStatement.setInt(1, minimumAmount);
+            preparedStatement.setString(2, uuid.toString());
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if(rowsAffected > 0) {
+                this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_ITEM_MINIMUM_REQUIREMENT_CHANGED, uuid);
+            }
         }
     }
 }

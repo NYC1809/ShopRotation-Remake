@@ -8,7 +8,6 @@ import de.nyc.shopRotationRemake.enums.ItemDescription;
 import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.objects.CurrentItem;
 import de.nyc.shopRotationRemake.objects.Quadruple;
-import de.nyc.shopRotationRemake.objects.Quintuple;
 import de.nyc.shopRotationRemake.objects.Sextuple;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
@@ -294,9 +293,22 @@ public class InventoryManager {
             }
         });
 
-        for(int i=28; i<32; i++) {
+        for(int i=28; i<31; i++) {
             gui.setItem(i, ItemBuilder.of(Material.GRAY_DYE).name(ItemDescription.ITEM_COMING_SOON.getText()).asItem());
         }
+
+        //Set Item: Set minimum number to participate to get rewards
+        gui.setItem(31, ItemBuilder.of(Material.DIAMOND)
+                .name(ItemDescription.ITEM_SET_MINIMUM_REQUIREMENT_OF_PARTICIPATION.getText())
+                .description(ItemDescription.ITEM_SET_MINIMUM_REQUIREMENT_OF_PARTICIPATION_LORE_1.getText(), ItemDescription.ITEM_SET_MINIMUM_REQUIREMENT_OF_PARTICIPATION_LORE_2.getText(), ItemDescription.ITEM_SET_MINIMUM_REQUIREMENT_OF_PARTICIPATION_LORE_3.getText(), ItemDescription.ITEM_SET_MINIMUM_REQUIREMENT_OF_PARTICIPATION_LORE_4.getText(), ItemDescription.ITEM_SET_MINIMUM_REQUIREMENT_OF_PARTICIPATION_LORE_5.getText()).asItem(), event -> {
+            try {
+                int currentMinimumRequirement = main.getSrDatabase().getMinimumAmountOfChest(uuid);
+                changeMinimumRequirement(player, uuid, Utils.setColorInMessage("&eGebe hier den neuen &6Wert &eein..."), currentMinimumRequirement);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         gui.setItem(32, ItemBuilder.of(Material.WRITABLE_BOOK).name(ItemDescription.ITEM_MODIFY_ITEMS.getText()).description(ItemDescription.ITEM_MODIFY_ITEMS_LORE_1.getText(), ItemDescription.ITEM_MODIFY_ITEMS_LORE_2.getText()).asItem(), event -> {
             try {
                 createItemsInventory(player, uuid);
@@ -971,6 +983,54 @@ public class InventoryManager {
                 .open(player);
     }
 
+    private static void changeMinimumRequirement(Player player, UUID uuid, String title, Integer minimumRequirement) throws SQLException {
+
+        String minimumRequirementString = minimumRequirement.toString() + " %";
+        new AnvilGUI.Builder()
+                .onClose(stateSnapshot -> {
+                    try {
+                        createAdminSettingsInventory(player, uuid);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .onClick((slot, stateSnapshot) -> {
+                    if(slot != AnvilGUI.Slot.OUTPUT) {
+                        return Collections.emptyList();
+                    }
+                    String input = stateSnapshot.getText();
+
+                    String trimmedInput = input.trim();
+                    String[] inputWords = trimmedInput.split("\\s+");
+
+                    if(!Utils.isNumeric(inputWords[0]) || !(Integer.parseInt(inputWords[0]) > 0)) {
+                        player.sendMessage(Messages.IS_NOT_NUMERIC.getMessage().replace("%input", inputWords[0]));
+                        return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(minimumRequirementString));
+                    }
+                    if(Integer.parseInt(inputWords[0]) > 100) {
+                        player.sendMessage(Messages.CHEST_CHANGED_MINIMUM_REQUIREMENT_CANNOT_BE_OVER_100.getMessage().replace("%input", inputWords[0]));
+                        return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText(minimumRequirementString));
+                    }
+                    if(inputWords[0].equals(minimumRequirement.toString())) {
+                        player.sendMessage(Messages.CHEST_CHANGED_MINIMUM_REQUIREMENT_CANCEL.getMessage().replace("%number", inputWords[0]));
+                        return Arrays.asList(AnvilGUI.ResponseAction.close());
+                    }
+                    try {
+                        main.getSrDatabase().setMinimumAmountOfChest(uuid, Integer.parseInt(inputWords[0]), player);
+                        Bukkit.getLogger().info("[23:26:29] minimumRequirement for \"" + uuid + "\" set successfully to " + inputWords[0] + " %!");
+                        player.sendMessage(Messages.CHEST_CHANGED_MINIMUM_REQUIREMENT_SUCCESS.getMessage().replace("%number", inputWords[0]));
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return Arrays.asList(AnvilGUI.ResponseAction.close());
+                })
+                .preventClose()
+                .text(minimumRequirementString)
+                .title(title)
+                .plugin(main)
+                .open(player);
+    }
+
     private static ItemStack getItemStackFromItemUuid(String itemUuid) throws SQLException {
         String itemString = main.getSrDatabase().getItemStringByItemUuid(UUID.fromString(itemUuid));
         Material itemMaterial = ItemUtils.getItemMaterial(itemString);
@@ -1440,6 +1500,7 @@ public class InventoryManager {
         List<Integer> rowIDsRewards = main.getSrDatabase().getIdsFromItemUuidRewards(itemUuid);
         if(rowIDsRewards.isEmpty()) {
             lore.add("      &d▻ &7Keine");
+
         } else {
             for(Integer rowID : rowIDsRewards) {
                 int amount = main.getSrDatabase().getAmountOfRewardByID(rowID);
@@ -1452,7 +1513,13 @@ public class InventoryManager {
                     lore.add("      &d▻&7 " + amount + "x &6" + rewardName + "&b (&9" + rewardMaterial + "&b)");
                 }
             }
+            int minimumRequiredPercentage = main.getSrDatabase().getMinimumAmountOfChest(uuid);
+            int minimumRequiredItems = Utils.calculatePercentageAmount(requiredAmount, minimumRequiredPercentage);
+
+            lore.add(" ");
+            lore.add("&7Um die Belohnung zu erhalten musst du &nmindestens&r &7\"&6" + minimumRequiredItems + " Item(s) &7(&e" + minimumRequiredPercentage + "%&7)\" abgeben!");
         }
+
         itemMeta.setLore(Utils.setColorInList(lore));
         item.setItemMeta(itemMeta);
         return item;

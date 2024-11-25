@@ -18,7 +18,6 @@ public class HologramUtils {
     private static final Main main = Main.getInstance();
 
     public static void createHologram() {
-
         try {
             main.getSrDatabase().processAllChestUuids();
             if(main.getHologramMap() == null || main.getUuidList() == null) {

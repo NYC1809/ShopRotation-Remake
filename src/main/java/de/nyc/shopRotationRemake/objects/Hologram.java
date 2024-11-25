@@ -52,7 +52,7 @@ public class Hologram {
 
         checkLivingTask = new BukkitRunnable() {
             public void run() {
-                if (!isShown) return;
+                if(!isShown) return;
                 switch (hologramStyle) {
                     case HOLOGRAM_ITEM -> {
                         if (displayItem.isDead() ||hologramIItemArmorStand.isDead()) {
@@ -93,9 +93,6 @@ public class Hologram {
         if (isDestroyed) {
             throw new HologramAlreadyDestroyedException();
         }
-
-        //TODO: Set the correct style of the hologram
-
         switch (hologramStyle.getName()) {
             case "hologram_item" -> {
                 //Item ArmorStand
@@ -183,7 +180,6 @@ public class Hologram {
                 displayItem.setPickupDelay(Integer.MAX_VALUE);
                 displayItem.setTicksLived(Integer.MAX_VALUE);
                 hologramINPItemArmorStand.addPassenger(displayItem);
-
             }
             case "hologram_name_progress" -> {
                 //Name ArmorStand

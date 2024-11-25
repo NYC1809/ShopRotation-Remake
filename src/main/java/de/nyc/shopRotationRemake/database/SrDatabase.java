@@ -114,7 +114,7 @@ public class SrDatabase {
     }
 
     public List<String> processAllChestUuids() throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT uuid, name FROM chest GROUP BY name")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT uuid, name FROM chest ORDER BY name")) {
             ResultSet resultSet = preparedStatement.executeQuery();
             if(isTableEmpty("chest")) {
                 Bukkit.getLogger().severe("The SQL-LITE table \"chest\" has no entries!");
@@ -124,9 +124,6 @@ public class SrDatabase {
             main.getUuidList().clear();
             while (resultSet.next()) {
                 String uuid = resultSet.getString("uuid");
-                if(main.getUuidList().contains(uuid)) {
-                    continue;
-                }
                 main.getUuidList().add(uuid);
             }
             return main.getUuidList();

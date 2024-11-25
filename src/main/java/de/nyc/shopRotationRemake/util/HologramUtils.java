@@ -4,6 +4,7 @@ import de.nyc.shopRotationRemake.Main;
 import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.objects.CurrentItem;
 import de.nyc.shopRotationRemake.objects.Hologram;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -20,11 +21,11 @@ public class HologramUtils {
     public static void createHologram() {
         try {
             main.getSrDatabase().processAllChestUuids();
-            if(main.getHologramMap() == null || main.getUuidList() == null) {
+            if(main.getUuidList() == null || main.getUuidList().isEmpty()) {
                 return;
             }
-            deleteHolograms();
             for(String uuid : main.getUuidList()) {
+                deleteSpecificHologram(UUID.fromString(uuid));
                 Location location = main.getSrDatabase().getLocationOfChest(uuid);
                 HologramStyle hologramStyle = HologramStyle.fromKey(main.getSrDatabase().getHologramStyle(UUID.fromString(uuid)));
                 boolean holgramEnabled = main.getSrDatabase().getHologramEnabled(UUID.fromString(uuid));
@@ -35,13 +36,15 @@ public class HologramUtils {
                 boolean currentItemExists = CurrentItem.calculateCurrentItem(UUID.fromString(uuid));
                 String name = main.getSrDatabase().getNameOfChest(UUID.fromString(uuid));
 
+                Bukkit.getLogger().warning("[88:43:93] Hologram - uuids detected: " + uuid + " --- " + name);
+
                 if(!currentItemExists) {
                     ItemStack item = new ItemStack(Material.BARRIER);
                     //Create barrier hologram
                     Hologram hologram = new Hologram(location, name, item, main, hologramStyle, Utils.setColorInMessage("&c&l✖"));
                     hologram.create();
                     main.getHologramMap().put(UUID.fromString(uuid), hologram);
-                    return;
+                    continue;
                 }
 
                 String itemString = CurrentItem.getItemString(UUID.fromString(uuid));

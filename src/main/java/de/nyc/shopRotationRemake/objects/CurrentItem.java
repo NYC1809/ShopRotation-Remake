@@ -234,9 +234,10 @@ public class CurrentItem {
         Bukkit.getLogger().severe("[12:96:26] Added new addGivenAmount for player: " + newAmount);
         Bukkit.getLogger().severe("[28:59:19] Removed " + amountOfRemovedItems + " items from " + player.getName());
 
+        HologramUtils.updateSpecificHologram(uuid);
+
         for(Player viewingPlayers : gui.getViewersList()) {
             viewingPlayers.updateInventory();
-            HologramUtils.updateSpecificHologram(uuid);
             Bukkit.getLogger().info("[28:63:97] Updated Inventory for " + viewingPlayers.getName());
         }
     }

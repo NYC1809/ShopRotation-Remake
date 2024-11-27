@@ -7,6 +7,8 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -261,4 +263,32 @@ public class ItemUtils {
             return Utils.setColorInMessage("&c✖ &a" + percentage + "&6% " + progressBar);
         }
     }
+
+    public static Integer giveItemsToPlayer(Player player, ItemStack itemStack, Integer amount) {
+        Inventory inventory = player.getInventory();
+        int maxStackSize = itemStack.getMaxStackSize();
+        int remaining = amount;
+
+        while (remaining > 0) {
+            int currentStackAmount = Math.min(maxStackSize, remaining);
+
+            ItemStack stackToGive = itemStack.clone();
+            stackToGive.setAmount(currentStackAmount);
+
+            HashMap<Integer, ItemStack> leftovers = inventory.addItem(stackToGive);
+
+            if (!leftovers.isEmpty()) {
+                int leftoverAmount = leftovers.values().stream()
+                        .mapToInt(ItemStack::getAmount)
+                        .sum();
+                remaining -= (currentStackAmount - leftoverAmount);
+                break;
+            } else {
+                remaining -= currentStackAmount;
+            }
+        }
+
+        return remaining;
+    }
+
 }

@@ -110,6 +110,11 @@ public enum Messages {
     PLAYER_ITEM_LIMIT_RESET_ZERO("&cAktuell haben noch keine Spieler ein Item zu diesem Item-Ziel beigetragen!"),
     PLAYER_ITEM_LIMIT_RESET_SUCCESS("&7Du hast &aerfolgreich &7das &6Item-Limit &7für &6%number &7Spieler &azurückgesetzt!"),
 
+    //srChest processGivingRewards Messages
+    PLAYER_DID_NOT_GIVE_ENOUGH_ITEMS("&cDu hattest leider nicht genug Items abgegeben! &7(&e%givenamount &6/ &e%requiredamount&7)"),
+    PLAYER_REWARD_RECIEVED_1(Utils.getPrefix() + "&7Du hast %amountx &6%itemname &7erhalten!"),
+    PLAYER_REWARD_RECIEVED_2(Utils.getPrefix() + "&7Du hast %amountx &6%itemname &b(&9%itemmaterial&b) &7erhalten!"),
+
     //srChest get messages
     GET_UUID_INFO_LINE_1(Utils.getPrefix() + "&2Anklicken zum kopieren:"),
 

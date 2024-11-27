@@ -5,6 +5,7 @@ import de.nyc.shopRotationRemake.enums.HologramStyle;
 import de.nyc.shopRotationRemake.enums.SrAction;
 import de.nyc.shopRotationRemake.objects.CurrentItem;
 import de.nyc.shopRotationRemake.objects.Quadruple;
+import de.nyc.shopRotationRemake.objects.Quintuple;
 import de.nyc.shopRotationRemake.objects.Sextuple;
 import de.nyc.shopRotationRemake.util.Utils;
 import org.bukkit.Bukkit;
@@ -87,7 +88,15 @@ public class SrDatabase {
                     "player TEXT NOT NULL, " +
                     "givenamount INTEGER)");
         }
-         //TODO: New Table: pending rewards for player who have been offline
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("CREATE TABLE IF NOT EXISTS pendingrewards (" +
+                    "playeruuid TEXT PRIMARY KEY, " +
+                    "playername TEXT NOT NULL, " +
+                    "itemuuid TEXT NOT NULL, " +
+                    "item TEXT NOT NULL, " +
+                    "amount INTEGER NOT NULL, " +
+                    "minimumamount INTEGER NOT NULL)");
+        }
     }
 
     public void closeConnection() throws SQLException {
@@ -814,11 +823,11 @@ public class SrDatabase {
         }
     }
 
-    public Integer getGivenAmountFromPlayer(UUID uuid, UUID itemUuid, Player player) throws SQLException {
+    public Integer getGivenAmountFromPlayerName(UUID uuid, UUID itemUuid, String playerName) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT givenamount FROM player WHERE uuid = ? AND itemuuid = ? AND player = ?")) {
             preparedStatement.setString(1, uuid.toString());
             preparedStatement.setString(2, itemUuid.toString());
-            preparedStatement.setString(3, player.getName());
+            preparedStatement.setString(3, playerName);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if(resultSet.next()) {
@@ -927,6 +936,54 @@ public class SrDatabase {
             if(rowsAffected > 0) {
                 this.main.getSrDatabase().saveAction(Utils.createTimestamp(), player, SrAction.CHEST_ITEM_MINIMUM_REQUIREMENT_CHANGED, uuid);
             }
+        }
+    }
+
+    public void addPendingRewardEntry(Player player, UUID itemUuid, String itemString, Integer amount, Integer minimumAmount) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT OR REPLACE INTO pendingrewards (playeruuid, playername, itemuuid, item, amount, minimumamount) VALUES (?, ?, ?, ?, ?, ?)")) {
+            preparedStatement.setString(1, String.valueOf(player.getUniqueId()));
+            preparedStatement.setString(2, player.getName());
+            preparedStatement.setString(3, itemUuid.toString());
+            preparedStatement.setString(4, itemString);
+            preparedStatement.setInt(5, amount);
+            preparedStatement.setInt(6, minimumAmount);
+            preparedStatement.executeUpdate();
+        }
+    }
+    public Map<UUID, Quintuple> getAllPendingRewardEntries() throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM pendingrewards")) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            Map<UUID, Quintuple> entryMap = new HashMap<>();
+
+            while (resultSet.next()) {
+                String playeruuid = resultSet.getString("playeruuid");
+                String playerName = resultSet.getString("playername");
+                String itemuuid = resultSet.getString("itemuuid");
+                String itemString = resultSet.getString("item");
+                Integer amount = resultSet.getInt("amount");
+                Integer minimumamount = resultSet.getInt("minimumamount");
+
+                Quintuple values = new Quintuple(playerName, itemuuid, itemString, String.valueOf(amount), String.valueOf(minimumamount));
+
+                entryMap.put(UUID.fromString(playeruuid), values);
+            }
+            return entryMap;
+        }
+    }
+
+    public List<String> getAllPlayersFromSpecificItem(UUID itemUuid) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT player FROM player WHERE itemuuid = ?")) {
+            preparedStatement.setString(1, itemUuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<String> playerList = new ArrayList<>();
+
+            while(resultSet.next()) {
+                String playerName = resultSet.getString("player");
+                playerList.add(playerName);
+            }
+            return playerList;
         }
     }
 }

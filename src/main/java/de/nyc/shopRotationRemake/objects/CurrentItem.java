@@ -6,6 +6,7 @@ import de.nyc.shopRotationRemake.enums.Messages;
 import de.nyc.shopRotationRemake.util.HologramUtils;
 import de.nyc.shopRotationRemake.util.ItemUtils;
 import de.nyc.shopRotationRemake.util.Utils;
+import jdk.jshell.execution.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -175,7 +176,7 @@ public class CurrentItem {
 
         ItemStack requiredItemStack = ItemUtils.createItemStack(targetItemMaterial, targetItemName, targetItemEnchantments, targetItemDescription);
 
-        int alreadyGivenAmount = main.getSrDatabase().getGivenAmountFromPlayer(uuid, itemUuid, player);
+        int alreadyGivenAmount = main.getSrDatabase().getGivenAmountFromPlayerName(uuid, itemUuid, player.getName());
 
         if(alreadyGivenAmount >= maxPlayerItemLimit) {
             player.sendMessage(Messages.PLAYER_GIVE_ITEM_MAX_VALUE_REACHED.getMessage());
@@ -209,6 +210,7 @@ public class CurrentItem {
             return;
         }
         int amountOfRemovedItems;
+        boolean isfinished = false;
         if(amountOfNeededItems > remainingItemsPlayerCanGive) {
             Utils.removeItemsFromInventory(player, targetItemString, remainingItemsPlayerCanGive);
             player.sendMessage(Messages.PLAYER_GIVE_ITEM_SUCCES.getMessage().replace("%number", String.valueOf(remainingItemsPlayerCanGive)));
@@ -224,6 +226,7 @@ public class CurrentItem {
             main.getSrDatabase().setholdingAmountByItemUuid(itemUuid, holdingAmount + amountOfNeededItems);
 
             amountOfRemovedItems = amountOfNeededItems;
+            isfinished = true;
         }
 
         int newAmount = alreadyGivenAmount + amountOfRemovedItems;
@@ -234,6 +237,10 @@ public class CurrentItem {
         Bukkit.getLogger().severe("[12:96:26] Added new addGivenAmount for player: " + newAmount);
         Bukkit.getLogger().severe("[28:59:19] Removed " + amountOfRemovedItems + " items from " + player.getName());
 
+        if(isfinished) {
+            processGivingRewards(uuid, itemUuid);
+        }
+
         HologramUtils.updateSpecificHologram(uuid);
 
         for(Player viewingPlayers : gui.getViewersList()) {
@@ -241,4 +248,84 @@ public class CurrentItem {
             Bukkit.getLogger().info("[28:63:97] Updated Inventory for " + viewingPlayers.getName());
         }
     }
+
+    private static void itemGoalFinished(UUID uuid, Player player) {
+
+    }
+
+    private static void processGivingRewards(UUID uuid, UUID itemUuid) throws SQLException {
+        List<Integer> rowIDsRewards = main.getSrDatabase().getIdsFromItemUuidRewards(itemUuid);
+        if(rowIDsRewards == null || rowIDsRewards.isEmpty()) {
+            return;
+        }
+
+        int requiredAmount = main.getSrDatabase().getrequiredItemAmountByItemUuid(itemUuid);
+
+        int minimumRequiredPercentage = main.getSrDatabase().getMinimumAmountOfChest(uuid);
+        int minimumRequiredAmount = Utils.calculatePercentageAmount(requiredAmount, minimumRequiredPercentage);
+
+        List<String> listOfAllPlayers = main.getSrDatabase().getAllPlayersFromSpecificItem(itemUuid);
+        if(listOfAllPlayers == null || listOfAllPlayers.isEmpty()) {
+            return;
+        }
+
+        for(String playerName : listOfAllPlayers) {
+            int givenAmount = main.getSrDatabase().getGivenAmountFromPlayerName(uuid, itemUuid, playerName);
+
+            if(givenAmount < minimumRequiredAmount) {
+                //Player did not give enough items for this item-goal:
+                Player player = Bukkit.getPlayer(playerName);
+                if(player != null && player.isOnline()) {
+                    player.sendMessage(Messages.PLAYER_DID_NOT_GIVE_ENOUGH_ITEMS.getMessage().replace("%givenamount", String.valueOf(givenAmount)).replace("%requiredamount", String.valueOf(minimumRequiredAmount)));
+                }
+                continue;
+            }
+            //Give rewards to online players else add to db if not online or not enough inventorySpace
+            Player player = Bukkit.getPlayer(playerName);
+            if(player == null) {
+                Bukkit.getLogger().severe("[23:74:66] Player \"" + playerName + "\" is null!");
+                continue;
+            }
+
+            //Loop to get each reward of the item-goal:
+            for(Integer rowID : rowIDsRewards) {
+                int rewardAmount = main.getSrDatabase().getAmountOfRewardByID(rowID);
+                String rewardItemString = main.getSrDatabase().getRewardsItemStringByRowID(rowID);
+
+                Material itemMaterial = ItemUtils.getItemMaterial(rewardItemString);
+                String itemName = ItemUtils.getItemName(rewardItemString);
+                Map<Enchantment, Integer> itemEnchantments = ItemUtils.getItemEnchantments(rewardItemString);
+                List<String> itemDescription = ItemUtils.getItemDescription(rewardItemString);
+
+                ItemStack itemStack = ItemUtils.createItemStack(itemMaterial, itemName, itemEnchantments, itemDescription);
+
+                if(player.isOnline()) {
+                    int remainingAmount = ItemUtils.giveItemsToPlayer(player, itemStack, rewardAmount);
+                    if (remainingAmount > 0) {
+                        //Player has not enough inventorySpace -> Adding remainingItems to DB:
+                        main.getSrDatabase().addPendingRewardEntry(player, itemUuid, rewardItemString, remainingAmount, minimumRequiredAmount);
+                        Bukkit.getLogger().info("[68:37:98] Player had not enough invenotory space -> added \"" + remainingAmount + "\" for item \"" + itemUuid + "\"!");
+                    } else {
+                        //Player had enough inventorySpace:
+                        if (itemName.equals(String.valueOf(itemMaterial))) {
+                            player.sendMessage(Messages.PLAYER_REWARD_RECIEVED_1.getMessage()
+                                    .replace("%amount", String.valueOf(rewardAmount))
+                                    .replace("%itemname", itemName));
+                        } else {
+                            player.sendMessage(Messages.PLAYER_REWARD_RECIEVED_1.getMessage()
+                                    .replace("%amount", String.valueOf(rewardAmount))
+                                    .replace("%itemname", itemName)
+                                    .replace("itemmaterial", String.valueOf(itemMaterial)));
+                        }
+                    }
+                } else {
+                    //Player is not online -> Adding every reward to DB!
+                    main.getSrDatabase().addPendingRewardEntry(player, itemUuid, rewardItemString, rewardAmount, minimumRequiredAmount);
+                    Bukkit.getLogger().info("[00:17:30] Player is not online! -> added \"" + rewardAmount + "\" for item \"" + itemUuid + "\" to pendingrewardsDB!");
+                }
+            }
+
+        }
+    }
+
 }

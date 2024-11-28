@@ -24,7 +24,7 @@ Please create a new [Issue](https://github.com/NYC_1809/ShopRotation-Remake/issu
 ## Installation
 
 - Save the provided .jar file to your server's `/plugins` directory. Alternatively, you can compile the .jar file yourself by cloning and compiling this repository.
-- Restart (⚠️ Do not use `/reload`) the server to make this plugin fully functionally.
+- Restart (⚠️ Do not use `/reload` click [here](https://gist.github.com/A248/0085b1dff1bd3f93876e435d0d10b5d4)) the server to make this plugin fully functionally.
 - This will create a new `/plugins/ShopRotation-Remake` folder, which will contain the SQLITE database.
 
 ## Important Notes

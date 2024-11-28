@@ -53,7 +53,8 @@ This plugin operates with the `/srChest` command.
 
 
 >[!IMPORTANT]
-> ⚠️ This project's code may not look the best! As I am currently trying to improve coding it is the best to just practice it over and over again.
->This repository is to personally improve and learn coding.
+> ⚠️ This project's code may not look the best, as I am currently trying to improve coding it is the best to just practice it over and over again.
 >
->Thank you very much for understanding and patience reading this note! ❤️
+>This repository is to personally improve style of code and learn (minecraft-)coding.
+>
+>**Thank you very much for understanding and patience reading this note! ❤️**

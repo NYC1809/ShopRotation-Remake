@@ -6,9 +6,6 @@
 >
 >This plugin currently only supports the `GERMAN 🇩🇪` language ingame!
 >
->I am not very good at coding therefore the codestyle may not look the best.
->Even though it is a fully functional and operating spigot plugin!
->
 >If you encounter any bugs, feel free to open a new [Issue](https://github.com/NYC_1809/ShopRotation-Remake/issues) in this repository.
 
 ---
@@ -54,6 +51,7 @@ This plugin operates with the `/srChest` command.
 
 >[!IMPORTANT]
 > ⚠️ This project's code may not look the best, as I am currently trying to improve coding it is the best to just practice it over and over again.
+>Even though it is a fully functional and operating minecraft spigot plugin!
 >
 >This repository is to personally improve style of code and learn (minecraft-)coding.
 >

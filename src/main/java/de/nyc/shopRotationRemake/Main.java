@@ -4,9 +4,7 @@ import de.leonheuer.mcguiapi.gui.GUIFactory;
 import de.nyc.shopRotationRemake.commands.ChestCommand;
 import de.nyc.shopRotationRemake.database.SrDatabase;
 import de.nyc.shopRotationRemake.enums.HologramStyle;
-import de.nyc.shopRotationRemake.listener.BlockBreakListener;
-import de.nyc.shopRotationRemake.listener.ChatListener;
-import de.nyc.shopRotationRemake.listener.PlayerInteractListener;
+import de.nyc.shopRotationRemake.listener.*;
 import de.nyc.shopRotationRemake.objects.CurrentItem;
 import de.nyc.shopRotationRemake.objects.Hologram;
 import de.nyc.shopRotationRemake.util.HologramUtils;
@@ -31,7 +29,6 @@ public final class Main extends JavaPlugin {
 
     private final Map<UUID, Hologram> hologramMap = new HashMap<>();
     private GUIFactory guiFactory;
-    private BukkitTask checkForCurrentItem;
 
     private static Main instance;
 
@@ -59,8 +56,10 @@ public final class Main extends JavaPlugin {
         getCommand("srChest").setTabCompleter(new ChestCommand(this));
 
         Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
-        Bukkit.getPluginManager().registerEvents(new BlockBreakListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerInteractListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new BlockBreakListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerInteractListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ConnectionListener(), this);
+        Bukkit.getPluginManager().registerEvents(new DropListener(), this);
 
         getLogger().info("loaded in " + Duration.between(start, LocalDateTime.now()).toMillis() + "ms");
     }

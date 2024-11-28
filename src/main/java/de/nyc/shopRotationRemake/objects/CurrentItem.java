@@ -9,6 +9,7 @@ import de.nyc.shopRotationRemake.util.Utils;
 import jdk.jshell.execution.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -249,10 +250,6 @@ public class CurrentItem {
         }
     }
 
-    private static void itemGoalFinished(UUID uuid, Player player) {
-
-    }
-
     private static void processGivingRewards(UUID uuid, UUID itemUuid) throws SQLException {
         List<Integer> rowIDsRewards = main.getSrDatabase().getIdsFromItemUuidRewards(itemUuid);
         if(rowIDsRewards == null || rowIDsRewards.isEmpty()) {
@@ -303,6 +300,7 @@ public class CurrentItem {
                     int remainingAmount = ItemUtils.giveItemsToPlayer(player, itemStack, rewardAmount);
                     if (remainingAmount > 0) {
                         //Player has not enough inventorySpace -> Adding remainingItems to DB:
+                        player.sendMessage(Messages.PLAYER_HAS_NOT_ENOUGH_INVENTORY_SPACE.getMessage());
                         main.getSrDatabase().addPendingRewardEntry(player, itemUuid, rewardItemString, remainingAmount, minimumRequiredAmount);
                         Bukkit.getLogger().info("[68:37:98] Player had not enough invenotory space -> added \"" + remainingAmount + "\" for item \"" + itemUuid + "\"!");
                     } else {
@@ -312,11 +310,14 @@ public class CurrentItem {
                                     .replace("%amount", String.valueOf(rewardAmount))
                                     .replace("%itemname", itemName));
                         } else {
-                            player.sendMessage(Messages.PLAYER_REWARD_RECIEVED_1.getMessage()
+                            player.sendMessage(Messages.PLAYER_REWARD_RECIEVED_2.getMessage()
                                     .replace("%amount", String.valueOf(rewardAmount))
                                     .replace("%itemname", itemName)
-                                    .replace("itemmaterial", String.valueOf(itemMaterial)));
+                                    .replace("%itemmaterial", String.valueOf(itemMaterial)));
                         }
+                    }
+                    if(remainingAmount != rewardAmount) {
+                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
                     }
                 } else {
                     //Player is not online -> Adding every reward to DB!
@@ -324,8 +325,6 @@ public class CurrentItem {
                     Bukkit.getLogger().info("[00:17:30] Player is not online! -> added \"" + rewardAmount + "\" for item \"" + itemUuid + "\" to pendingrewardsDB!");
                 }
             }
-
         }
     }
-
 }

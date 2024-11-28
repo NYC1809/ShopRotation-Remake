@@ -18,11 +18,7 @@ import java.util.UUID;
 
 public class PlayerInteractListener implements Listener {
 
-    private final Main main;
-
-    public PlayerInteractListener(Main main) {
-        this.main = main;
-    }
+    private static final Main main = Main.getInstance();
 
     @EventHandler
     public void onBlockInteract(PlayerInteractEvent event) throws SQLException {
@@ -36,16 +32,16 @@ public class PlayerInteractListener implements Listener {
         }
 
         Location location = Objects.requireNonNull(event.getClickedBlock()).getLocation();
-        if(!this.main.getSrDatabase().locationExistsInDB(location)) {
+        if(!main.getSrDatabase().locationExistsInDB(location)) {
             return;
         }
 
         event.setCancelled(true);
-        UUID uuid = UUID.fromString(this.main.getSrDatabase().getChestByLocation(location));
-        String name = this.main.getSrDatabase().getNameOfChest(uuid);
+        UUID uuid = UUID.fromString(main.getSrDatabase().getChestByLocation(location));
+        String name = main.getSrDatabase().getNameOfChest(uuid);
         Bukkit.getLogger().info("[09:27:11] Player " + player.getName() + " interacted with srChest " + uuid);
 
-        if (!this.main.getSrDatabase().chestIsEnabled(uuid.toString())) {
+        if (!main.getSrDatabase().chestIsEnabled(uuid.toString())) {
             if(!player.isOp()) {
                 player.sendMessage(Messages.CHEST_IS_DISABLED.getMessage());
                 return;

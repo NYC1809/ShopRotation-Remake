@@ -90,7 +90,8 @@ public class SrDatabase {
         }
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS pendingrewards (" +
-                    "playeruuid TEXT PRIMARY KEY, " +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "playeruuid TEXT NOT NULL, " +
                     "playername TEXT NOT NULL, " +
                     "itemuuid TEXT NOT NULL, " +
                     "item TEXT NOT NULL, " +
@@ -940,7 +941,7 @@ public class SrDatabase {
     }
 
     public void addPendingRewardEntry(Player player, UUID itemUuid, String itemString, Integer amount, Integer minimumAmount) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT OR REPLACE INTO pendingrewards (playeruuid, playername, itemuuid, item, amount, minimumamount) VALUES (?, ?, ?, ?, ?, ?)")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO pendingrewards (playeruuid, playername, itemuuid, item, amount, minimumamount) VALUES (?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setString(1, String.valueOf(player.getUniqueId()));
             preparedStatement.setString(2, player.getName());
             preparedStatement.setString(3, itemUuid.toString());
@@ -984,6 +985,16 @@ public class SrDatabase {
                 playerList.add(playerName);
             }
             return playerList;
+        }
+    }
+
+    public void removePendingRewardEntry(UUID playerUuid, UUID itemUuid, String item) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM pendingrewards WHERE playeruuid = ? AND itemuuid = ? AND item = ?")) {
+            preparedStatement.setString(1, playerUuid.toString());
+            preparedStatement.setString(2, itemUuid.toString());
+            preparedStatement.setString(3, item);
+
+            preparedStatement.executeUpdate();
         }
     }
 }

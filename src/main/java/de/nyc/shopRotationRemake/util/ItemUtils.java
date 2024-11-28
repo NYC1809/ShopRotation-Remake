@@ -173,39 +173,22 @@ public class ItemUtils {
     public static ItemStack createItemStack(Material material, String name, Map<Enchantment, Integer> enchantmentMap, List<String> description) {
         ItemStack item = new ItemStack(material);
         ItemMeta itemMeta = item.getItemMeta();
+
         if (itemMeta != null) {
-            if (enchantmentMap == null) {
-                if (description == null) {
-                    itemMeta.setDisplayName(name);
-                    item.setItemMeta(itemMeta);
-                    return item;
-                } else {
-                    itemMeta.setDisplayName(name);
-                    itemMeta.setLore(description);
-                    item.setItemMeta(itemMeta);
-                    return item;
-                }
-            } else if (description == null) {
-                for (Map.Entry<Enchantment, Integer> entry : enchantmentMap.entrySet()) {
-                    Enchantment enchantment = entry.getKey();
-                    Integer level = entry.getValue();
-                    itemMeta.addEnchant(enchantment, level, true);
-                }
+            if (name != null && !name.equals(String.valueOf(material)) && !name.isEmpty()) {
                 itemMeta.setDisplayName(name);
-                item.setItemMeta(itemMeta);
-                return item;
             }
-            for (Map.Entry<Enchantment, Integer> entry : enchantmentMap.entrySet()) {
-                Enchantment enchantment = entry.getKey();
-                Integer level = entry.getValue();
-                itemMeta.addEnchant(enchantment, level, true);
+            if ((description != null) && !(description.isEmpty())) {
+                itemMeta.setLore(description);
             }
-            itemMeta.setLore(description);
-            itemMeta.setDisplayName(name);
+            if ((enchantmentMap != null) && !(enchantmentMap.isEmpty())) {
+                for (Map.Entry<Enchantment, Integer> entry : enchantmentMap.entrySet()) {
+                    itemMeta.addEnchant(entry.getKey(), entry.getValue(), true);
+                }
+            }
             item.setItemMeta(itemMeta);
-            return item;
         }
-        return item;
+        return fixJsonDisplayName(item);
     }
 
     public static boolean compareItemStacks(ItemStack itemStackA, ItemStack itemStackB) {
@@ -240,10 +223,7 @@ public class ItemUtils {
 
         Map<org.bukkit.enchantments.Enchantment, Integer> enchantsA = itemStackA.getEnchantments();
         Map<org.bukkit.enchantments.Enchantment, Integer> enchantsB = itemStackB.getEnchantments();
-        if (!Objects.equals(enchantsA, enchantsB)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(enchantsA, enchantsB);
     }
 
     private static List<String> normalizeLore(ItemMeta meta) {
@@ -291,4 +271,47 @@ public class ItemUtils {
         return remaining;
     }
 
+    //TODO: Bugfixing the displayName of the item
+    //Version 1: ItemStack{ANVIL x 51, UNSPECIFIC_META:{meta-type=UNSPECIFIC, display-name="ANVILLLII"}}
+    //Version 2: ItemStack{ANVIL x 11, UNSPECIFIC_META:{meta-type=UNSPECIFIC, display-name={"text":"","extra":["ANVILLLII"]}}}
+    //
+    //The first one is the correct vanilla minecraft itemMeta style
+
+    public static ItemStack fixJsonDisplayName(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) {
+            return item;
+        }
+
+        ItemMeta meta = item.getItemMeta();
+
+        if (meta != null && meta.hasDisplayName()) {
+            String displayName = meta.getDisplayName();
+
+            if (isJsonDisplayName(displayName)) {
+                String plainName = extractPlainText(displayName);
+                meta.setDisplayName(plainName);
+                item.setItemMeta(meta);
+            }
+        }
+
+        return item;
+    }
+
+    private static boolean isJsonDisplayName(String displayName) {
+        return displayName.startsWith("{") && displayName.contains("\"extra\"");
+    }
+
+    private static String extractPlainText(String json) {
+        try {
+            int start = json.indexOf("[\"") + 2;
+            int end = json.indexOf("\"]", start);
+            if (start >= 0 && end > start) {
+                return json.substring(start, end);
+            }
+        } catch (Exception ignored) {
+            ignored.printStackTrace();
+        }
+
+        return json;
+    }
 }

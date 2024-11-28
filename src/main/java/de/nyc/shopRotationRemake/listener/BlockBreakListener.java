@@ -12,11 +12,7 @@ import java.sql.SQLException;
 
 public class BlockBreakListener implements Listener {
 
-    private final Main main;
-
-    public BlockBreakListener(Main main) {
-        this.main = main;
-    }
+    private static final Main main = Main.getInstance();
 
     @EventHandler
     public void onblockBreak(BlockBreakEvent event) throws SQLException {
@@ -24,7 +20,7 @@ public class BlockBreakListener implements Listener {
 
         Location location = event.getBlock().getLocation();
 
-        if(this.main.getSrDatabase().locationExistsInDB(location)) {
+        if(main.getSrDatabase().locationExistsInDB(location)) {
             event.setCancelled(true);
             player.sendMessage(Messages.CANNOT_BREAK_BLOCK.getMessage());
         }

@@ -49,7 +49,7 @@ This plugin operates with the `/srChest` command.
 
 ## About ShopRotation-Remake
 
-## Settings
+## Customization
 
 
 

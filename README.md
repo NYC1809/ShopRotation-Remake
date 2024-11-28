@@ -3,9 +3,9 @@
 
 >[!IMPORTANT]
 >:warning: This project is currently not finished (~90%)!
-
+>
 >This plugin currently only supports the `GERMAN 🇩🇪` language ingame!
-
+>
 >I am not very good at coding therefore the codestyle may not look the best.
 >Even though it is a fully functional and operating spigot plugin!
 >

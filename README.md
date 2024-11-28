@@ -17,6 +17,8 @@ A minecraft plugin to create Chests where the server staff can create public com
 ## What is the ShopRotation Plugin?
 
 "ShopRotation-Remake" is a minecraft spigot plugin to create community item goals for every member of the server.
+Please create a new [Issue](https://github.com/NYC_1809/ShopRotation-Remake/issues) if you want to request new features or functions!
+I'd be very happy about any feedback regarding this repository!
 
 ## Installation
 

@@ -291,8 +291,6 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     }
                 }
                 break;
-            case "debug":
-                break;
             default:
                 player.sendMessage(Messages.MESSAGE_UNKNOWN.getMessage());
                 break;

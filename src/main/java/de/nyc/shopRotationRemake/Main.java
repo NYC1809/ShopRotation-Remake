@@ -59,7 +59,6 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BlockBreakListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerInteractListener(), this);
         Bukkit.getPluginManager().registerEvents(new ConnectionListener(), this);
-        Bukkit.getPluginManager().registerEvents(new DropListener(), this);
 
         getLogger().info("loaded in " + Duration.between(start, LocalDateTime.now()).toMillis() + "ms");
     }

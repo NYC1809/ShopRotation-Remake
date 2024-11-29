@@ -6,7 +6,7 @@
 >
 >This plugin currently only supports the `GERMAN 🇩🇪` language ingame!
 >
->If you encounter any bugs, feel free to open a new [Issue](https://github.com/NYC_1809/ShopRotation-Remake/issues) in this repository.
+>If you encounter any bugs, feel free to open a new [Issue](https://github.com/NYC1809/ShopRotation-Remake/issues) in this repository.
 
 ---
 
@@ -17,7 +17,7 @@ A minecraft plugin to create Chests where the server staff can create public com
 ## What is the ShopRotation Plugin?
 
 "ShopRotation-Remake" is a minecraft spigot plugin to create community item goals for every member of the server.
-Please create a new [Issue](https://github.com/NYC_1809/ShopRotation-Remake/issues) if you want to request new features or functions!
+Please create a new [Issue](https://github.com/NYC1809/ShopRotation-Remake/issues) if you want to request new features or functions!
 
 **I would be very happy about any feedback regarding this repository!**
 

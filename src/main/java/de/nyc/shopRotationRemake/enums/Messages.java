@@ -20,6 +20,7 @@ public enum Messages {
     CANNOT_BREAK_BLOCK("&cDu kannst diesen Block nicht zerstören! \nNutze /srChest remove <chest>"),
     IS_NOT_NUMERIC("&c\"%input\" ist keine gültige Zahl!"),
     IS_NOT_ENCHANTMENT("&c\"%input\" ist kein gültiges Enchantment!"),
+    NO_ITEM_IN_MAIN_HAND("&cDu hast aktuell kein Item in der Hand!"),
 
     //srChest messages
     CHEST_REMOVE_SUCCESS("&7Die Chest \"&a%chest&7\" wurde erfolgreich &centfernt&7."),
@@ -111,7 +112,7 @@ public enum Messages {
     PLAYER_ITEM_LIMIT_RESET_SUCCESS("&7Du hast &aerfolgreich &7das &6Item-Limit &7für &6%number &7Spieler &azurückgesetzt!"),
 
     //srChest processGivingRewards Messages
-    PLAYER_DID_NOT_GIVE_ENOUGH_ITEMS("&cDu hattest leider nicht genug Items abgegeben! &7(&e%givenamount &6/ &e%requiredamount&7)"),
+    PLAYER_DID_NOT_GIVE_ENOUGH_ITEMS("&cDu hattest leider nicht genug Items abgegeben! &7(&e%givenamount&6/&e%requiredamount&7)"),
     PLAYER_REWARD_RECIEVED_1(Utils.getPrefix() + "&7Du hast %amountx &6%itemname &7als &dBelohnung &7erhalten!"),
     PLAYER_REWARD_RECIEVED_2(Utils.getPrefix() + "&7Du hast %amountx &6%itemname &b(&9%itemmaterial&b) &7als &dBelohnung &7erhalten!"),
     PLAYER_HAS_NOT_ENOUGH_INVENTORY_SPACE("&cDein Inventar ist Voll! Die fehlenden Belohnungen werden dir beim nächsten Server-Login übergeben!"),

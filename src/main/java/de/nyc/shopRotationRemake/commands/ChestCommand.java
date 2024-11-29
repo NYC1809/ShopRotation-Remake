@@ -15,15 +15,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.StringUtil;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class ChestCommand implements CommandExecutor, TabCompleter {
 
@@ -230,7 +230,66 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(ChatColor.GOLD + "»------------------ " + Utils.getPrefix() + ChatColor.GOLD + "------------------«");
                 break;
             case "addthis":
-                //TODO: Implement "addthis" command
+                // /srChest addthis <uuid> <amountRequired>
+                if(args.length != 3) {
+                    player.sendMessage(Messages.NOT_ENOUGH_ARGUMENTS.getMessage());
+                    return true;
+                }
+                String atUuid = args[1];
+                if(!Utils.isNumeric(args[2])) {
+                    player.sendMessage(Messages.IS_NOT_NUMERIC.getMessage().replace("%input", args[2]));
+                    return true;
+                }
+                Integer amountRequiredAddthis = Integer.valueOf(args[2]);
+
+                ItemStack itemStack = player.getInventory().getItemInMainHand();
+                if(itemStack.equals(new ItemStack(Material.AIR))) {
+                    player.sendMessage(Messages.NO_ITEM_IN_MAIN_HAND.getMessage());
+                    return true;
+                }
+                if(!itemStack.hasItemMeta()) {
+                    Material material = itemStack.getType();
+                    String itemString = ItemUtils.createItemString(material.name(), material, null, null);
+                    UUID randomItemUuidaddthis = UUID.randomUUID();
+                    try {
+                        this.main.getSrDatabase().addItemToItemsDB(UUID.fromString(atUuid),randomItemUuidaddthis, itemString, amountRequiredAddthis, player);
+                        HologramUtils.updateSpecificHologram(UUID.fromString(atUuid));
+                        player.sendMessage(Messages.ITEM_ADDED_SUCCESS.getMessage().replace("%item", "Material." + material.name()));
+                        player.sendMessage(Messages.ITEM_MODIFICATE_FOR_CHANGES.getMessage());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    ItemMeta itemMeta = itemStack.getItemMeta();
+                    if(itemMeta != null) {
+                        String displayName;
+                        if(itemMeta.getDisplayName().isEmpty()) {
+                            displayName = itemStack.getType().name();
+                        } else {
+                            displayName = itemMeta.getDisplayName();
+                        }
+                        Material material = itemStack.getType();
+                        Map<Enchantment, Integer> enchantmentMap = null;
+                        List<String> itemDescription = null;
+
+                        if(itemMeta.hasEnchants()) {
+                            enchantmentMap = itemMeta.getEnchants();
+                        }
+                        if(itemMeta.hasLore()) {
+                            itemDescription = itemMeta.getLore();
+                        }
+                        String itemString = ItemUtils.createItemString(displayName, material, enchantmentMap, itemDescription);
+                        UUID randomItemUuidaddthis = UUID.randomUUID();
+                        try {
+                            main.getSrDatabase().addItemToItemsDB(UUID.fromString(atUuid), randomItemUuidaddthis, itemString, amountRequiredAddthis, player);
+                            HologramUtils.updateSpecificHologram(UUID.fromString(atUuid));
+                            player.sendMessage(Messages.ITEM_ADDED_SUCCESS.getMessage().replace("%item", "Material." + material.name()));
+                            player.sendMessage(Messages.ITEM_MODIFICATE_FOR_CHANGES.getMessage());
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
                 break;
             case "debug":
                 break;
@@ -262,6 +321,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
             arguments.add("remove");
             arguments.add("adminsettings");
             arguments.add("add");
+            arguments.add("addthis");
             arguments.add("help");
             arguments.add("debug");
             StringUtil.copyPartialMatches(args[0], arguments, completions);
@@ -272,7 +332,7 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     arguments.add("<name>");
                     StringUtil.copyPartialMatches(args[1], arguments, completions);
                     break;
-                case "remove", "adminsettings", "add":
+                case "remove", "adminsettings", "add", "addthis":
                     try {
                         this.main.getSrDatabase().addFromDBtoList();
                     } catch (SQLException e) {
@@ -300,6 +360,9 @@ public class ChestCommand implements CommandExecutor, TabCompleter {
                     arguments.addAll(validBlocks);
                     StringUtil.copyPartialMatches(args[2], arguments, completions);
                     break;
+                case "addthis":
+                    arguments.add("<amount>");
+                    StringUtil.copyPartialMatches(args[2], arguments, completions);
             }
         }
         if(args.length == 4) {

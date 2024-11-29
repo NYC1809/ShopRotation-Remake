@@ -43,7 +43,7 @@ This plugin operates with the `/srChest` command.
 - `/srChest get` - prints a List of all existing ShopRotation chests. Simply click on the provided chestUUID to copy it to your local clipboard.
 - `/srChest remove <name/uuid>` - removes the specified chest.
 - `/srChest add <uuid> <material/block> <requiredAmount>` - adds the specified item to the ShopRotation chest. `requiredAmount` describes the amount this itemgoal needs to be finished.
-- `/srChest addthis <uuid>` - gets the item you are currently holding and adds it to the specified ShopRotation chest. This command also copies the items Properties directly to the itemgoal!
+- `/srChest addthis <uuid> <requiredAmount>` - gets the item you are currently holding and adds it to the specified ShopRotation chest. This command also copies the items Properties directly to the itemgoal!
 - `/srChest adminsettings <uuid>` - opens the gui to modify the whole ShopRotation chest. In this gui server operators can modify every `setting/item/reward`!
 - `/srChest help` - prints all available commands.
 

@@ -51,6 +51,9 @@ This plugin operates with the `/srChest` command.
 
 ## Customization
 
+## Features
+
+
 
 >[!IMPORTANT]
 > ⚠️ This project's code may not look the best. I am currently trying to improve coding. Therefore it is the best to just practice it over and over again.
